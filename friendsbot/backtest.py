@@ -46,7 +46,8 @@ class ExitConfig:
     partial_frac: float = 0.5       # share closed at target_r in partial mode
     breakeven_after_partial: bool = True
     cost: float = 0.30              # round-trip spread + slippage in price units (gold: $ per ounce)
-    cost_pct: float = 0.0           # extra round-trip cost as a fraction of price (crypto fees)
+    cost_pct: float = 0.0           # extra round-trip cost as a fraction of price (commission, slippage)
+    swap_pct_day: float = 0.0       # holding cost per day as a fraction of price, charged per hour held
     max_hold_bars: int = 96         # 8 hours
     intrabar: str = "pessimistic"   # pessimistic | optimistic
     # what to do at a market break (1-minute engine): "close" before any break (daily pause and

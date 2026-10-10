@@ -24,12 +24,15 @@ START, END = pd.Timestamp("2026-02-02", tz="UTC"), pd.Timestamp("2026-09-26", tz
 TIMEFRAMES = {"1m": "1min", "5m": "5min", "15m": "15min", "30m": "30min", "1h": "1h", "4h": "4h"}
 ASSETS = {
     # cost: spread + slippage per round trip in price units; cost_pct: exchange fees
-    "xauusd": {"label": "Goud (XAUUSD)", "dataset": "xauusd_1m", "cost": 0.30, "cost_pct": 0.0,
-               "cost_note": "$0,30 per trade (spread + slippage)"},
-    "nas100": {"label": "US100 (Nasdaq 100)", "dataset": "nas100_1m", "cost": 1.5, "cost_pct": 0.0,
-               "cost_note": "1,5 punt per trade (spread + slippage)"},
+    # MyFundedPerps (docs, Oct 2026): commission 0.005% per fill for commodities/indices and 0.03% for
+    # crypto, worst-case slippage 0.25 bp per side on gold/indices, swap per hour held of 0.015%/day
+    # (commodities/indices) and 0.03%/day (crypto).
+    "xauusd": {"label": "Goud (XAUUSD)", "dataset": "xauusd_1m", "cost": 0.0, "cost_pct": 0.00015,
+               "swap_pct_day": 0.00015, "cost_note": "0,015% per trade (commissie + slippage) + swap 0,015%/dag"},
+    "nas100": {"label": "US100 (Nasdaq 100)", "dataset": "nas100_1m", "cost": 0.0, "cost_pct": 0.00015,
+               "swap_pct_day": 0.00015, "cost_note": "0,015% per trade (commissie + slippage) + swap 0,015%/dag"},
     "btcusdt": {"label": "BTCUSDT", "dataset": "btcusd_1m", "cost": 0.0, "cost_pct": 0.0008,
-                "cost_note": "0,08% per trade (futures-fees taker/maker + slippage)"},
+                "swap_pct_day": 0.0003, "cost_note": "0,08% per trade (commissie 0,06% + slippage) + swap 0,03%/dag"},
 }
 EXITS = {
     "friend": ExitConfig(),                                   # half at 2R, runner to EMA, BE
@@ -60,7 +63,7 @@ def run(out_dir="reports", assets=None, timeframes=None) -> dict:
             setups = find_setups(tf, cfg)
             per_exit = {}
             for ex_name, ex in EXITS.items():
-                ex = replace(ex, cost=spec["cost"], cost_pct=spec["cost_pct"])
+                ex = replace(ex, cost=spec["cost"], cost_pct=spec["cost_pct"], swap_pct_day=spec["swap_pct_day"])
                 per_window = {}
                 for w in WINDOW_SET if ex_name == "friend" else ["all"]:
                     trades = simulate_fine(tf, fine, setups, ex, _filter(w))

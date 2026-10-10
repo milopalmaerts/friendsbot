@@ -76,3 +76,14 @@ def test_session_close_exits_at_session_end():
     s = [x for x in find_setups(tf, CFG) if x.direction == "long"]
     t = simulate_fine(tf, fine, s, ExitConfig(mode="ema", cost=0, session_close=True), session="asia")[0]
     assert t.exit_reason == "session" and t.exit_time < pd.Timestamp("2026-03-02 07:00", tz="UTC")
+
+
+def test_swap_is_charged_per_full_hour_held():
+    fine = minutes(LONG + [(112, 111)] * 30, [True] * (len(LONG) + 30), start="2026-03-02 06:00")
+    tf = with_indicators(resample(fine, "5min"), CFG)
+    s = [x for x in find_setups(tf, CFG) if x.direction == "long"]
+    base = simulate_fine(tf, fine, s, ExitConfig(mode="ema", cost=0, gap_policy="hold"))[0]
+    swap = simulate_fine(tf, fine, s, ExitConfig(mode="ema", cost=0, gap_policy="hold", swap_pct_day=0.24))[0]
+    hours = int(swap.exit_time.floor("h").value // 3_600_000_000_000 - swap.entry_time.floor("h").value // 3_600_000_000_000)
+    assert hours >= 1
+    assert base.r - swap.r == pytest.approx(0.24 / 24 * hours * s[0].entry / s[0].risk, abs=1e-3)

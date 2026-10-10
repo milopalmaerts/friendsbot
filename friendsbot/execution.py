@@ -15,6 +15,9 @@ from .backtest import ExitConfig, Trade, for_setup, session_of, trade_cost
 from .strategy import Setup
 
 
+HOUR_NS = 3_600_000_000_000
+
+
 def simulate_fine(tf: pd.DataFrame, fine: pd.DataFrame, setups: list[Setup], ex: ExitConfig = ExitConfig(),
                   session_filter=None, max_hold: pd.Timedelta = pd.Timedelta(days=5),
                   session: str | None = None) -> list[Trade]:
@@ -108,7 +111,10 @@ def simulate_fine(tf: pd.DataFrame, fine: pd.DataFrame, setups: list[Setup], ex:
             exit_price = fc[j]
             realized += remaining * (fc[j] - entry) * sign
         r_gross = realized / risk
-        r_net = r_gross - trade_cost(ex, entry) / risk
+        # swap: charged at every full hour boundary the position is held through
+        hours = int(ft[j] // HOUR_NS - ft[k] // HOUR_NS)
+        swap = ex.swap_pct_day / 24 * hours * abs(entry)
+        r_net = r_gross - (trade_cost(ex, entry) + swap) / risk
         outcome = "win" if r_net > 0.05 else "loss" if r_net < -0.05 else "breakeven"
         entry_time, exit_time = fine.index[k], fine.index[j]
         exit_bar = int(bucket[j])

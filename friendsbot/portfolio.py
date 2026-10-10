@@ -49,7 +49,7 @@ def cell_trades(assets=None, exits=None, start=START, end=END, timeframes=None, 
             tf = with_indicators(resample(fine, rule), cfg)
             setups = find_setups(tf, cfg, levels)
             for ex_name, ex in exits.items():
-                ex = replace(ex, cost=spec["cost"], cost_pct=spec["cost_pct"])
+                ex = replace(ex, cost=spec["cost"], cost_pct=spec["cost_pct"], swap_pct_day=spec["swap_pct_day"])
                 for session in sessions or SESSIONS:
                     trades = simulate_fine(tf, fine, setups, ex, window_filter(session), session=session)
                     for t in trades:
