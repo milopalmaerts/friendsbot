@@ -11,7 +11,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from .backtest import ExitConfig, Trade, session_of, trade_cost
+from .backtest import ExitConfig, Trade, for_setup, session_of, trade_cost
 from .strategy import Setup
 
 
@@ -42,8 +42,9 @@ def simulate_fine(tf: pd.DataFrame, fine: pd.DataFrame, setups: list[Setup], ex:
         if len(hit) == 0:
             continue  # the 1-minute feed never traded through the trigger
         k = a + hit[0]
+        ex_s = for_setup(ex, s)
         entry, stop, risk = s.entry, s.stop, s.risk
-        target = entry + sign * ex.target_r * risk
+        target = entry + sign * ex_s.target_r * risk
         remaining, realized, partial_done, cur_stop = 1.0, 0.0, False, stop
         reason, j = "time", k
         end_time = ft[k] + max_hold.value
@@ -53,25 +54,25 @@ def simulate_fine(tf: pd.DataFrame, fine: pd.DataFrame, setups: list[Setup], ex:
             else:
                 stop_hit = fl[j] <= cur_stop if sign == 1 else fh[j] >= cur_stop
             tgt_hit = fh[j] >= target if sign == 1 else fl[j] <= target
-            needs_target = ex.mode == "fixed" or (ex.mode == "partial" and not partial_done)
+            needs_target = ex_s.mode == "fixed" or (ex_s.mode == "partial" and not partial_done)
             if stop_hit and (pessimistic or not (needs_target and tgt_hit)):
                 realized += remaining * (cur_stop - entry) * sign
                 remaining, exit_price = 0.0, cur_stop
                 reason = "stop" if cur_stop == stop else "breakeven"
                 break
             if needs_target and tgt_hit:
-                if ex.mode == "fixed":
+                if ex_s.mode == "fixed":
                     realized += remaining * (target - entry) * sign
                     remaining, exit_price, reason = 0.0, target, "target"
                     break
-                realized += ex.partial_frac * (target - entry) * sign
-                remaining -= ex.partial_frac
+                realized += ex_s.partial_frac * (target - entry) * sign
+                remaining -= ex_s.partial_frac
                 partial_done = True
-                if ex.breakeven_after_partial:
+                if ex_s.breakeven_after_partial:
                     cur_stop = entry
                 j += 1
                 continue
-            runner = ex.mode == "ema" or (ex.mode == "partial" and partial_done)
+            runner = ex_s.mode == "ema" or (ex_s.mode == "partial" and partial_done)
             bar = bucket[j]
             if runner and last_of_bar[j] and bar > m and (tf_c[bar] - tf_e[bar]) * sign < 0:
                 realized += remaining * (fc[j] - entry) * sign

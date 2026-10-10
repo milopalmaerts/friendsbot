@@ -123,3 +123,23 @@ def test_pending_setup_reports_next_stop_order():
     p = [x for x in pending(frame(LONG[:8]), CFG) if x["direction"] == "long"][0]
     assert p["stage"] == "waiting for 2"
     assert p["entry_stop"] == pytest.approx(103.01) and p["stop"] == pytest.approx(100.9)
+
+
+def test_adaptive_exit_runs_only_good_setups():
+    rows = LONG + [(113, 111), (113, 101.5, 101.6), (102, 101, 101.5)]
+    df = frame(rows)
+    s = find_setups(df, CFG)
+    ex = ExitConfig(mode="adaptive", target_r=1.0, cost=0)
+    s[0].tags["good"] = False
+    plain = simulate(df, s, ex)[0]
+    assert plain.exit_reason == "target" and plain.r == pytest.approx(1.0)
+    s[0].tags["good"] = True
+    runner = simulate(df, s, ex)[0]
+    # half banked at 1R, stop moved to entry, the collapse candle takes out the rest at breakeven
+    assert runner.exit_reason == "breakeven" and runner.r == pytest.approx(0.5)
+
+
+def test_good_setup_tags_are_set():
+    s = find_setups(frame(LONG), CFG)[0]
+    assert {"fresh_trend", "at_level", "good"} <= set(s.tags)
+    assert s.tags["good"] == (s.tags["fresh_trend"] or s.tags["at_level"])

@@ -6,7 +6,7 @@ default is pessimistic: the stop wins any tie, including on the entry candle its
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, replace
 
 import numpy as np
 import pandas as pd
@@ -39,7 +39,9 @@ def in_window(t: pd.Timestamp, window: tuple[float, float]) -> bool:
 
 @dataclass(frozen=True)
 class ExitConfig:
-    mode: str = "partial"           # fixed | partial | ema
+    mode: str = "partial"           # fixed | partial | ema | adaptive
+    # adaptive (the author's own rule): everything at target_r, unless the setup is tagged
+    # "good" (start of trend / key level): then partial_frac at target_r and a runner.
     target_r: float = 2.0           # fixed: full exit; partial: first target
     partial_frac: float = 0.5       # share closed at target_r in partial mode
     breakeven_after_partial: bool = True
@@ -55,6 +57,8 @@ class ExitConfig:
     def label(self) -> str:
         if self.mode == "fixed":
             return f"{self.target_r:g}R"
+        if self.mode == "adaptive":
+            return f"{self.target_r:g}R, goede setup: {int(self.partial_frac * 100)}% op {self.target_r:g}R + runner"
         if self.mode == "partial":
             be = " + BE" if self.breakeven_after_partial else ""
             return f"{int(self.partial_frac * 100)}% at {self.target_r:g}R, runner to EMA{be}"
@@ -89,11 +93,18 @@ class Trade:
         return d
 
 
+def for_setup(ex: ExitConfig, setup) -> ExitConfig:
+    """Resolve the adaptive exit into a concrete one for this setup."""
+    if ex.mode != "adaptive":
+        return ex
+    return replace(ex, mode="partial" if setup.tags.get("good") else "fixed")
+
+
 def trade_cost(ex: ExitConfig, price: float) -> float:
     return ex.cost + ex.cost_pct * abs(price)
 
 
-def simulate(df: pd.DataFrame, setups: list[Setup], ex: ExitConfig = ExitConfig(),
+def simulate(df: pd.DataFrame, setups: list[Setup], exit_cfg: ExitConfig = ExitConfig(),
              session_filter=None) -> list[Trade]:
     """Simulate setups one position at a time. `df` must contain the `ema` column.
     `session_filter(timestamp) -> bool` decides which entries are allowed."""
@@ -102,12 +113,13 @@ def simulate(df: pd.DataFrame, setups: list[Setup], ex: ExitConfig = ExitConfig(
     n = len(df)
     trades: list[Trade] = []
     busy_until = -1
-    pessimistic = ex.intrabar == "pessimistic"
+    pessimistic = exit_cfg.intrabar == "pessimistic"
     for s in setups:
         m = s.entry_bar
         if m <= busy_until or (session_filter is not None and not session_filter(idx[m])):
             continue
         sign = 1 if s.direction == "long" else -1
+        ex = for_setup(exit_cfg, s)
         entry, stop, risk = s.entry, s.stop, s.risk
         target = entry + sign * ex.target_r * risk
         remaining, realized, partial_done = 1.0, 0.0, False

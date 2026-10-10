@@ -13,6 +13,7 @@ def main(argv=None):
     f = sub.add_parser("fetch", help="download and merge the public candle histories")
     f.add_argument("--all", action="store_true", help="also the 1-minute gold, US100 and BTC data (data/cache/)")
     sub.add_parser("timeframes", help="compare 1m…4h on gold, US100 and BTCUSDT")
+    sub.add_parser("portfolio", help="one bot over several markets, sessions chosen on Feb–Jun only")
     r = sub.add_parser("research", help="session comparison, dev/test split, parameter grid")
     r.add_argument("--csv", default=str(data.DEFAULT_CSV))
     s = sub.add_parser("scan", help="paper signals: setups forming on the latest candle")
@@ -37,6 +38,11 @@ def main(argv=None):
         from .timeframes import run
         run()
         print("written to reports/timeframes.json")
+    elif a.cmd == "portfolio":
+        from .portfolio import run
+        res = run()
+        for k, p_ in res["portfolios"].items():
+            print(f"{k:22s} dev {p_['dev']['total_r']:+7.1f}R  test {p_['test']['total_r']:+7.1f}R")
     elif a.cmd == "scan":
         from .backtest import FRIEND_WINDOW, in_window
         from .research import FRIEND_RULES

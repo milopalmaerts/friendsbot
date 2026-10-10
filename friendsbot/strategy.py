@@ -36,6 +36,11 @@ class StrategyConfig:
     slope_bars: int = 3
     ema_touch_atr: float | None = None   # pullback must come within this × ATR of the EMA
     level_atr: float | None = None       # pullback must come within this × ATR of a key level
+    # "good setup" in the author's words: start of a trend, or a bounce off a key level.
+    # Fixed before testing: price closed on the other side of the EMA within `fresh_trend_bars`
+    # candles before 0, or the pullback extreme is within `good_level_atr` × ATR of a key level.
+    fresh_trend_bars: int = 20
+    good_level_atr: float = 0.5
     directions: tuple[str, ...] = ("long", "short")
 
     def to_dict(self) -> dict:
@@ -142,15 +147,20 @@ def find_setups(df: pd.DataFrame, cfg: StrategyConfig = StrategyConfig(), levels
             if cfg.ema_touch_atr is not None and ema_dist > cfg.ema_touch_atr:
                 continue
             tags = {"ema_dist_atr": round(float(ema_dist), 2)}
+            lo_ = max(0, zero - cfg.fresh_trend_bars)
+            tags["fresh_trend"] = bool((c[lo_:zero + 1] <= e[lo_:zero + 1]).any())
+            tags["at_level"] = False
             if levels is not None:
                 price = sign * l[ext]
                 near = levels.nearest(df.index[k], price)
                 tags["level_dist_atr"] = None if near is None else round(abs(near - price) / a[k], 2)
                 tags["level"] = near
+                tags["at_level"] = near is not None and abs(near - price) <= cfg.good_level_atr * a[k]
                 if cfg.level_atr is not None and (near is None or abs(near - price) > cfg.level_atr * a[k]):
                     continue
             elif cfg.level_atr is not None:
                 raise ValueError("level_atr filter needs key levels")
+            tags["good"] = tags["fresh_trend"] or tags["at_level"]
             setups.append(Setup(direction, zero, one, pb, m, sign * fill, sign * stop, ext, tags))
     setups.sort(key=lambda s: (s.entry_bar, s.direction))
     return setups

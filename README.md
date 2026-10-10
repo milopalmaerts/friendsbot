@@ -11,6 +11,7 @@ pip install -r requirements.txt
 python -m friendsbot fetch      # openbare 5m-XAUUSD-data verversen (data/xauusd_5m.csv)
 python -m friendsbot fetch --all   # + 1m goud, US100 en BTC (data/cache/, niet in git)
 python -m friendsbot timeframes # 1m…4h op goud, US100 en BTCUSDT → reports/timeframes.json
+python -m friendsbot portfolio  # één bot over goud, US100, BTC → reports/portfolio.json
 python -m friendsbot research   # sessievergelijking, dev/test-split, 48 varianten → reports/
 python -m friendsbot scan       # setup die zich op de laatste candle vormt (papiersignaal)
 python -m friendsbot journal    # samenvatting van data/journal/data_final.xlsx (lokaal, privé)
@@ -25,6 +26,7 @@ python -m pytest
 | `friendsbot/levels.py` | key levels zonder look-ahead (high/low gisteren, Asia-range, swing-punten 1u) |
 | `friendsbot/execution.py` | uitvoering van signalen van elke timeframe op 1-minutencandles |
 | `friendsbot/timeframes.py` | timeframe- en marktvergelijking |
+| `friendsbot/portfolio.py` | één bot over meerdere markten, sessies gekozen op feb–jun |
 | `friendsbot/backtest.py` | uitvoering: stop-order entry, 1R/2R/partial+runner, kosten, sessies |
 | `friendsbot/research.py` | vaste "vriend-regels" per sessie + varianten gekozen op feb–jun, getest op jul–sep |
 | `friendsbot/journal.py` | inlezen van zijn journal (TIME/CHINA → UTC) |

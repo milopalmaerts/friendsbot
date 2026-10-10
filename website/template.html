@@ -110,6 +110,7 @@ footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line);
       <button role="tab" id="t-overzicht" aria-selected="true" data-tab="overzicht">Overzicht</button>
       <button role="tab" id="t-sessies" aria-selected="false" data-tab="sessies">Sessies</button>
       <button role="tab" id="t-timeframes" aria-selected="false" data-tab="timeframes">Timeframes</button>
+      <button role="tab" id="t-portefeuille" aria-selected="false" data-tab="portefeuille">Eén bot</button>
       <button role="tab" id="t-vergelijking" aria-selected="false" data-tab="vergelijking">Zijn trades</button>
       <button role="tab" id="t-strategie" aria-selected="false" data-tab="strategie">Strategie</button>
       <button role="tab" id="t-journal" aria-selected="false" data-tab="journal">Journal</button>
@@ -198,6 +199,47 @@ footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line);
           <li>Er zijn 18 combinaties van markt en timeframe getest. Door toeval scoort er dan altijd wel één goed.</li>
           <li>Op de US100 is de runner-exit zonder de 5 beste trades ongeveer −5R. De 1R-exit hangt niet aan uitschieters, maar het interval raakt nul nog net.</li>
           <li>Alle markten gebruiken dezelfde parameters, die niet per markt zijn afgesteld. Bitcoin is BTC/USD van Bitstamp, als benadering voor BTCUSDT.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="tab" id="portefeuille" hidden>
+    <div class="lead">
+      <span class="label">Goud, US100 en BTC in één bot, elk in zijn beste sessie</span>
+      <h2>Kies je de beste sessies vooraf, dan blijft er weinig winst over</h2>
+      <p class="muted">De bot kiest per markt en sessie de beste timeframe, en kijkt daarbij <b>alleen naar februari–juni</b>. Daarna draait die keuze één keer op juli–september, data die de bot nooit gezien heeft. Zo zou het ook live gaan: je kiest op het verleden en handelt in de toekomst.</p>
+    </div>
+    <div class="kpis" id="pf-kpis"></div>
+    <div class="chartcard">
+      <div class="chartbar"><div class="meta"><b>Equity in R</b><span class="muted">één lijn per portefeuille, links van de stippellijn is ontwikkeling, rechts test</span></div>
+        <div class="seg" role="group" aria-label="Exit" id="pf-ex"></div></div>
+      <div id="pf-equity"></div>
+      <div class="legend"><span><i style="background:var(--ink)"></i>gekozen op feb–jun (eerlijke test)</span><span><i style="background:var(--gold)"></i>jouw selectie (gekozen mét kennis van de testcijfers)</span><span><i style="background:var(--muted)"></i>alles op 15m</span></div>
+    </div>
+    <div class="grid2">
+      <div class="block"><h3>Wat de bot koos (feb–jun)</h3><div class="tablewrap"><table id="pf-cells"></table></div></div>
+      <div class="block"><h3>Jouw selectie</h3><div class="tablewrap"><table id="pf-hand"></table></div><p class="muted" style="font-size:.88rem">In de testperiode ziet je selectie er sterk uit, omdat ze juist op die cijfers gekozen is. In februari–juni, wat de bot vóóraf had kunnen zien, was ze veel zwakker.</p></div>
+    </div>
+    <div class="block"><h3>Markt × sessie × timeframe</h3>
+      <p class="muted" style="font-size:.88rem" id="pf-heat-note"></p>
+      <div class="tablewrap"><table class="heat" id="pf-heat"></table></div></div>
+    <div class="grid2">
+      <div class="block">
+        <h3>De TP-regel van je vriend</h3>
+        <ul class="plain">
+          <li>"1:1 vast, en bij een goede setup 1:1 + runner." Een goede setup is het begin van een trend of een key level.</li>
+          <li>In de bot: vooraf vastgelegd. Begin van een trend = prijs kwam binnen 20 candles vóór 0 van de andere kant van de EMA. Key level = pullback tot 0,5 ATR van een level.</li>
+          <li>Op 15m en 1h, voor goud en US100, levert de runner bij die setups meer op dan alles op 1R: <b>+0,089R</b> tegenover +0,034R per trade bij het begin van een trend, en +0,058R tegenover +0,025R bij een key level.</li>
+          <li>Met deze definitie valt wel 90% van de setups in "goed". Zijn oog voor wat écht het begin van een trend is, is strenger dan deze regel.</li>
+        </ul>
+      </div>
+      <div class="block">
+        <h3>Wat ik zou doen</h3>
+        <ul class="plain">
+          <li>Wel: één bot voor meerdere markten. De regel blijft dezelfde, en de selectie gebeurt volgens een vaste regel op het verleden, niet op het oog.</li>
+          <li>Eerst een paar maanden live op papier volgen. Pas als de gekozen combinaties dan nog winnen, kleine echte inzet.</li>
+          <li>Reken op tot 4 posities tegelijk open, en een drawdown van tientallen R. Met 0,5% risico per trade is 40R al 20% van je account.</li>
         </ul>
       </div>
     </div>
@@ -577,7 +619,71 @@ function renderTimeframes() {
 }
 document.querySelectorAll("[data-ex]").forEach((b) => (b.onclick = () => { tfEx = b.dataset.ex; if (tfEx !== "friend") tfWin = "all"; renderTimeframes(); }));
 
+/* ---------- portfolio ---------- */
+const PF = DATA.portfolio;
+const EXN = { author: "1R, goede setup + runner", "1R": "alles op 1R", "2R_runner": "½ op 2R + runner" };
+const SESN = { asia: "Asia", london: "London", new_york: "New York", late: "Late US" };
+let pfEx = "author";
+function lineChart(el, series, boundary) {
+  const W = Math.max(300, el.clientWidth || 700), H = 300, padL = 48, padR = 12, padT = 12, padB = 28;
+  const all = series.flatMap((s) => s.pts);
+  if (!all.length) { el.innerHTML = ""; return; }
+  const t0 = Math.min(...all.map((p) => p[0])), t1 = Math.max(...all.map((p) => p[0]));
+  let lo = Math.min(0, ...all.map((p) => p[1])), hi = Math.max(0, ...all.map((p) => p[1]));
+  const step = niceStep((hi - lo) / 4 || 1); lo = Math.floor(lo / step) * step; hi = Math.ceil(hi / step) * step;
+  const x = (t) => padL + (t - t0) / (t1 - t0 || 1) * (W - padL - padR), y = (v) => padT + (hi - v) / (hi - lo) * (H - padT - padB);
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" role="img">`;
+  for (let v = lo; v <= hi + 1e-9; v += step) s += `<line x1="${padL}" x2="${W - padR}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${padL - 6}" y="${y(v) + 4}" text-anchor="end">${fmtR(v, 0)}</text>`;
+  const bx = x(boundary);
+  s += `<line x1="${bx}" x2="${bx}" y1="${padT}" y2="${H - padB}" stroke="var(--muted)" stroke-dasharray="4 4"/><text x="${bx - 6}" y="${H - 10}" text-anchor="end">feb–jun</text><text x="${bx + 6}" y="${H - 10}">jul–sep</text>`;
+  series.forEach((se) => {
+    const d = se.pts.map((p, i) => `${i ? "L" : "M"}${x(p[0]).toFixed(1)},${y(p[1]).toFixed(1)}`).join("");
+    s += `<path d="${d}" fill="none" stroke="${se.color}" stroke-width="${se.w || 1.8}" ${se.dash ? 'stroke-dasharray="5 4"' : ""}/>`;
+  });
+  el.innerHTML = s + "</svg>";
+}
+function cellRows(cells, ex) {
+  return cells.map(([a, tf, ses]) => {
+    const c = PF.cells.find((r) => r.asset === a && r.tf === tf && r.session === ses && r.exit === ex);
+    return `<tr><td>${esc(PF.assets[a])}</td><td>${SESN[ses]}</td><td class="mono">${tf}</td><td class="num ${cls(c.dev.total_r)}">${fmtR(c.dev.total_r)}</td><td class="num ${cls(c.test.total_r)}">${fmtR(c.test.total_r)}</td></tr>`;
+  }).join("");
+}
+function renderPortfolio() {
+  if (!PF) return;
+  $("pf-ex").innerHTML = `<span class="label">Exit</span>` + Object.keys(EXN).map((e) => `<button data-pfex="${e}" aria-pressed="${e === pfEx}">${EXN[e]}</button>`).join("");
+  $("pf-ex").querySelectorAll("button").forEach((b) => (b.onclick = () => { pfEx = b.dataset.pfex; renderPortfolio(); }));
+  const sel = PF.portfolios["selected_" + pfEx], hand = PF.portfolios["hand_" + pfEx], all15 = PF.portfolios["all15m_" + pfEx];
+  $("pf-kpis").innerHTML = [
+    ["Bot-keuze, ontwikkeling", fmtR(sel.dev.total_r), `${sel.dev.trades} trades · hierop gekozen`],
+    ["Bot-keuze, test jul–sep", fmtR(sel.test.total_r), `${sel.test.trades} trades · ${fmtR(sel.test.avg_r, 2)} per trade`],
+    ["Jouw selectie, test", fmtR(hand.test.total_r), `vooraf (feb–jun): ${fmtR(hand.dev.total_r)}`],
+    ["Max. drawdown bot-keuze", fmtR(-sel.all.max_drawdown_r), `tot ${sel.max_open} posities tegelijk`],
+  ].map(([l, v, s]) => `<div class="kpi"><span class="label">${l}</span><span class="v ${cls(parseFloat(v.replace("−", "-")))}">${v}</span><span class="s">${s}</span></div>`).join("");
+  const pts = (p) => p.equity.map(([t, v]) => [Date.parse(t), v]);
+  lineChart($("pf-equity"), [
+    { pts: pts(all15), color: "var(--muted)", w: 1.2 },
+    { pts: pts(hand), color: "var(--gold)", dash: true },
+    { pts: pts(sel), color: "var(--ink)", w: 2.2 },
+  ], Date.parse(PF.period.dev_end));
+  const th = `<thead><tr><th>Markt</th><th>Sessie</th><th>TF</th><th class="num">Feb–jun</th><th class="num">Jul–sep</th></tr></thead>`;
+  $("pf-cells").innerHTML = th + `<tbody>${cellRows(sel.cells, pfEx)}</tbody>`;
+  $("pf-hand").innerHTML = th + `<tbody>${cellRows(hand.cells, pfEx)}</tbody>`;
+  $("pf-heat-note").textContent = `Exit: ${EXN[pfEx]}. Elke cel: feb–jun / jul–sep in R na kosten. Groen omrand = positief in beide periodes, zwart kader = gekozen door de bot. De bot kiest per rij de cel met de beste gemiddelde R in feb–jun (minstens ${PF.rule.min_dev_trades} trades en gemiddeld ${fmtR(PF.rule.min_dev_avg_r, 2)} of meer).`;
+  const tfs = ["5m", "15m", "30m", "1h", "4h"];
+  const chosen = new Set(sel.cells.map((c) => c.join("|")));
+  let rows = "";
+  Object.keys(PF.assets).forEach((a) => Object.keys(SESN).forEach((ses) => {
+    rows += `<tr><td style="white-space:nowrap">${esc(PF.assets[a].split(" ")[0])} · ${SESN[ses]}</td>` + tfs.map((tf) => {
+      const c = PF.cells.find((r) => r.asset === a && r.tf === tf && r.session === ses && r.exit === pfEx);
+      const both = c.dev.total_r > 0 && c.test.total_r > 0, pick = chosen.has([a, tf, ses].join("|"));
+      return `<td class="cell ${both ? "both" : ""} ${pick ? "sel" : ""}" style="background:${heatColor(c.dev.total_r + c.test.total_r)};cursor:default">${fmtR(c.dev.total_r, 0)} / ${fmtR(c.test.total_r, 0)}</td>`;
+    }).join("") + "</tr>";
+  }));
+  $("pf-heat").innerHTML = `<thead><tr><th>Markt · sessie</th>${tfs.map((t) => `<th class="c">${t}</th>`).join("")}</tr></thead><tbody>${rows}</tbody>`;
+}
+
 function drawAll() {
+  if (!$("portefeuille").hidden) renderPortfolio();
   if (!$("timeframes").hidden) renderTimeframes();
   if (!$("overzicht").hidden) drawExample();
   if (!$("sessies").hidden) renderSessions();

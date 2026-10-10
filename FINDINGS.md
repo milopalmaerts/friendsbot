@@ -67,3 +67,31 @@ Resultaat na kosten, hele dag, exit "½ op 2R + runner" (ontwikkeling / test):
 4. **Bitcoin**: fees maken 1m–30m onrendabel; 1h staat rond nul.
 5. 18 combinaties getest: één goede combinatie kan toeval zijn. Volgende stap is US100 15m vooruit
    paper-traden voordat er geld op gezet wordt.
+
+
+# Eén bot over goud, US100 en BTC (`python -m friendsbot portfolio`)
+
+De bot kiest per markt en sessie (Asia, London, New York, Late US) de timeframe met de beste gemiddelde R
+in februari–juni (minstens 20 trades, gemiddeld ≥ +0,05R), en wordt daarna één keer getest op juli–september.
+
+| Portefeuille | Feb–jun trades | Feb–jun | Jul–sep trades | Jul–sep | Max. drawdown |
+|---|---:|---:|---:|---:|---:|
+| Bot-keuze (feb–jun), exit 1R/goede setup+runner | 409 | +69.5R | 245 | +4.5R | 41.4R |
+| Jouw selectie*, exit 1R/goede setup+runner | 286 | +5.9R | 173 | +89.4R | 45.7R |
+| Bot-keuze (feb–jun), exit 1R | 245 | +43.6R | 166 | +7.6R | 18.9R |
+| Jouw selectie*, exit 1R | 299 | -12.1R | 179 | -10.8R | 45.3R |
+| Bot-keuze (feb–jun), exit ½ op 2R + runner | 383 | +85.0R | 240 | +15.3R | 58.4R |
+| Jouw selectie*, exit ½ op 2R + runner | 278 | +24.2R | 170 | +105.7R | 28.0R |
+
+\* Jouw selectie (US100 15m NY, goud 15m + 1h Asia, US100 1h Asia, BTC 15m London) is gekozen na het zien
+van de juli–septembercijfers, dus die kolom is geen eerlijke test.
+
+## Conclusies
+1. Kiezen op het verleden en handelen in de toekomst laat het grootste deel van de schijnbare winst verdwijnen:
+   +69,5R in de selectieperiode wordt +4,5R in de test (exit van je vriend). Positief, maar binnen de ruis.
+2. Jouw selectie haalde vóóraf (feb–jun) maar +5,9R; de +89R in de test komt vooral van BTC London 15m, die in
+   feb–jun −18,9R verloor.
+3. TP-regel van je vriend ("1R, goede setup 1R + runner"): de runner levert op 15m/1h meer op dan alles op 1R
+   (+0,089R tegenover +0,034R per trade bij trendstart), maar een eenvoudige regel markeert 90% van de setups als
+   "goed". Zijn eigen oordeel is strenger dan wat de bot nu kan nabootsen.
+4. Een multi-market bot kan, maar dan met een vaste selectieregel en eerst maanden papier-trading.
