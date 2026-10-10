@@ -114,6 +114,7 @@ footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line);
       <div class="seg" role="group" aria-label="Bron" id="seg-src">
         <button data-s="all" aria-pressed="true">Simulatie + papier</button>
         <button data-s="papier" aria-pressed="false">Alleen papier</button>
+        <button data-s="sandbox" aria-pressed="false">Sandbox</button>
       </div>
       <div class="money">
         <label for="acct">Account €<input id="acct" type="number" min="100" step="100" inputmode="decimal"></label>
@@ -124,7 +125,7 @@ footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line);
     <div class="card">
       <div class="cardhead"><h3>Equity</h3><span class="muted" style="font-size:.85rem" id="eq-note"></span></div>
       <div id="equity"></div>
-      <div class="legend"><span><i style="background:var(--muted)"></i>simulatie (walk-forward)</span><span><i style="background:var(--ink);height:3px"></i>papier (vooruit, regels vast sinds 10 okt)</span></div>
+      <div class="legend" id="eq-legend"><span><i style="background:var(--muted)"></i>simulatie (walk-forward)</span><span><i style="background:var(--ink);height:3px"></i>papier (vooruit, regels vast sinds 10 okt)</span></div>
     </div>
     <div class="card">
       <div class="cardhead"><h3>Resultaat per dag</h3><span class="muted" style="font-size:.85rem">gerealiseerd, op de dag van de exit</span></div>
@@ -188,8 +189,9 @@ const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const cls = (v) => (v > 0.0001 ? "pos" : v < -0.0001 ? "neg" : "");
 const sgn = (v) => (v > 0 ? "+" : v < 0 ? "−" : "");
-const eur = (v, d = 0) => sgn(v) + "€" + Math.abs(v).toLocaleString("nl-BE", { minimumFractionDigits: d, maximumFractionDigits: d });
-const eurAbs = (v) => "€" + v.toLocaleString("nl-BE", { maximumFractionDigits: 0 });
+let CUR = "€";
+const eur = (v, d = 0) => sgn(v) + CUR + Math.abs(v).toLocaleString("nl-BE", { minimumFractionDigits: d, maximumFractionDigits: d });
+const eurAbs = (v) => CUR + v.toLocaleString("nl-BE", { maximumFractionDigits: 0 });
 const pc = (v, d = 1) => sgn(v) + Math.abs(v).toFixed(d).replace(".", ",") + "%";
 const pcPlain = (v) => String(+v.toFixed(2)).replace(".", ",") + "%";
 const rr = (v, d = 2) => (v == null ? "–" : sgn(v) + Math.abs(v).toFixed(d).replace(".", ",") + "R");
@@ -219,18 +221,27 @@ tabs.forEach((b) => b.addEventListener("click", () => show(b.dataset.tab)));
 /* ---------- money ---------- */
 // every closed trade risks its own % (top combinations double), scaled by the chosen base risk,
 // of the equity at that moment (compounding), booked on its exit time
+// which trades a source view shows: the paper views never mix in the real sandbox account
+const inSource = (t) => (src === "all" ? t.source !== "sandbox" : t.source === src);
 function ledger() {
-  const closed = J.trades.filter((t) => t.status === "closed" && (src === "all" || t.source === src))
+  if (src === "sandbox") {   // the real account: its own dollars, not the account/risk inputs
+    let eq = J.sandbox ? J.sandbox.account.starting_balance : 100000;
+    return J.trades.filter((t) => t.source === "sandbox" && t.status === "closed")
+      .slice().sort((a, b) => a.exit_time.localeCompare(b.exit_time))
+      .map((t) => { const before = eq; eq += t.pnl_usd; return { ...t, before, pnl: t.pnl_usd, after: eq, pct: t.risk_pct }; });
+  }
+  const closed = J.trades.filter((t) => t.status === "closed" && inSource(t))
     .slice().sort((a, b) => a.exit_time.localeCompare(b.exit_time));
   let eq = account;
   return closed.map((t) => { const before = eq; const pct = t.risk_pct * risk / J.defaults.base_risk; const pnl = before * (pct / 100) * t.r; eq += pnl; return { ...t, before, pnl, after: eq, pct }; });
 }
-const lastTime = () => J.trades.reduce((m, t) => (t.exit_time > m ? t.exit_time : m), "");
+const lastTime = () => (src === "sandbox" && J.sandbox ? J.sandbox.updated
+  : J.trades.filter(inSource).reduce((m, t) => (t.exit_time && t.exit_time > m ? t.exit_time : m), ""));
 function inPeriod(rows) {
   if (period === "all") return rows;
   const end = Date.parse(lastTime());
   const from = end - (+period) * 86400000;
-  return rows.filter((t) => Date.parse(t.exit_time) > from);
+  return rows.filter((t) => Date.parse(t.exit_time || t.entry_time) > from);
 }
 
 /* ---------- charts ---------- */
@@ -249,7 +260,7 @@ function equityChart(el, pts, start, fwd) {
   const ticks = W < 520 ? 2 : 4;
   for (let i = 0; i <= ticks; i++) { const t = t0 + (t1 - t0) * i / ticks; s += `<text x="${x(t)}" y="${H - 6}" text-anchor="${i === 0 ? "start" : i === ticks ? "end" : "middle"}">${fmtDay(new Date(t).toISOString().slice(0, 10), { day: "numeric", month: "short" })}</text>`; }
   const path = (arr) => arr.map((p, i) => `${i ? "L" : "M"}${x(p[0]).toFixed(1)},${y(p[1]).toFixed(1)}`).join("");
-  const fx = Date.parse(fwd);
+  const fx = src === "sandbox" ? -Infinity : Date.parse(fwd);
   const simPts = all.filter((p) => p[0] < fx), papPts = all.filter((p) => p[0] >= fx);
   if (simPts.length) s += `<path d="${path(simPts)}" fill="none" stroke="var(--muted)" stroke-width="1.6"/>`;
   if (papPts.length) s += `<path d="${path([simPts[simPts.length - 1] || papPts[0], ...papPts])}" fill="none" stroke="var(--ink)" stroke-width="2.4"/>`;
@@ -310,18 +321,18 @@ function renderJournal() {
     ["Beste dag", best ? eur(best.pnl) : "–", best ? `${fmtDay(best.day)} · ${pc(best.pct, 2)}` : "", best ? best.pnl : 0],
     ["Max. drawdown", pc(-st.dd), `slechtste dag ${worst ? eur(worst.pnl) : "–"}`, -st.dd],
   ].map(([l, v, s, sign]) => `<div class="kpi"><span class="label">${l}</span><span class="v ${cls(sign)}">${v}</span><span class="s">${s}</span></div>`).join("");
-  $("eq-note").textContent = `${eurAbs(account)} start · ${String(risk).replace(".", ",")}% per trade, toppers ${String(risk * J.rules.risk.hot / J.rules.risk.base).replace(".", ",")}% · herbelegd`;
+  $("eq-note").textContent = src === "sandbox" ? "echte sandbox-account, na fees en funding" : `${eurAbs(account)} start · ${String(risk).replace(".", ",")}% per trade, toppers ${String(risk * J.rules.risk.hot / J.rules.risk.base).replace(".", ",")}% · herbelegd`;
   equityChart($("equity"), rows.map((t) => [Date.parse(t.exit_time), t.after]), start, J.forward_start);
   dailyBars($("daily"), days);
   renderCalendar(days);
   breakdown("by-asset", rows, (t) => SHORT[t.asset]);
   breakdown("by-session", rows, (t) => SES[t.session]);
-  $("days").innerHTML = `<thead><tr><th>Dag</th><th class="num">Trades</th><th class="num">R</th><th class="num">€</th><th class="num">%</th></tr></thead><tbody>${days.slice(-10).reverse().map((d) => `<tr><td>${fmtDay(d.day)}${d.paper ? "" : ' <span class="pill sim">sim</span>'}</td><td class="num">${d.n}</td><td class="num ${cls(d.r)}">${rr(d.r, 1)}</td><td class="num ${cls(d.pnl)}">${eur(d.pnl)}</td><td class="num ${cls(d.pct)}">${pc(d.pct, 2)}</td></tr>`).join("")}</tbody>`;
+  $("days").innerHTML = `<thead><tr><th>Dag</th><th class="num">Trades</th><th class="num">R</th><th class="num">${CUR}</th><th class="num">%</th></tr></thead><tbody>${days.slice(-10).reverse().map((d) => `<tr><td>${fmtDay(d.day)}${d.paper || src === "sandbox" ? "" : ' <span class="pill sim">sim</span>'}</td><td class="num">${d.n}</td><td class="num ${cls(d.r)}">${rr(d.r, 1)}</td><td class="num ${cls(d.pnl)}">${eur(d.pnl)}</td><td class="num ${cls(d.pct)}">${pc(d.pct, 2)}</td></tr>`).join("")}</tbody>`;
 }
 function breakdown(id, rows, key) {
   const g = new Map();
   rows.forEach((t) => { const k = key(t); const v = g.get(k) || { n: 0, r: 0, pnl: 0, w: 0 }; v.n++; v.r += t.r; v.pnl += t.pnl; v.w += t.r > 0.05 ? 1 : 0; g.set(k, v); });
-  $(id).innerHTML = `<thead><tr><th></th><th class="num">Trades</th><th class="num">Winrate</th><th class="num">R</th><th class="num">€</th></tr></thead><tbody>${[...g.entries()].sort((a, b) => b[1].pnl - a[1].pnl).map(([k, v]) => `<tr><td>${esc(k)}</td><td class="num">${v.n}</td><td class="num">${Math.round(v.w / v.n * 100)}%</td><td class="num ${cls(v.r)}">${rr(v.r, 1)}</td><td class="num ${cls(v.pnl)}">${eur(v.pnl)}</td></tr>`).join("")}</tbody>`;
+  $(id).innerHTML = `<thead><tr><th></th><th class="num">Trades</th><th class="num">Winrate</th><th class="num">R</th><th class="num">${CUR}</th></tr></thead><tbody>${[...g.entries()].sort((a, b) => b[1].pnl - a[1].pnl).map(([k, v]) => `<tr><td>${esc(k)}</td><td class="num">${v.n}</td><td class="num">${Math.round(v.w / v.n * 100)}%</td><td class="num ${cls(v.r)}">${rr(v.r, 1)}</td><td class="num ${cls(v.pnl)}">${eur(v.pnl)}</td></tr>`).join("")}</tbody>`;
 }
 function renderCalendar(days) {
   const map = new Map(days.map((d) => [d.day, d]));
@@ -346,6 +357,13 @@ function renderSelection() {
   $("selection").innerHTML = `<thead><tr><th>#</th><th>Markt</th><th>Sessie</th><th>TF</th><th class="num">Gem. R vooraf</th><th class="num">Risico</th></tr></thead><tbody>${cur.cells.map((c) => `<tr><td class="num">${c.rank}</td><td>${SHORT[c.asset]}</td><td>${SES[c.session]}</td><td class="num">${c.tf}</td><td class="num ${cls(c.avg_r)}">${rr(c.avg_r)}</td><td class="num">${c.hot ? pcPlain(hotPct) + " ★" : pcPlain(risk)}</td></tr>`).join("")}</tbody>`;
 }
 function renderStatus() {
+  if (src === "sandbox") {
+    const sb = J.sandbox;
+    $("status").innerHTML = sb
+      ? `<span><span class="dot"></span>Sandbox ${esc(sb.account.number || "")} · ${esc(sb.account.status)}</span><span>saldo $${sb.account.balance.toLocaleString("nl-BE", { maximumFractionDigits: 2 })}</span><span>bijgewerkt ${fmtDay(dayKey(sb.updated), { day: "numeric", month: "short" })} ${sb.updated.slice(11, 16)} UTC</span>`
+      : `<span>Nog geen sandboxgegevens. Ze worden elk uur opgehaald zodra de bot draait.</span>`;
+    return;
+  }
   const ends = Object.entries(J.data_end).map(([k, v]) => `${SHORT[k]} t/m ${fmtDay(dayKey(v), { day: "numeric", month: "short" })}`).join(" · ");
   const p = J.summary.papier;
   $("status").innerHTML = `<span><span class="dot"></span>Papier-trading sinds ${fmtDay(dayKey(J.forward_start), { day: "numeric", month: "long", year: "numeric" })}</span><span>${p.trades} papiertrade(s) gesloten${p.open ? `, ${p.open} open` : ""}</span><span>Data: ${ends}</span>`;
@@ -357,12 +375,13 @@ function renderTrades() {
   $("seg-asset").innerHTML = ids.map((a) => `<button data-a="${a}" aria-pressed="${a === assetF}">${a === "all" ? "Alle markten" : SHORT[a]}</button>`).join("");
   $("seg-asset").querySelectorAll("button").forEach((b) => (b.onclick = () => { assetF = b.dataset.a; renderTrades(); }));
   const money = new Map(ledger().map((t) => [t.id, t]));
-  const rows = inPeriod(J.trades.filter((t) => (assetF === "all" || t.asset === assetF) && (src === "all" || t.source === src))).slice().reverse();
+  const rows = inPeriod(J.trades.filter((t) => (assetF === "all" || t.asset === assetF) && inSource(t))).slice().reverse();
   $("trades-count").textContent = `${rows.length} trades ${period === "all" ? "sinds de start" : `in de laatste ${period} dagen`}, nieuwste eerst. Periode en bron kies je op de Journal-pagina.`;
-  const reason = { stop: "stop", breakeven: "breakeven", ema: "runner (EMA)", target: "doel", time: "pauze/weekend" };
-  $("trade-table").innerHTML = `<thead><tr><th>Entry (UTC)</th><th>Markt</th><th>TF</th><th>Sessie</th><th>Richting</th><th class="num">Entry</th><th class="num">Stop</th><th class="num">Exit</th><th>Exit via</th><th class="num">R</th><th class="num">Risico</th><th class="num">€</th><th>Bron</th></tr></thead><tbody>${rows.slice(0, 400).map((t) => {
+  const reason = { stop: "stop", breakeven: "breakeven", ema: "runner (EMA)", target: "doel", time: "pauze/weekend",
+    stop_loss: "stop", take_profit: "doel", user: "bot sloot (EMA)", system: "account gestopt", liquidation: "liquidatie", open: "open" };
+  $("trade-table").innerHTML = `<thead><tr><th>Entry (UTC)</th><th>Markt</th><th>TF</th><th>Sessie</th><th>Richting</th><th class="num">Entry</th><th class="num">Stop</th><th class="num">Exit</th><th>Exit via</th><th class="num">R</th><th class="num">Risico</th><th class="num">${CUR}</th><th>Bron</th></tr></thead><tbody>${rows.slice(0, 400).map((t) => {
     const m = money.get(t.id);
-    return `<tr><td class="num">${t.entry_time.slice(0, 16).replace("T", " ")}</td><td>${SHORT[t.asset]}</td><td class="num">${t.tf}</td><td>${SES[t.session]}</td><td>${t.direction === "long" ? "long" : "short"}</td><td class="num">${t.entry.toLocaleString("nl-BE")}</td><td class="num">${t.stop.toLocaleString("nl-BE")}</td><td class="num">${t.status === "open" ? "open" : t.exit.toLocaleString("nl-BE")}</td><td>${reason[t.exit_reason] || t.exit_reason}</td><td class="num ${cls(t.r)}">${t.status === "open" ? "–" : rr(t.r)}</td><td class="num">${pcPlain(t.risk_pct * risk / J.defaults.base_risk)}${t.hot ? " ★" : ""}</td><td class="num ${m ? cls(m.pnl) : ""}">${m ? eur(m.pnl) : "–"}</td><td><span class="pill ${t.source === "papier" ? "" : "sim"}">${t.source}</span></td></tr>`;
+    return `<tr><td class="num">${t.entry_time.slice(0, 16).replace("T", " ")}</td><td>${SHORT[t.asset]}</td><td class="num">${t.tf}</td><td>${SES[t.session]}</td><td>${t.direction === "long" ? "long" : "short"}</td><td class="num">${t.entry.toLocaleString("nl-BE")}</td><td class="num">${t.stop.toLocaleString("nl-BE")}</td><td class="num">${t.status === "open" || t.exit == null ? "open" : t.exit.toLocaleString("nl-BE")}</td><td>${reason[t.exit_reason] || t.exit_reason}</td><td class="num ${cls(t.r)}">${t.status === "open" || t.r == null ? "–" : rr(t.r)}</td><td class="num">${pcPlain(t.source === "sandbox" ? t.risk_pct : t.risk_pct * risk / J.defaults.base_risk)}${t.hot ? " ★" : ""}</td><td class="num ${m ? cls(m.pnl) : ""}">${m ? eur(m.pnl) : "–"}</td><td><span class="pill ${t.source === "papier" ? "" : "sim"}">${t.source}</span></td></tr>`;
   }).join("")}</tbody>`;
 }
 
@@ -389,6 +408,9 @@ $("rules").innerHTML = [
 ].map((t) => `<li>${t}</li>`).join("");
 
 function render() {
+  CUR = src === "sandbox" ? "$" : "€";
+  $("eq-legend").hidden = src === "sandbox";
+  document.querySelector(".money").hidden = src === "sandbox";
   if (!$("journal").hidden) { renderStatus(); renderJournal(); renderSelection(); }
   if (!$("trades").hidden) renderTrades();
 }

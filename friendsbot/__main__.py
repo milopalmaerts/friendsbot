@@ -16,6 +16,7 @@ def main(argv=None):
     sub.add_parser("timeframes", help="compare 1m…4h on gold, US100 and BTCUSDT")
     sub.add_parser("portfolio", help="one bot over several markets, sessions chosen on Feb–Jun only")
     sub.add_parser("paper", help="update the paper-trading journal with the latest candles")
+    sub.add_parser("sandbox", help="fetch the bot's real trades from MyFundedPerps into reports/live/sandbox.json")
     rn = sub.add_parser("run", help="always-on: react to candle closes and fills within seconds (key in FP_API_KEY)")
     rn.add_argument("--dry-run", action="store_true", help="compute orders without sending them")
     rn.add_argument("--account", help="account id (default: first active account the key can see)")
@@ -68,6 +69,16 @@ def main(argv=None):
         plan = tick(client, account_id=a.account, dry_run=a.dry_run or not client.authenticated)
         print(json.dumps({"environment": client.environment, "dry_run": a.dry_run or not client.authenticated,
                           "notes": plan.notes, "actions": plan.actions}, indent=1, default=str))
+    elif a.cmd == "sandbox":
+        from .mfp import Client
+        from .sandbox import update
+        client = Client()
+        if not client.authenticated:
+            raise SystemExit("FP_API_KEY ontbreekt")
+        d = update(client=client)
+        closed = [t for t in d["trades"] if t["status"] == "closed"]
+        print(f"{d['environment']} account {d['account']['number']}: balance {d['account']['balance']:,.2f}, "
+              f"{len(closed)} gesloten en {len(d['trades']) - len(closed)} open trades van de bot")
     elif a.cmd == "paper":
         from .paper import update
         j = update()

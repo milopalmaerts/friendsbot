@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: paper
+  group: journal-commit
   cancel-in-progress: false
 
 permissions:
@@ -28,6 +28,10 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python -m friendsbot fetch --all
       - run: python -m friendsbot paper
+      - name: Sandbox trades (skipped without key)
+        env:
+          FP_API_KEY: ${{ secrets.FP_API_KEY }}
+        run: if [ -n "$FP_API_KEY" ]; then python -m friendsbot sandbox; fi
       - run: python -m friendsbot site
       - run: python -m pytest -q
       - name: Commit
@@ -35,5 +39,6 @@ jobs:
           git config user.name "friendsbot"
           git config user.email "friendsbot@users.noreply.github.com"
           git add data/xauusd_5m.csv reports/paper/journal.json website/index.html
+          [ -f reports/live/sandbox.json ] && git add reports/live/sandbox.json
           git diff --cached --quiet || git commit -m "Update paper journal $(date -u +%F)"
-          git push
+          git pull --rebase --autostash && git push

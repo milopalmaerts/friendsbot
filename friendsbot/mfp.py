@@ -96,6 +96,17 @@ class Client:
     def orders(self, account_id: str, status: str | None = None, limit: int = 100) -> list[dict]:
         return self._call("GET", "/v1/orders", {"account_id": account_id, "status": status, "limit": limit})["data"]
 
+    def paged(self, path: str, query: dict, max_pages: int = 20) -> list[dict]:
+        """All items of a cursor-paginated list (closed positions, order history)."""
+        out, cursor = [], None
+        for _ in range(max_pages):
+            page = self._call("GET", path, {**query, "cursor": cursor, "limit": 100})
+            out += page["data"]
+            cursor = page.get("next_cursor")
+            if not page.get("has_more") or not cursor:
+                break
+        return out
+
     def orders_by_client_id(self, client_order_id: str) -> list[dict]:
         return self._call("GET", "/v1/orders", {"client_order_id": client_order_id})["data"]
 

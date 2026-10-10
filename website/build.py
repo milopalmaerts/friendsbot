@@ -14,6 +14,11 @@ HERE = Path(__file__).resolve().parent
 
 def build() -> str:
     journal = json.loads((ROOT / "reports" / "paper" / "journal.json").read_text())
+    sandbox_path = ROOT / "reports" / "live" / "sandbox.json"
+    if sandbox_path.exists():
+        sb = json.loads(sandbox_path.read_text())
+        journal["sandbox"] = {k: v for k, v in sb.items() if k != "trades"}
+        journal["trades"] = journal["trades"] + sb["trades"]
     body = (HERE / "journal.html").read_text().replace("/*__DATA__*/null", json.dumps(journal, separators=(",", ":")))
     page = ("<!doctype html>\n<html lang=\"nl\">\n<head>\n<meta charset=\"utf-8\">\n"
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n"
