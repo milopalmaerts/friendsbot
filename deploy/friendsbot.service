@@ -1,0 +1,23 @@
+# systemd service for a Linux server (VPS). Install:
+#   sudo cp deploy/friendsbot.service /etc/systemd/system/
+#   sudo mkdir -p /etc/friendsbot && echo 'FP_API_KEY=fp_test_...' | sudo tee /etc/friendsbot/env && sudo chmod 600 /etc/friendsbot/env
+#   sudo systemctl daemon-reload && sudo systemctl enable --now friendsbot
+#   journalctl -u friendsbot -f        # follow the log
+[Unit]
+Description=friendsbot second-entry runner (MyFundedPerps)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=friendsbot
+WorkingDirectory=/opt/friendsbot
+EnvironmentFile=/etc/friendsbot/env
+ExecStartPre=/usr/bin/git pull --ff-only
+ExecStart=/opt/friendsbot/.venv/bin/python -m friendsbot run
+Restart=always
+RestartSec=10
+# pick up the new monthly selection: restart once a day (git pull runs on every start)
+RuntimeMaxSec=86400
+
+[Install]
+WantedBy=multi-user.target

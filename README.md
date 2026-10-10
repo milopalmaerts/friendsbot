@@ -47,7 +47,18 @@ Risico per trade standaard 0,10% (toppers 0,20%) omdat prop-accounts maar 3–6%
 (`FB_BASE_RISK_PCT`, `FB_HOT_RISK_PCT`). Geen nieuwe entries als de daglimiet of de maximale drawdown dichtbij is.
 Een `fp_live_`-sleutel wordt geweigerd tenzij `FB_ALLOW_LIVE=1`.
 
-Automatisch: `.github/workflows/live.yml` draait elke 5 minuten zodra de repository-secret `FP_API_KEY`
+### Doorlopend draaien (aanbevolen)
+`python -m friendsbot run` luistert naar de marktstream en de accountstream van MyFundedPerps en reageert binnen
+enkele seconden: bij het sluiten van een candle zet of verplaatst hij de stop-entry, bij een fill plaatst hij meteen
+de stop loss en TP. Elke 60 seconden volgt een extra controle. Goud en US100 volgen de CME-uren (zondag 18:00 tot
+vrijdag 17:00 New York, dagelijkse pauze 17:00–18:00): daarbuiten geen entries, en open posities sluiten 5 minuten
+voor de pauze. BTC handelt de klok rond.
+
+Dit moet op een machine die altijd aan staat:
+* Linux-server/VPS: `deploy/friendsbot.service` (systemd, herstart zichzelf, haalt dagelijks de nieuwe selectie op).
+* Windows-pc die aan blijft: `deploy/run_windows.bat`.
+
+Fallback: `.github/workflows/live.yml` draait elke 5 minuten zodra de repository-secret `FP_API_KEY`
 bestaat (GitHub → Settings → Secrets and variables → Actions). `.github/workflows/paper.yml` werkt
 wekelijks en op de 1e van de maand de data, de journal en de maandselectie bij.
 

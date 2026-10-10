@@ -16,6 +16,9 @@ def main(argv=None):
     sub.add_parser("timeframes", help="compare 1m…4h on gold, US100 and BTCUSDT")
     sub.add_parser("portfolio", help="one bot over several markets, sessions chosen on Feb–Jun only")
     sub.add_parser("paper", help="update the paper-trading journal with the latest candles")
+    rn = sub.add_parser("run", help="always-on: react to candle closes and fills within seconds (key in FP_API_KEY)")
+    rn.add_argument("--dry-run", action="store_true", help="compute orders without sending them")
+    rn.add_argument("--account", help="account id (default: first active account the key can see)")
     lv = sub.add_parser("live", help="one run against MyFundedPerps (key in FP_API_KEY; sandbox for fp_test_ keys)")
     lv.add_argument("--dry-run", action="store_true", help="compute and print the orders without sending them")
     lv.add_argument("--account", help="account id (default: first active account the key can see)")
@@ -48,6 +51,14 @@ def main(argv=None):
         res = run()
         for k, p_ in res["portfolios"].items():
             print(f"{k:22s} dev {p_['dev']['total_r']:+7.1f}R  test {p_['test']['total_r']:+7.1f}R")
+    elif a.cmd == "run":
+        from pathlib import Path
+        from .mfp import Client
+        from .runner import run
+        client = Client()
+        if client.environment == "live" and not a.dry_run and os.environ.get("FB_ALLOW_LIVE") != "1":
+            raise SystemExit("live key detected: set FB_ALLOW_LIVE=1 to trade a real challenge account")
+        run(client, a.account, dry_run=a.dry_run or not client.authenticated, log_file=Path("logs/live.jsonl"))
     elif a.cmd == "live":
         from .live import tick
         from .mfp import Client

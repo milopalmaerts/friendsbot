@@ -96,6 +96,9 @@ class Client:
     def orders(self, account_id: str, status: str | None = None, limit: int = 100) -> list[dict]:
         return self._call("GET", "/v1/orders", {"account_id": account_id, "status": status, "limit": limit})["data"]
 
+    def orders_by_client_id(self, client_order_id: str) -> list[dict]:
+        return self._call("GET", "/v1/orders", {"client_order_id": client_order_id})["data"]
+
     # trading
     def place_order(self, body: dict) -> dict:
         return self._call("POST", "/v1/orders", body=body, idempotent=True)["data"]

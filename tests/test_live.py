@@ -166,3 +166,52 @@ def test_client_id_round_trip():
     assert live.parse_client_id(cid + "|1791650000")["trigger"] == 30900.25
     assert live.parse_client_id("someone-else") is None
     assert len(cid) <= 128
+
+
+@pytest.mark.parametrize("ts,asset,is_open", [
+    ("2026-10-10 16:00", "xauusd", False),   # Saturday
+    ("2026-10-11 21:30", "nas100", False),   # Sunday 17:30 New York
+    ("2026-10-11 22:05", "nas100", True),    # Sunday 18:05 New York: open
+    ("2026-10-12 21:30", "xauusd", False),   # Monday 17:30 New York: daily break
+    ("2026-10-16 21:05", "xauusd", False),   # Friday after 17:00 New York
+    ("2026-10-10 16:00", "btcusdt", True),   # BTC trades through the weekend
+    ("2026-01-12 22:30", "xauusd", False),   # winter: break is 22:00–23:00 UTC
+])
+def test_market_hours(ts, asset, is_open):
+    assert live.market_open(asset, pd.Timestamp(ts, tz="UTC")) is is_open
+
+
+def test_no_gold_entries_in_the_weekend(journal):
+    c = FakeClient()
+    weekend_bars = bars_with_setup()
+    weekend_bars.index = weekend_bars.index + (pd.Timestamp("2026-03-07", tz="UTC") - pd.Timestamp("2026-03-02", tz="UTC"))
+    live.tick(c, now=pd.Timestamp("2026-03-07 06:21", tz="UTC"), journal_path=journal, bars={("xauusd", "5m"): weekend_bars})
+    assert c.calls == []
+
+
+def test_gold_position_is_closed_before_the_daily_break(journal):
+    c = FakeClient(positions=[position()], recent=[entry_order_filled()])
+    live.tick(c, now=pd.Timestamp("2026-03-02 21:57", tz="UTC"), journal_path=journal, bars={("xauusd", "5m"): bars_with_setup()})
+    assert ("close", "p1") in c.calls
+
+
+class ConflictClient(FakeClient):
+    def __init__(self, existing_status, **kw):
+        super().__init__(**kw)
+        self.existing_status = existing_status
+
+    def place_order(self, body):
+        self.calls.append(("place", body))
+        if "|" in body["client_order_id"].split("|", 8)[-1] or body["client_order_id"].count("|") > 7:
+            return {"id": "o-new", **body}
+        raise live.ApiError(409, {"error": {"code": "conflict"}})
+
+    def orders_by_client_id(self, cid):
+        return [{"client_order_id": cid, "status": self.existing_status}]
+
+
+@pytest.mark.parametrize("status,places", [("resting", 1), ("filled", 1), ("canceled", 2)])
+def test_conflicting_client_id_never_duplicates_a_live_order(journal, status, places):
+    c = ConflictClient(status)
+    run(c, journal)
+    assert sum(1 for k, *_ in c.calls if k == "place") == places

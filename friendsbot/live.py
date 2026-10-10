@@ -41,8 +41,28 @@ TAG = "fb"                                   # prefix of every client_order_id t
 BASE_RISK_PCT = float(os.environ.get("FB_BASE_RISK_PCT", "0.10"))
 HOT_RISK_PCT = float(os.environ.get("FB_HOT_RISK_PCT", "0.20"))
 LEVERAGE = float(os.environ.get("FB_LEVERAGE", "5"))
+NY = "America/New_York"
+# Gold and the Nasdaq follow CME futures hours: Sunday 18:00 → Friday 17:00 New York time, with a
+# daily break 17:00–18:00. The perps on MyFundedPerps keep quoting through those hours, but the
+# backtest never traded them, so neither does the bot. BTC trades around the clock.
+SESSION_MARKETS = {"xauusd", "nas100"}
+CLOSE_BEFORE_BREAK = pd.Timedelta(minutes=5)
 DAILY_ROOM_TRADES = 3        # need room for this many full losses before the daily-loss floor
 DRAWDOWN_ROOM_TRADES = 6     # … and this many before the maximum-drawdown floor
+
+
+def market_open(asset: str, t: pd.Timestamp) -> bool:
+    if asset not in SESSION_MARKETS:
+        return True
+    ny = t.tz_convert(NY)
+    h = ny.hour + ny.minute / 60
+    if ny.weekday() == 5:
+        return False                     # Saturday
+    if ny.weekday() == 6:
+        return h >= 18                   # opens Sunday 18:00
+    if ny.weekday() == 4 and h >= 17:
+        return False                     # closes Friday 17:00
+    return not 17 <= h < 18              # daily break
 
 
 @dataclass
@@ -183,9 +203,25 @@ def tick(client: Client, account_id: str | None = None, now: pd.Timestamp | None
         if not asset or not e:
             plan.note(f"positie {p['market_id']} is niet van de bot; niet aangeraakt")
             continue
+        try:
+            manage_position(client, plan, p, asset, e, working, markets, frames, now, dry_run)
+        except ApiError as err:
+            plan.note(f"positie {p['market_id']}: {err}")
+
+    # ---- 2. entries -------------------------------------------------------------------------
+    return place_entries(client, plan, cfg, ranks, frames, markets, positions, working, by_market, losses_today,
+                         hot, equity, risk, account_id, now, dry_run)
+
+
+def manage_position(client, plan, p, asset, e, working, markets, frames, now, dry_run):
         order, meta = e
-        entry, stop = p["entry_price"], meta["stop"]
         sign = 1 if p["side"] == "long" else -1
+        if not market_open(asset, now + CLOSE_BEFORE_BREAK):
+            plan.act("close_before_break", market=p["market_id"])
+            if not dry_run:
+                client.close_position(p["id"], client_order_id=f"{TAG}-brk-{p['id'][:40]}-{int(now.timestamp())}")
+            return
+        entry, stop = p["entry_price"], meta["stop"]
         r = abs(entry - stop)
         initial = order.get("filled_size") or order["size"]
         partial_done = p["size"] <= initial * 0.75
@@ -226,7 +262,8 @@ def tick(client: Client, account_id: str | None = None, now: pd.Timestamp | None
             if not dry_run:
                 client.close_position(p["id"], client_order_id=f"{TAG}-close-{p['id'][:40]}-{int(now.timestamp())}")
 
-    # ---- 2. entries -------------------------------------------------------------------------
+def place_entries(client, plan, cfg, ranks, frames, markets, positions, working, by_market, losses_today,
+                  hot, equity, risk, account_id, now, dry_run) -> Plan:
     open_assets = {by_market.get(p["market_id"]) for p in positions}
     our_entries = {o["id"]: (o, m) for o, m in ((o, parse_client_id(o.get("client_order_id"))) for o in working)
                    if m and not o.get("reduce_only")}
@@ -249,9 +286,12 @@ def tick(client: Client, account_id: str | None = None, now: pd.Timestamp | None
         df = frames.get((asset, tf))
         if df is None:
             continue
-        next_bar = df.index[-1] + (df.index[-1] - df.index[-2])
+        bar = df.index[-1] - df.index[-2]
+        next_bar = df.index[-1] + bar
         if blocked or not window_filter(session)(next_bar) or asset in open_assets:
             continue
+        if not (market_open(asset, now) and market_open(asset, now + bar)):
+            continue                     # weekend, daily break, or closing before this bar ends
         if losses_today.get(asset, 0) >= paper.ASSET_DAY_LOSSES:
             plan.note(f"{asset}: {losses_today[asset]} verliezen vandaag, markt gestopt tot morgen")
             continue
@@ -286,14 +326,19 @@ def tick(client: Client, account_id: str | None = None, now: pd.Timestamp | None
             try:
                 client.place_order(body)
             except ApiError as err:
-                if err.status == 409:   # this exact order existed before (e.g. cancelled earlier): re-place it
-                    body["client_order_id"] = cid + f"|{int(now.timestamp())}"
-                    try:
-                        client.place_order(body)
-                        continue
-                    except ApiError as err2:
-                        err = err2
-                plan.note(f"order geweigerd {cid}: {err}")
+                if err.status != 409:
+                    plan.note(f"order geweigerd {cid}: {err}")
+                    continue
+                # this exact order exists already: another run placed it, it filled, or it was cancelled
+                states = {o["status"] for o in client.orders_by_client_id(cid)}
+                if states & {"pending", "resting", "filled"}:
+                    plan.note(f"{cid} bestaat al ({', '.join(sorted(states))}); niet opnieuw geplaatst")
+                    continue
+                body["client_order_id"] = cid + f"|{int(now.timestamp())}"
+                try:
+                    client.place_order(body)
+                except ApiError as err2:
+                    plan.note(f"order geweigerd {cid}: {err2}")
     plan.note(f"account {account_id}: equity ${equity:,.0f}, {len(positions)} posities, "
               f"{len(our_entries)} wachtende entries, toppers {hot}")
     return plan
