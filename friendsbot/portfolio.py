@@ -36,19 +36,20 @@ HAND_PICKED = [("nas100", "15m", "new_york"), ("xauusd", "15m", "asia"), ("xauus
                ("nas100", "1h", "asia"), ("btcusdt", "15m", "london")]
 
 
-def cell_trades(assets=None):
+def cell_trades(assets=None, exits=None, start=START, end=END, timeframes=None):
     """{(asset, tf, exit, session): [Trade]} with Trade.tags['asset'] set."""
     cfg = FRIEND_RULES[0]
     out = {}
+    exits = {k: EXITS[k] for k in (exits or EXITS)}
     for asset in assets or ASSETS:
         spec = ASSETS[asset]
         fine = load_dataset(spec["dataset"])
-        fine = fine[(fine.index >= START) & (fine.index < END)]
+        fine = fine[(fine.index >= start) & (fine.index < end)]
         levels = KeyLevels(fine)
-        for tf_name, rule in TIMEFRAMES.items():
+        for tf_name, rule in (timeframes or TIMEFRAMES).items():
             tf = with_indicators(resample(fine, rule), cfg)
             setups = find_setups(tf, cfg, levels)
-            for ex_name, ex in EXITS.items():
+            for ex_name, ex in exits.items():
                 ex = replace(ex, cost=spec["cost"], cost_pct=spec["cost_pct"])
                 for session in SESSIONS:
                     trades = simulate_fine(tf, fine, setups, ex, window_filter(session))

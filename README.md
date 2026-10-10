@@ -3,7 +3,17 @@
 Bot en onderzoek voor de "second entry"-strategie van een vriend: XAUUSD op 5 minuten, EMA 21,
 key levels, entry op de tweede poging na een pullback (0 → 1 → P → 2).
 
-**Status:** onderzoek en papiersignalen. Er is geen brokerkoppeling en de bot plaatst geen echte orders.
+**Status:** papier-trading sinds 10 oktober 2026. Er is geen brokerkoppeling en de bot plaatst geen echte orders.
+
+## Papier-trading
+```bash
+python -m friendsbot fetch --all   # nieuwste candles (goud/US100 wekelijks op zaterdag, BTC dagelijks)
+python -m friendsbot paper         # journal bijwerken → reports/paper/journal.json
+python -m friendsbot site          # journal-website → website/index.html
+```
+De regels liggen vast sinds 10 oktober 2026 (`friendsbot/paper.py`). Elke maand kiest de bot per markt en sessie
+de beste timeframe over de vorige 120 dagen. Exit: helft op 2R, stop naar breakeven, runner tot de EMA 21.
+Trades vóór 10 oktober zijn een walk-forward-simulatie, trades daarna zijn papiertrades.
 
 ## Snel starten
 ```bash
@@ -35,6 +45,5 @@ python -m pytest
 Resultaten en beperkingen: zie [FINDINGS.md](FINDINGS.md). Databron: [THIRD_PARTY_DATA.md](THIRD_PARTY_DATA.md).
 
 ## Website
-`website/index.html` is één zelfstandig bestand. Met de journal lokaal aanwezig schrijft
-`python -m friendsbot site` een privéversie met journalcijfers naar `dist/` (niet in git).
-Deployen op Vercel: importeer de repo; `vercel.json` serveert de map `website/`.
+`website/index.html` is de journal van de bot: 7/30/90 dagen of alles, equity-curve, resultaat per dag in € en %,
+kalender, per markt en sessie, en alle trades. Eén zelfstandig bestand; Vercel serveert de map `website/`.

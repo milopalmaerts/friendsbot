@@ -14,6 +14,7 @@ def main(argv=None):
     f.add_argument("--all", action="store_true", help="also the 1-minute gold, US100 and BTC data (data/cache/)")
     sub.add_parser("timeframes", help="compare 1m…4h on gold, US100 and BTCUSDT")
     sub.add_parser("portfolio", help="one bot over several markets, sessions chosen on Feb–Jun only")
+    sub.add_parser("paper", help="update the paper-trading journal with the latest candles")
     r = sub.add_parser("research", help="session comparison, dev/test split, parameter grid")
     r.add_argument("--csv", default=str(data.DEFAULT_CSV))
     s = sub.add_parser("scan", help="paper signals: setups forming on the latest candle")
@@ -43,6 +44,10 @@ def main(argv=None):
         res = run()
         for k, p_ in res["portfolios"].items():
             print(f"{k:22s} dev {p_['dev']['total_r']:+7.1f}R  test {p_['test']['total_r']:+7.1f}R")
+    elif a.cmd == "paper":
+        from .paper import update
+        j = update()
+        print(json.dumps(j["summary"], indent=1))
     elif a.cmd == "scan":
         from .backtest import FRIEND_WINDOW, in_window
         from .research import FRIEND_RULES
