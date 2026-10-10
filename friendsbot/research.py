@@ -30,7 +30,7 @@ WINDOW_LABELS = {
     "london": "London 07:00–12:00 UTC",
     "new_york": "New York 12:00–17:00 UTC",
     "late": "Late US 17:00–22:00 UTC",
-    "friend_window": "Journal window 04:00–06:30 UTC (12:00–14:30 China)",
+    "friend_window": "Journalvenster 04:00–06:30 UTC (12:00–14:30 China)",
 }
 FRIEND_RULES = (StrategyConfig(trend="side+slope"), ExitConfig())
 
@@ -53,14 +53,18 @@ def grid():
 
 
 def describe(cfg: StrategyConfig, ex: ExitConfig) -> str:
-    trend = {"none": "no trend filter", "side": "price on trend side of EMA",
-             "side+slope": "price on trend side of a sloping EMA"}[cfg.trend]
+    trend = {"none": "geen trendfilter", "side": "prijs aan de trendkant van de EMA",
+             "side+slope": "prijs aan de trendkant van een hellende EMA"}[cfg.trend]
     parts = [trend]
     if cfg.ema_touch_atr is not None:
-        parts.append(f"pullback within {cfg.ema_touch_atr:g} ATR of EMA")
+        parts.append(f"pullback tot {cfg.ema_touch_atr:g} ATR van de EMA")
     if cfg.level_atr is not None:
-        parts.append(f"pullback within {cfg.level_atr:g} ATR of a key level")
-    return ", ".join(parts) + " · exit " + ex.label
+        parts.append(f"pullback tot {cfg.level_atr:g} ATR van een key level")
+    if ex.mode == "fixed":
+        exit_ = f"alles op {ex.target_r:g}R"
+    else:
+        exit_ = f"{int(ex.partial_frac * 100)}% op {ex.target_r:g}R, runner tot de EMA" + (", stop naar breakeven" if ex.breakeven_after_partial else "")
+    return ", ".join(parts) + " · exit: " + exit_
 
 
 def run(csv=DEFAULT_CSV, out_dir="reports") -> dict:

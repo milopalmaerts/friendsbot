@@ -10,7 +10,7 @@
   "london": "London 07:00\u201312:00 UTC",
   "new_york": "New York 12:00\u201317:00 UTC",
   "late": "Late US 17:00\u201322:00 UTC",
-  "friend_window": "Journal window 04:00\u201306:30 UTC (12:00\u201314:30 China)"
+  "friend_window": "Journalvenster 04:00\u201306:30 UTC (12:00\u201314:30 China)"
  },
  "friend_rules": {
   "strategy": {
@@ -41,7 +41,7 @@
    "max_hold_bars": 96,
    "intrabar": "pessimistic"
   },
-  "description": "price on trend side of a sloping EMA \u00b7 exit 50% at 2R, runner to EMA + BE"
+  "description": "prijs aan de trendkant van een hellende EMA \u00b7 exit: 50% op 2R, runner tot de EMA, stop naar breakeven"
  },
  "friend": {
   "asia": {
@@ -823,7 +823,7 @@
  "selected": {
   "asia": {
    "window": "asia",
-   "rules": "price on trend side of a sloping EMA, pullback within 0.5 ATR of EMA \u00b7 exit 50% at 2R, runner to EMA + BE",
+   "rules": "prijs aan de trendkant van een hellende EMA, pullback tot 0.5 ATR van de EMA \u00b7 exit: 50% op 2R, runner tot de EMA, stop naar breakeven",
    "dev": {
     "trades": 204,
     "win_rate": 0.2647,
@@ -847,7 +847,7 @@
   },
   "london": {
    "window": "london",
-   "rules": "price on trend side of a sloping EMA, pullback within 0.5 ATR of EMA, pullback within 0.5 ATR of a key level \u00b7 exit 1R",
+   "rules": "prijs aan de trendkant van een hellende EMA, pullback tot 0.5 ATR van de EMA, pullback tot 0.5 ATR van een key level \u00b7 exit: alles op 1R",
    "dev": {
     "trades": 77,
     "win_rate": 0.4545,
@@ -871,7 +871,7 @@
   },
   "new_york": {
    "window": "new_york",
-   "rules": "price on trend side of EMA, pullback within 0.5 ATR of EMA, pullback within 0.5 ATR of a key level \u00b7 exit 1R",
+   "rules": "prijs aan de trendkant van de EMA, pullback tot 0.5 ATR van de EMA, pullback tot 0.5 ATR van een key level \u00b7 exit: alles op 1R",
    "dev": {
     "trades": 55,
     "win_rate": 0.4545,
@@ -895,7 +895,7 @@
   },
   "late": {
    "window": "late",
-   "rules": "price on trend side of a sloping EMA, pullback within 0.5 ATR of EMA, pullback within 0.5 ATR of a key level \u00b7 exit 1R",
+   "rules": "prijs aan de trendkant van een hellende EMA, pullback tot 0.5 ATR van de EMA, pullback tot 0.5 ATR van een key level \u00b7 exit: alles op 1R",
    "dev": {
     "trades": 43,
     "win_rate": 0.5116,
@@ -919,7 +919,7 @@
   },
   "friend_window": {
    "window": "friend_window",
-   "rules": "price on trend side of a sloping EMA, pullback within 0.5 ATR of EMA \u00b7 exit 50% at 2R, runner to EMA + BE",
+   "rules": "prijs aan de trendkant van een hellende EMA, pullback tot 0.5 ATR van de EMA \u00b7 exit: 50% op 2R, runner tot de EMA, stop naar breakeven",
    "dev": {
     "trades": 71,
     "win_rate": 0.3099,
