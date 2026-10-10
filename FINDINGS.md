@@ -41,3 +41,29 @@ naar R. Betekenis van "F" in F2EL/F2ES onbekend.
 - Zijn trades **met datum**, entry, stop en exit, plus setups die hij **bewust oversloeg**.
 - Zijn eigen key levels per dag (screenshot voor de sessie start).
 - Data van zijn broker (FXCM / Capital.com); onze feed ligt ~$8–16 hoger, met dezelfde vorm.
+
+# Timeframes en markten
+
+`python -m friendsbot timeframes` → `reports/timeframes.json`. Zelfde vaste regels, 2026-02-02 → 2026-09-25,
+ontwikkeling tot 2026-07-01, test daarna. Elke timeframe is opgebouwd uit dezelfde 1-minutencandles en
+elke trade wordt op 1-minutencandles uitgevoerd (`friendsbot/execution.py`), dus ook binnen een 4h-candle
+telt wat eerst geraakt werd. Kosten: goud $0,30, US100 1,5 punt, BTCUSDT 0,08% per trade.
+
+Resultaat na kosten, hele dag, exit "½ op 2R + runner" (ontwikkeling / test):
+
+| Markt | 1m | 5m | 15m | 30m | 1h | 4h |
+|---|---|---|---|---|---|---|
+| Goud | −553 / −369 | −101 / −8 | +33 / −17 | −19 / −4 | **+4 / +6** | −8 / −2 |
+| US100 | −558 / −570 | +19 / −36 | **+22 / +24** | −30 / +10 | **+10 / +2** | **+1 / +1** |
+| BTCUSDT | −9470 / −6651 | −749 / −519 | −137 / −19 | −3 / −25 | **+0 / +4** | +2 / −8 |
+
+## Conclusies
+1. **1 minuut werkt op geen enkele markt.** Vóór kosten ongeveer nul; de kosten zijn 0,14–0,17R per trade
+   (goud, US100) en 1,9R per trade op bitcoin.
+2. **US100 op 15 minuten** is de stabielste combinatie: positief in beide periodes met alle drie de exits.
+   Met een vaste exit op 1R: 499 trades, 57% winrate, +43R, 95%-interval gemiddelde R [−0,00; +0,17],
+   6 van de 8 maanden positief. Met de runner-exit hangt het aan uitschieters (zonder top 5: −4,5R).
+3. **Goud**: op 5m wint alleen het journalvenster (04:00–06:30 UTC). Op de hele dag is 1h klein positief.
+4. **Bitcoin**: fees maken 1m–30m onrendabel; 1h staat rond nul.
+5. 18 combinaties getest: één goede combinatie kan toeval zijn. Volgende stap is US100 15m vooruit
+   paper-traden voordat er geld op gezet wordt.

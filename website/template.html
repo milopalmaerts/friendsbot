@@ -90,6 +90,15 @@ svg text { font-family: var(--mono); font-size: 11px; fill: var(--muted); }
 ul.plain { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; max-width: 70ch; }
 code { font-family: var(--mono); font-size: 0.86em; background: var(--gold-soft); padding: 1px 5px; border-radius: 4px; }
 pre { font-family: var(--mono); font-size: 0.85rem; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; overflow-x: auto; margin: 0; }
+.controls { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; }
+.seg { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.seg .label { margin-right: 6px; }
+.seg button { font: inherit; font-size: .85rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 4px 11px; border-radius: 999px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+table.heat td.cell { cursor: pointer; text-align: center; font-family: var(--mono); font-size: .82rem; white-space: nowrap; padding: 10px 8px; border: 2px solid var(--paper); border-radius: 6px; }
+table.heat td.cell.both { box-shadow: inset 0 0 0 2px var(--win); }
+table.heat td.cell.sel { outline: 2px solid var(--ink); outline-offset: -2px; }
+table.heat th.c { text-align: center; text-transform: none; font-family: var(--mono); font-size: .85rem; }
 footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 0.82rem; color: var(--muted); }
 @media (prefers-reduced-motion: no-preference) { section.tab { animation: fade .25s ease-out; } @keyframes fade { from { opacity: .4; } to { opacity: 1; } } }
 </style>
@@ -100,6 +109,7 @@ footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line);
     <nav role="tablist" aria-label="Onderdelen">
       <button role="tab" id="t-overzicht" aria-selected="true" data-tab="overzicht">Overzicht</button>
       <button role="tab" id="t-sessies" aria-selected="false" data-tab="sessies">Sessies</button>
+      <button role="tab" id="t-timeframes" aria-selected="false" data-tab="timeframes">Timeframes</button>
       <button role="tab" id="t-vergelijking" aria-selected="false" data-tab="vergelijking">Zijn trades</button>
       <button role="tab" id="t-strategie" aria-selected="false" data-tab="strategie">Strategie</button>
       <button role="tab" id="t-journal" aria-selected="false" data-tab="journal">Journal</button>
@@ -148,6 +158,48 @@ footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line);
     <div class="grid2">
       <div class="block"><h3>Gevoeligheid voor kosten</h3><div class="tablewrap"><table id="cost-table"></table></div></div>
       <div class="block"><h3>Beste variant per sessie</h3><p class="muted" style="font-size:.88rem" id="grid-note"></p><div class="tablewrap"><table id="grid-table"></table></div></div>
+    </div>
+  </section>
+
+  <section class="tab" id="timeframes" hidden>
+    <div class="lead">
+      <span class="label">Welke timeframe, welke markt?</span>
+      <h2>15 minuten op de US100 is de stabielste combinatie. Onder 15 minuten eten de kosten alles op.</h2>
+      <p class="muted" id="tf-sub"></p>
+    </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Exit">
+        <span class="label">Exit</span>
+        <button data-ex="friend" aria-pressed="true">½ op 2R + runner</button>
+        <button data-ex="1R" aria-pressed="false">alles op 1R</button>
+        <button data-ex="2R" aria-pressed="false">alles op 2R</button>
+      </div>
+      <div class="seg" role="group" aria-label="Sessie" id="tf-win"></div>
+    </div>
+    <div class="tablewrap"><table class="heat" id="tf-heat"></table></div>
+    <p class="muted" style="font-size:.88rem">Elke cel: resultaat in R na kosten, <b>ontwikkeling feb–jun / test jul–sep</b>. Groen omrand = positief in beide periodes. Klik een cel voor details.</p>
+    <div class="grid2">
+      <div class="block"><h3 id="tf-detail-h">Details</h3><div id="tf-detail"></div></div>
+      <div class="block"><h3>Voor en na kosten (hele dag, ½ op 2R + runner)</h3><div id="tf-cost"></div><p class="muted" style="font-size:.88rem">Grijs: resultaat vóór kosten. Gekleurd: na kosten. Hoe kleiner de timeframe, hoe kleiner de stop, en hoe groter de kosten in R.</p></div>
+    </div>
+    <div class="grid2">
+      <div class="block">
+        <h3>Wat dit zegt</h3>
+        <ul class="plain">
+          <li><b>1 minuut werkt nergens.</b> Vóór kosten is het resultaat ongeveer nul. Na kosten verlies je 0,15R (goud, US100) tot 1,9R (bitcoin) per trade.</li>
+          <li><b>US100 op 15 minuten</b> wint in beide periodes met alle drie de exits. Met een vaste exit op 1R: 57% winrate, +43R over 499 trades, en 6 van de 8 maanden positief.</li>
+          <li><b>Goud</b>: op de hele dag is alleen 1h positief in beide periodes (+4R en +6R), en dat is klein. Op 5m wint alleen het journalvenster van je vriend.</li>
+          <li><b>Bitcoin</b> verliest op 1m tot 30m door de fees. Op 1h staat het rond nul.</li>
+        </ul>
+      </div>
+      <div class="block">
+        <h3>Waarom voorzichtig</h3>
+        <ul class="plain">
+          <li>Er zijn 18 combinaties van markt en timeframe getest. Door toeval scoort er dan altijd wel één goed.</li>
+          <li>Op de US100 is de runner-exit zonder de 5 beste trades ongeveer −5R. De 1R-exit hangt niet aan uitschieters, maar het interval raakt nul nog net.</li>
+          <li>Alle markten gebruiken dezelfde parameters, die niet per markt zijn afgesteld. Bitcoin is BTC/USD van Bitstamp, als benadering voor BTCUSDT.</li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -472,7 +524,61 @@ function renderJournal() {
   bars($("j-hours"), Object.entries(j.entries_by_utc_hour).map(([h, n]) => ({ name: h + ":00", n })), { series: [{ key: "n", color: "var(--gold)" }], height: 180, label: (v) => String(Math.round(v)) });
 }
 
+
+/* ---------- timeframes ---------- */
+const TF = DATA.timeframes;
+const WNAME = { all: "Hele dag", ...WIN };
+let tfEx = "friend", tfWin = "all", tfSel = ["nas100", "15m"];
+function heatColor(v) {
+  const a = Math.min(1, Math.abs(v) / 40) * 0.55 + 0.08;
+  return `color-mix(in srgb, ${v >= 0 ? "var(--win)" : "var(--loss)"} ${Math.round(a * 100)}%, var(--surface))`;
+}
+function tfCell(a, tf) {
+  const row = TF.assets[a].rows[tf][tfEx];
+  return row[tfWin] || row.all;
+}
+function renderTimeframes() {
+  if (!TF) return;
+  $("tf-sub").textContent = `Dezelfde vaste regels op drie markten en zes timeframes, ${TF.period.start.slice(0, 10)} tot ${TF.assets.xauusd.last.slice(0, 10)}. Elke timeframe is opgebouwd uit dezelfde 1-minutencandles, en elke trade wordt minuut per minuut uitgevoerd. Zo telt ook binnen een 4h-candle wat eerst geraakt werd: stop of doel.`;
+  $("tf-win").innerHTML = `<span class="label">Sessie</span>` + (tfEx === "friend" ? TF.windows : ["all"]).map((w) => `<button data-win="${w}" aria-pressed="${w === tfWin}">${WNAME[w]}</button>`).join("");
+  $("tf-win").querySelectorAll("button").forEach((b) => (b.onclick = () => { tfWin = b.dataset.win; renderTimeframes(); }));
+  document.querySelectorAll("[data-ex]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.ex === tfEx)));
+  const head = `<thead><tr><th>Markt</th>${TF.timeframes.map((t) => `<th class="c">${t}</th>`).join("")}</tr></thead>`;
+  const body = Object.entries(TF.assets).map(([a, v]) => `<tr><td style="white-space:nowrap">${esc(v.label)}</td>${TF.timeframes.map((tf) => {
+    const c = tfCell(a, tf), d = c.dev.total_r, t = c.test.total_r;
+    const both = d > 0 && t > 0, sel = tfSel[0] === a && tfSel[1] === tf;
+    return `<td class="cell ${both ? "both" : ""} ${sel ? "sel" : ""}" data-a="${a}" data-tf="${tf}" style="background:${heatColor(c.all.total_r)}" title="${esc(v.label)} ${tf}">${fmtR(d, 0)} / ${fmtR(t, 0)}</td>`;
+  }).join("")}</tr>`).join("");
+  $("tf-heat").innerHTML = head + `<tbody>${body}</tbody>`;
+  $("tf-heat").querySelectorAll("td.cell").forEach((td) => (td.onclick = () => { tfSel = [td.dataset.a, td.dataset.tf]; renderTimeframes(); }));
+  const [a, tf] = tfSel, c = tfCell(a, tf), meta = TF.assets[a];
+  $("tf-detail-h").textContent = `${meta.label} · ${tf} · ${WNAME[tfWin] || "Hele dag"}`;
+  const rows = [
+    ["Trades", c.all.trades, `${c.per_week} per week`],
+    ["Resultaat na kosten", fmtR(c.all.total_r), `gemiddeld ${fmtR(c.all.avg_r, 2)} per trade`],
+    ["Ontwikkeling / test", `${fmtR(c.dev.total_r)} / ${fmtR(c.test.total_r)}`, `${c.dev.trades} / ${c.test.trades} trades`],
+    ["Winrate", pct(c.all.win_rate), `profit factor ${c.all.profit_factor ?? "–"}`],
+    ["95%-interval gem. R", `${fmtR(c.all.ci_low, 2)} … ${fmtR(c.all.ci_high, 2)}`, c.all.ci_low > 0 ? "boven nul" : "bevat nul"],
+    ["Zonder 5 beste trades", fmtR(c.without_top5_r), "afhankelijkheid van uitschieters"],
+    ["Kosten per trade", fmtR(-c.median_cost_r, 2), meta.cost_note],
+    ["Mediaan stop", c.median_risk?.toLocaleString("nl-BE"), `mediaan duur ${c.median_hold_min} min`],
+    ["Max. drawdown", fmtR(-c.all.max_drawdown_r), ""],
+  ];
+  $("tf-detail").innerHTML = `<div class="tablewrap"><table><tbody>${rows.map(([k, v, s]) => `<tr><td>${k}</td><td class="num">${v}</td><td class="muted" style="font-size:.85rem">${esc(s)}</td></tr>`).join("")}</tbody></table></div>` +
+    `<div id="tf-month" style="margin-top:12px"></div>`;
+  bars($("tf-month"), Object.entries(c.monthly).map(([m, v]) => ({ name: m.slice(5), total: v })), { series: [{ key: "total", color: "sign" }], height: 170 });
+  const costItems = [];
+  Object.entries(TF.assets).forEach(([k, v]) => TF.timeframes.forEach((tf) => {
+    const x = v.rows[tf].friend.all;
+    costItems.push({ name: tf === "1m" ? v.label.split(" ")[0] : "", tf, gross: Math.max(-60, Math.min(60, x.gross_total_r)), net: Math.max(-60, Math.min(60, x.all.total_r)) });
+  }));
+  bars($("tf-cost"), costItems, { series: [{ key: "gross", color: "var(--line)" }, { key: "net", color: "sign" }], height: 220 });
+  $("tf-cost").insertAdjacentHTML("beforeend", `<p class="muted" style="font-size:.8rem">Per markt van links naar rechts: ${TF.timeframes.join(" · ")}. Afgekapt op ±60R; bitcoin op 1m staat na kosten op ${fmtR(TF.assets.btcusdt.rows["1m"].friend.all.all.total_r, 0)}.</p>`);
+}
+document.querySelectorAll("[data-ex]").forEach((b) => (b.onclick = () => { tfEx = b.dataset.ex; if (tfEx !== "friend") tfWin = "all"; renderTimeframes(); }));
+
 function drawAll() {
+  if (!$("timeframes").hidden) renderTimeframes();
   if (!$("overzicht").hidden) drawExample();
   if (!$("sessies").hidden) renderSessions();
   if (!$("vergelijking").hidden) drawDays();

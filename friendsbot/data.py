@@ -61,21 +61,58 @@ def drop_partial_tail(df: pd.DataFrame, max_gap: str = "1h") -> pd.DataFrame:
     return df
 
 
-def fetch(out: str | Path = DEFAULT_CSV) -> pd.DataFrame:
-    """Clone the source repository and merge every historical version of the CSV."""
+CACHE = ROOT / "data" / "cache"
+GETDATA = "https://github.com/getdata-finance/"
+# name: (repository, file inside it, all versions in git history?)
+DATASETS = {
+    "xauusd_5m": (SOURCE_REPO, SOURCE_FILE, True),
+    "xauusd_1m": (GETDATA + "xauusd-1m-ohlcv-metals-historical-data", "XAUUSD_1m.csv", True),
+    "nas100_1m": (GETDATA + "nas100-1m-ohlcv-index-historical-data", "NAS100_1m.csv", True),
+    # Bitstamp BTC/USD, used as the BTCUSDT proxy (same price to within a few dollars)
+    "btcusd_1m": ("https://github.com/ff137/bitstamp-btcusd-minute-data",
+                  "data/updates/btcusd_bitstamp_1min_latest.csv", False),
+}
+
+
+def _git_versions(repo: str, path: str, all_versions: bool) -> list[str]:
     with tempfile.TemporaryDirectory() as tmp:
-        subprocess.run(["git", "clone", "-q", "--filter=blob:none", "--no-checkout", SOURCE_REPO, tmp], check=True)
-        commits = subprocess.run(["git", "-C", tmp, "log", "--reverse", "--format=%H", "--", SOURCE_FILE],
+        subprocess.run(["git", "clone", "-q", "--filter=blob:none", "--no-checkout", repo, tmp], check=True)
+        commits = subprocess.run(["git", "-C", tmp, "log", "--reverse", "--format=%H", "--", path],
                                  check=True, capture_output=True, text=True).stdout.split()
-        frames = []
-        for sha in commits:
-            text = subprocess.run(["git", "-C", tmp, "show", f"{sha}:{SOURCE_FILE}"],
-                                  check=True, capture_output=True, text=True).stdout
-            frames.append(drop_partial_tail(load_candles(StringIO(text))))
+        if not all_versions:
+            commits = commits[-1:]
+        return [subprocess.run(["git", "-C", tmp, "show", f"{sha}:{path}"], check=True,
+                               capture_output=True, text=True).stdout for sha in commits]
+
+
+def _read_any(text: str) -> pd.DataFrame:
+    head = text[:200].split("\n", 1)[0].lower()
+    if head.startswith("timestamp"):
+        df = pd.read_csv(StringIO(text))
+        df["datetime"] = pd.to_datetime(df.pop("timestamp"), unit="s", utc=True)
+        return load_candles(StringIO(df.to_csv(index=False)))
+    return load_candles(StringIO(text))
+
+
+def fetch(name: str = "xauusd_5m", out: str | Path | None = None) -> pd.DataFrame:
+    """Clone the source repository and merge every published version of the CSV
+    (newest wins). The 5-minute gold file is kept in git; the rest go to data/cache/."""
+    repo, path, all_versions = DATASETS[name]
+    frames = [drop_partial_tail(_read_any(t)) for t in _git_versions(repo, path, all_versions)]
     merged = merge_versions(frames)
+    if out is None:
+        out = DEFAULT_CSV if name == "xauusd_5m" else CACHE / f"{name}.csv.gz"
     Path(out).parent.mkdir(parents=True, exist_ok=True)
     merged.reset_index().rename(columns={"time": "datetime"}).to_csv(out, index=False, float_format="%.2f")
     return merged
+
+
+def load_dataset(name: str) -> pd.DataFrame:
+    """Load a dataset, fetching it on first use."""
+    path = DEFAULT_CSV if name == "xauusd_5m" else CACHE / f"{name}.csv.gz"
+    if not Path(path).exists():
+        return fetch(name)
+    return load_candles(path)
 
 
 def resample(df: pd.DataFrame, rule: str) -> pd.DataFrame:

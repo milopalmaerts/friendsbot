@@ -10,7 +10,9 @@ from . import data
 def main(argv=None):
     p = argparse.ArgumentParser(prog="friendsbot", description="Second-entry gold strategy toolkit")
     sub = p.add_subparsers(dest="cmd", required=True)
-    sub.add_parser("fetch", help="download and merge the public 5-minute XAUUSD history")
+    f = sub.add_parser("fetch", help="download and merge the public candle histories")
+    f.add_argument("--all", action="store_true", help="also the 1-minute gold, US100 and BTC data (data/cache/)")
+    sub.add_parser("timeframes", help="compare 1m…4h on gold, US100 and BTCUSDT")
     r = sub.add_parser("research", help="session comparison, dev/test split, parameter grid")
     r.add_argument("--csv", default=str(data.DEFAULT_CSV))
     s = sub.add_parser("scan", help="paper signals: setups forming on the latest candle")
@@ -20,8 +22,9 @@ def main(argv=None):
     a = p.parse_args(argv)
 
     if a.cmd == "fetch":
-        df = data.fetch()
-        print(f"{len(df)} candles {df.index[0]} → {df.index[-1]} written to {data.DEFAULT_CSV}")
+        for name in (data.DATASETS if a.all else ["xauusd_5m"]):
+            df = data.fetch(name)
+            print(f"{name}: {len(df)} candles {df.index[0]} → {df.index[-1]}")
     elif a.cmd == "research":
         from .research import run
         res = run(a.csv)
@@ -30,6 +33,10 @@ def main(argv=None):
             print(f"{w:14s} dev {p_['dev']['trades']:4d} trades {p_['dev']['total_r']:+7.1f}R | "
                   f"test {p_['test']['trades']:4d} trades {p_['test']['total_r']:+7.1f}R")
         print("written to reports/results.json")
+    elif a.cmd == "timeframes":
+        from .timeframes import run
+        run()
+        print("written to reports/timeframes.json")
     elif a.cmd == "scan":
         from .backtest import FRIEND_WINDOW, in_window
         from .research import FRIEND_RULES

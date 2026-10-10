@@ -10,6 +10,13 @@
 - This is a data-vendor feed, not your friend's broker (Capital.com / FXCM on the screenshots).
   Individual wicks can differ by a few tenths of a dollar between feeds.
 
+## `data/cache/` (niet in git, `python -m friendsbot fetch --all`)
+- `xauusd_1m`: github.com/getdata-finance/xauusd-1m-ohlcv-metals-historical-data (MIT), alle versies samengevoegd.
+  Komt exact overeen met de 5-minutendata hierboven.
+- `nas100_1m`: github.com/getdata-finance/nas100-1m-ohlcv-index-historical-data (MIT), alle versies samengevoegd.
+- `btcusd_1m`: github.com/ff137/bitstamp-btcusd-minute-data — Bitstamp BTC/USD, 1 minuut, als benadering voor
+  BTCUSDT (Binance is vanuit deze omgeving niet bereikbaar). Licentie: zie die repository.
+
 ## `data/journal/data_final.xlsx`
 Your friend's trade journal. It is git-ignored and stays local only; put the file at this path to
 rerun the journal analysis.

@@ -43,7 +43,8 @@ class ExitConfig:
     target_r: float = 2.0           # fixed: full exit; partial: first target
     partial_frac: float = 0.5       # share closed at target_r in partial mode
     breakeven_after_partial: bool = True
-    cost: float = 0.30              # round-trip spread + slippage in dollars per ounce
+    cost: float = 0.30              # round-trip spread + slippage in price units (gold: $ per ounce)
+    cost_pct: float = 0.0           # extra round-trip cost as a fraction of price (crypto fees)
     max_hold_bars: int = 96         # 8 hours
     intrabar: str = "pessimistic"   # pessimistic | optimistic
 
@@ -86,6 +87,10 @@ class Trade:
         d["entry_time"] = self.entry_time.isoformat()
         d["exit_time"] = self.exit_time.isoformat()
         return d
+
+
+def trade_cost(ex: ExitConfig, price: float) -> float:
+    return ex.cost + ex.cost_pct * abs(price)
 
 
 def simulate(df: pd.DataFrame, setups: list[Setup], ex: ExitConfig = ExitConfig(),
@@ -146,7 +151,7 @@ def simulate(df: pd.DataFrame, setups: list[Setup], ex: ExitConfig = ExitConfig(
             realized += remaining * (c[j] - entry) * sign
             reason = "time"  # closed at the candle close
         r_gross = realized / risk
-        r_net = r_gross - ex.cost / risk
+        r_net = r_gross - trade_cost(ex, entry) / risk
         outcome = "win" if r_net > 0.05 else "loss" if r_net < -0.05 else "breakeven"
         trades.append(Trade(s.direction, idx[m], idx[exit_bar], entry, stop, float(exit_price),
                             round(float(r_gross), 4), round(float(r_net), 4), outcome, reason,

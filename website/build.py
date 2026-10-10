@@ -81,7 +81,9 @@ def build(include_journal: bool | None = None) -> str:
         from friendsbot import journal as jr
         journal = jr.summary(jr.load(jpath))
 
-    payload = {"results": results, "examples": examples, "days": days, "journal": journal}
+    tf_path = ROOT / "reports" / "timeframes.json"
+    timeframes = json.loads(tf_path.read_text()) if tf_path.exists() else None
+    payload = {"results": results, "examples": examples, "days": days, "journal": journal, "timeframes": timeframes}
     body = (HERE / "template.html").read_text()
     body = body.replace("/*__DATA__*/null", json.dumps(payload, separators=(",", ":")))
     page = ("<!doctype html>\n<html lang=\"nl\">\n<head>\n<meta charset=\"utf-8\">\n"
