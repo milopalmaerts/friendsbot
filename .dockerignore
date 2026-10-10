@@ -1,0 +1,7 @@
+.git
+data/cache
+data/journal
+dist
+logs
+website
+__pycache__
