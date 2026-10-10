@@ -1,0 +1,51 @@
+"""Command line: python -m friendsbot <command>"""
+from __future__ import annotations
+
+import argparse
+import json
+
+from . import data
+
+
+def main(argv=None):
+    p = argparse.ArgumentParser(prog="friendsbot", description="Second-entry gold strategy toolkit")
+    sub = p.add_subparsers(dest="cmd", required=True)
+    sub.add_parser("fetch", help="download and merge the public 5-minute XAUUSD history")
+    r = sub.add_parser("research", help="session comparison, dev/test split, parameter grid")
+    r.add_argument("--csv", default=str(data.DEFAULT_CSV))
+    s = sub.add_parser("scan", help="paper signals: setups forming on the latest candle")
+    s.add_argument("--csv", default=str(data.DEFAULT_CSV))
+    sub.add_parser("journal", help="summarise data/journal/data_final.xlsx")
+    sub.add_parser("site", help="build the website from the reports")
+    a = p.parse_args(argv)
+
+    if a.cmd == "fetch":
+        df = data.fetch()
+        print(f"{len(df)} candles {df.index[0]} → {df.index[-1]} written to {data.DEFAULT_CSV}")
+    elif a.cmd == "research":
+        from .research import run
+        res = run(a.csv)
+        for w, row in res["friend"].items():
+            p_ = row["pessimistic"]
+            print(f"{w:14s} dev {p_['dev']['trades']:4d} trades {p_['dev']['total_r']:+7.1f}R | "
+                  f"test {p_['test']['trades']:4d} trades {p_['test']['total_r']:+7.1f}R")
+        print("written to reports/results.json")
+    elif a.cmd == "scan":
+        from .backtest import FRIEND_WINDOW, in_window
+        from .research import FRIEND_RULES
+        from .strategy import pending, with_indicators
+        cfg = FRIEND_RULES[0]
+        df = with_indicators(data.load_candles(a.csv), cfg)
+        last = df.index[-1]
+        print(f"last candle {last} · journal window: {'yes' if in_window(last, FRIEND_WINDOW) else 'no'}")
+        print(json.dumps(pending(df, cfg), indent=1))
+    elif a.cmd == "journal":
+        from . import journal
+        print(json.dumps(journal.summary(journal.load()), indent=1))
+    elif a.cmd == "site":
+        from website.build import build
+        print(build())
+
+
+if __name__ == "__main__":
+    main()

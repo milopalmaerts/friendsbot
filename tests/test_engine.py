@@ -116,3 +116,10 @@ def test_key_levels_have_no_lookahead():
     assert "prev_day_high" in kinds and "asia_high" not in kinds    # today's Asia range isn't finished
     day2 = df.loc["2026-03-03"]
     assert all(p != day2.high.max() for p, k in lv.active(t) if k == "prev_day_high")
+
+
+def test_pending_setup_reports_next_stop_order():
+    from friendsbot.strategy import pending
+    p = [x for x in pending(frame(LONG[:8]), CFG) if x["direction"] == "long"][0]
+    assert p["stage"] == "waiting for 2"
+    assert p["entry_stop"] == pytest.approx(103.01) and p["stop"] == pytest.approx(100.9)

@@ -86,7 +86,7 @@ def _mirror(df: pd.DataFrame) -> pd.DataFrame:
     return m
 
 
-def _scan_long(h, l, o, cfg: StrategyConfig):
+def _scan_long(h, l, o, cfg: StrategyConfig, state: dict | None = None):
     """Yield (zero, one, pullback, entry_bar, entry_price, extreme_bar) for long setups."""
     n = len(h)
     lb = cfg.zero_lookback
@@ -115,6 +115,8 @@ def _scan_long(h, l, o, cfg: StrategyConfig):
             went_down = l[i] < l[i - 1] if cfg.pullback_rule == "low" else h[i] < h[i - 1]
             if went_down:
                 pb = i
+    if state is not None:
+        state.update(zero=zero, one=one, pullback=pb)
 
 
 def find_setups(df: pd.DataFrame, cfg: StrategyConfig = StrategyConfig(), levels=None) -> list[Setup]:
@@ -152,3 +154,31 @@ def find_setups(df: pd.DataFrame, cfg: StrategyConfig = StrategyConfig(), levels
             setups.append(Setup(direction, zero, one, pb, m, sign * fill, sign * stop, ext, tags))
     setups.sort(key=lambda s: (s.entry_bar, s.direction))
     return setups
+
+
+def pending(df: pd.DataFrame, cfg: StrategyConfig = StrategyConfig()) -> list[dict]:
+    """Setups still forming on the last candle, with the stop-order price for the next candle."""
+    out = []
+    last = len(df) - 1
+    for direction in cfg.directions:
+        d = df if direction == "long" else _mirror(df)
+        h, l, o = d.high.to_numpy(), d.low.to_numpy(), d.open.to_numpy()
+        state: dict = {}
+        for _ in _scan_long(h, l, o, cfg, state):
+            pass
+        if state.get("zero", -1) < 0:
+            continue
+        sign = 1 if direction == "long" else -1
+        stage = "waiting for 2" if state["pullback"] >= 0 else "waiting for P" if state["one"] >= 0 else "waiting for 1"
+        item = {"direction": direction, "stage": stage, "zero_time": df.index[state["zero"]].isoformat()}
+        if state["pullback"] >= 0:
+            start = state["one"] + 1 if cfg.stop_ref == "pullback" else state["zero"] + 1
+            ext = start + int(np.argmin(l[start:last + 1]))
+            entry = h[last] + TICK
+            stop = l[ext] - cfg.stop_buffer
+            trend_ok = ("side" not in cfg.trend or d.close.iloc[-1] > d.ema.iloc[-1]) and \
+                       ("slope" not in cfg.trend or d.ema.iloc[-1] > d.ema.iloc[-1 - cfg.slope_bars])
+            item.update(entry_stop=round(sign * entry, 2), stop=round(sign * stop, 2),
+                        risk=round(entry - stop, 2), trend_ok=bool(trend_ok))
+        out.append(item)
+    return out
