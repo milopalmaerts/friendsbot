@@ -189,9 +189,14 @@ def test_no_gold_entries_in_the_weekend(journal):
     assert c.calls == []
 
 
-def test_gold_position_is_closed_before_the_daily_break(journal):
+def test_gold_position_held_through_the_daily_break_unless_configured(journal, monkeypatch):
+    before_break = pd.Timestamp("2026-03-02 21:57", tz="UTC")
     c = FakeClient(positions=[position()], recent=[entry_order_filled()])
-    live.tick(c, now=pd.Timestamp("2026-03-02 21:57", tz="UTC"), journal_path=journal, bars={("xauusd", "5m"): bars_with_setup()})
+    live.tick(c, now=before_break, journal_path=journal, bars={("xauusd", "5m"): bars_with_setup()})
+    assert ("close", "p1") not in c.calls
+    monkeypatch.setattr(live, "FLATTEN_BEFORE_BREAK", True)
+    c = FakeClient(positions=[position()], recent=[entry_order_filled()])
+    live.tick(c, now=before_break, journal_path=journal, bars={("xauusd", "5m"): bars_with_setup()})
     assert ("close", "p1") in c.calls
 
 

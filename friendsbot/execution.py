@@ -16,18 +16,26 @@ from .strategy import Setup
 
 
 def simulate_fine(tf: pd.DataFrame, fine: pd.DataFrame, setups: list[Setup], ex: ExitConfig = ExitConfig(),
-                  session_filter=None, max_hold: pd.Timedelta = pd.Timedelta(days=5)) -> list[Trade]:
+                  session_filter=None, max_hold: pd.Timedelta = pd.Timedelta(days=5),
+                  session: str | None = None) -> list[Trade]:
     """`tf` is the chart timeframe with `ema`; `fine` the 1-minute candles it was built from."""
     step = tf.index[1] - tf.index[0] if len(tf) > 1 else pd.Timedelta(minutes=1)
     step = pd.Series(tf.index).diff().mode().iloc[0] if len(tf) > 2 else step
-    ft = fine.index.asi8
+    ft = fine.index.as_unit("ns").asi8          # one unit everywhere: data may come in µs
     fo, fh, fl, fc = (fine[c].to_numpy() for c in ("open", "high", "low", "close"))
-    tf_t = tf.index.asi8
+    tf_t = tf.index.as_unit("ns").asi8
     tf_c, tf_e = tf.close.to_numpy(), tf.ema.to_numpy()
     # chart bar each minute belongs to, and whether it is the last minute of that bar
     bucket = np.searchsorted(tf_t, ft, side="right") - 1
     last_of_bar = np.r_[bucket[1:] != bucket[:-1], True]
-    gap_after = np.r_[np.diff(ft) > pd.Timedelta(minutes=30).value, True]
+    gaps = np.diff(ft)
+    break_after = np.r_[gaps > pd.Timedelta(minutes=30).value, True]      # daily pause or weekend follows
+    weekend_after = np.r_[gaps > pd.Timedelta(hours=12).value, True]
+    close_after = {"close": break_after, "weekend": weekend_after, "hold": np.r_[np.zeros(len(gaps), bool), True]}[ex.gap_policy]
+    session_end_hour = None
+    if ex.session_close and session is not None:
+        from .research import WINDOWS
+        session_end_hour = WINDOWS[session][1]
     pessimistic = ex.intrabar == "pessimistic"
     trades, busy_until = [], -1
     for s in setups:
@@ -48,6 +56,14 @@ def simulate_fine(tf: pd.DataFrame, fine: pd.DataFrame, setups: list[Setup], ex:
         remaining, realized, partial_done, cur_stop = 1.0, 0.0, False, stop
         reason, j = "time", k
         end_time = ft[k] + max_hold.value
+        sess_end_ns = None
+        if session_end_hour is not None:
+            day = fine.index[k].normalize()
+            sess_end = day + pd.Timedelta(hours=session_end_hour)
+            if sess_end <= fine.index[k]:
+                sess_end += pd.Timedelta(days=1)
+            sess_end_ns = sess_end.value
+            end_time = min(end_time, sess_end_ns - 1)
         while j < len(ft):
             if j == k and not pessimistic:
                 stop_hit = (fc[j] - cur_stop) * sign <= 0
@@ -56,16 +72,19 @@ def simulate_fine(tf: pd.DataFrame, fine: pd.DataFrame, setups: list[Setup], ex:
             tgt_hit = fh[j] >= target if sign == 1 else fl[j] <= target
             needs_target = ex_s.mode == "fixed" or (ex_s.mode == "partial" and not partial_done)
             if stop_hit and (pessimistic or not (needs_target and tgt_hit)):
-                realized += remaining * (cur_stop - entry) * sign
-                remaining, exit_price = 0.0, cur_stop
+                # a candle that opens beyond the stop (after a break) fills at its open
+                fill = fo[j] if j > k and (fo[j] - cur_stop) * sign < 0 else cur_stop
+                realized += remaining * (fill - entry) * sign
+                remaining, exit_price = 0.0, fill
                 reason = "stop" if cur_stop == stop else "breakeven"
                 break
             if needs_target and tgt_hit:
+                fill = fo[j] if j > k and (fo[j] - target) * sign > 0 else target
                 if ex_s.mode == "fixed":
-                    realized += remaining * (target - entry) * sign
-                    remaining, exit_price, reason = 0.0, target, "target"
+                    realized += remaining * (fill - entry) * sign
+                    remaining, exit_price, reason = 0.0, fill, "target"
                     break
-                realized += ex_s.partial_frac * (target - entry) * sign
+                realized += ex_s.partial_frac * (fill - entry) * sign
                 remaining -= ex_s.partial_frac
                 partial_done = True
                 if ex_s.breakeven_after_partial:
@@ -78,7 +97,10 @@ def simulate_fine(tf: pd.DataFrame, fine: pd.DataFrame, setups: list[Setup], ex:
                 realized += remaining * (fc[j] - entry) * sign
                 remaining, exit_price, reason = 0.0, fc[j], "ema"
                 break
-            if gap_after[j] or ft[j] >= end_time:
+            if close_after[j]:
+                break
+            if j + 1 < len(ft) and ft[j + 1] > end_time:
+                reason = "session" if sess_end_ns is not None and ft[j + 1] >= sess_end_ns else "time"
                 break
             j += 1
         j = min(j, len(ft) - 1)

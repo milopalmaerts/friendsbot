@@ -95,3 +95,21 @@ van de juli–septembercijfers, dus die kolom is geen eerlijke test.
    (+0,089R tegenover +0,034R per trade bij trendstart), maar een eenvoudige regel markeert 90% van de setups als
    "goed". Zijn eigen oordeel is strenger dan wat de bot nu kan nabootsen.
 4. Een multi-market bot kan, maar dan met een vaste selectieregel en eerst maanden papier-trading.
+
+# Correctie 10 oktober 2026: tijdseenheden in de 1-minuut-engine
+De 1-minutendata heeft tijdstempels in microseconden; de engine vergeleek ze met grenzen in nanoseconden.
+Daardoor werden de dagelijkse pauze en het weekend nooit herkend en werkte de maximale houdtijd niet: trades
+bleven in de praktijk altijd doorlopen. Hersteld in `execution.py` (alles naar nanoseconden) met een test.
+Alle rapporten (timeframes, portefeuille, papierjournal) zijn opnieuw berekend.
+
+## Laten lopen of sluiten? (walk-forward papierbot, juni – 10 oktober)
+| Open trades bij een pauze | Resultaat | Account | Max. drawdown |
+|---|---:|---:|---:|
+| Sluiten voor pauze en weekend | −39,4R | −8,3% | 14,5% |
+| Door de pauze, sluiten voor het weekend | −47,6R | −9,2% | 13,1% |
+| **Altijd laten lopen** | **−15,3R** | **−4,9%** | **11,6%** |
+| Sluiten aan einde van de sessie | −47,0R | −12,2% | 16,9% |
+
+Een stop die door een gap wordt overgeslagen vult tegen de openingsprijs (verlies > 1R); dat zit in de cijfers.
+De bot laat trades nu lopen (`paper.GAP_POLICY = "hold"`). De volgorde is niet netjes oplopend, dus een deel van
+het verschil is toeval. Swap-fees per uur van MyFundedPerps zitten niet in de backtest.

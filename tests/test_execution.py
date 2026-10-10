@@ -53,3 +53,26 @@ def test_percentage_cost_is_charged_in_r():
     a = simulate_fine(tf, fine, s, ExitConfig(mode="fixed", target_r=1.0, cost=0))[0]
     b = simulate_fine(tf, fine, s, ExitConfig(mode="fixed", target_r=1.0, cost=0, cost_pct=0.001))[0]
     assert a.r - b.r == pytest.approx(0.001 * s[0].entry / s[0].risk, abs=1e-3)
+
+
+def test_stop_after_a_break_fills_at_the_gapped_open():
+    fine = minutes(LONG[:10], [True] * 10)
+    tf = with_indicators(resample(fine, "5min"), CFG)
+    s = [x for x in find_setups(tf, CFG) if x.direction == "long"]
+    # an hour-long break after the entry candle, reopening far below the stop
+    after = fine.index[-1] + pd.Timedelta(hours=1)
+    gap = pd.DataFrame({"open": [95.0], "high": [96.0], "low": [94.0], "close": [95.5], "volume": [1.0]},
+                       index=pd.DatetimeIndex([after]))
+    fine2 = pd.concat([fine.iloc[:45], gap])
+    hold = simulate_fine(tf, fine2, s, ExitConfig(mode="fixed", target_r=5, cost=0, gap_policy="hold"))[0]
+    assert hold.exit_reason == "stop" and hold.exit_price == pytest.approx(95.0) and hold.r < -1
+    close = simulate_fine(tf, fine2, s, ExitConfig(mode="fixed", target_r=5, cost=0, gap_policy="close"))[0]
+    assert close.exit_reason == "time" and close.exit_time < after
+
+
+def test_session_close_exits_at_session_end():
+    fine = minutes(LONG + [(112, 111)] * 30, [True] * (len(LONG) + 30), start="2026-03-02 06:00")
+    tf = with_indicators(resample(fine, "5min"), CFG)
+    s = [x for x in find_setups(tf, CFG) if x.direction == "long"]
+    t = simulate_fine(tf, fine, s, ExitConfig(mode="ema", cost=0, session_close=True), session="asia")[0]
+    assert t.exit_reason == "session" and t.exit_time < pd.Timestamp("2026-03-02 07:00", tz="UTC")

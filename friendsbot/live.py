@@ -47,6 +47,9 @@ NY = "America/New_York"
 # backtest never traded them, so neither does the bot. BTC trades around the clock.
 SESSION_MARKETS = {"xauusd", "nas100"}
 CLOSE_BEFORE_BREAK = pd.Timedelta(minutes=5)
+# Open positions stay through the pause and weekend (paper.GAP_POLICY = "hold"); set
+# FB_CLOSE_BEFORE_BREAK=1 to flatten gold and US100 five minutes before each break instead.
+FLATTEN_BEFORE_BREAK = os.environ.get("FB_CLOSE_BEFORE_BREAK") == "1"
 DAILY_ROOM_TRADES = 3        # need room for this many full losses before the daily-loss floor
 DRAWDOWN_ROOM_TRADES = 6     # … and this many before the maximum-drawdown floor
 
@@ -216,7 +219,7 @@ def tick(client: Client, account_id: str | None = None, now: pd.Timestamp | None
 def manage_position(client, plan, p, asset, e, working, markets, frames, now, dry_run):
         order, meta = e
         sign = 1 if p["side"] == "long" else -1
-        if not market_open(asset, now + CLOSE_BEFORE_BREAK):
+        if FLATTEN_BEFORE_BREAK and not market_open(asset, now + CLOSE_BEFORE_BREAK):
             plan.act("close_before_break", market=p["market_id"])
             if not dry_run:
                 client.close_position(p["id"], client_order_id=f"{TAG}-brk-{p['id'][:40]}-{int(now.timestamp())}")

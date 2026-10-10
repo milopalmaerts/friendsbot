@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import json
 from collections import defaultdict
+from dataclasses import replace
 from pathlib import Path
 
 import numpy as np
@@ -27,7 +28,7 @@ import pandas as pd
 
 from .backtest import summarize
 from .data import ROOT, load_dataset, resample
-from .portfolio import MIN_DEV_AVG_R, MIN_DEV_TRADES, SESSIONS, TIMEFRAMES, cell_trades
+from .portfolio import EXITS, MIN_DEV_AVG_R, MIN_DEV_TRADES, SESSIONS, TIMEFRAMES, cell_trades
 from .research import FRIEND_RULES, window_filter
 from .strategy import pending, with_indicators
 from .timeframes import ASSETS, START
@@ -36,6 +37,9 @@ FORWARD_START = pd.Timestamp("2026-10-10", tz="UTC")   # rules frozen on this da
 FIRST_MONTH = pd.Timestamp("2026-06-01", tz="UTC")     # first month with 4 months of history
 LOOKBACK_DAYS = 120
 EXIT = "2R_runner"
+# Trades stay open through the daily pause and the weekend (gap risk included): in the walk-forward
+# test this beat closing before each break (−15R vs −39R) and closing at session end (−47R).
+GAP_POLICY = "hold"
 CANDIDATE_SESSIONS = [*SESSIONS, "friend_window"]
 SLOT = {"friend_window": "asia"}                         # the author's window competes for the Asia slot
 BASE_RISK, HOT_RISK, HOT_N = 0.25, 0.5, 2
@@ -167,7 +171,8 @@ def equity_stats(rows: list[dict]) -> dict:
 
 
 def load_cells(last: pd.Timestamp):
-    return cell_trades(exits=[EXIT], start=START, end=last + pd.Timedelta(minutes=1), sessions=CANDIDATE_SESSIONS)
+    exits = {EXIT: replace(EXITS[EXIT], gap_policy=GAP_POLICY)}
+    return cell_trades(exits=exits, start=START, end=last + pd.Timedelta(minutes=1), sessions=CANDIDATE_SESSIONS)
 
 
 def update(path: Path = JOURNAL, cells=None) -> dict:
@@ -205,7 +210,7 @@ def update(path: Path = JOURNAL, cells=None) -> dict:
         "data_end": {k: v.isoformat() for k, v in data_end.items()},
         "assets": {k: v["label"] for k, v in ASSETS.items()},
         "rules": {
-            "exit": "50% op 2R, stop naar breakeven, runner tot slot door EMA 21",
+            "exit": "50% op 2R, stop naar breakeven, runner tot slot door EMA 21; trades blijven open door pauze en weekend",
             "selection": f"elke 1e van de maand per markt en sessie de beste timeframe over de vorige {LOOKBACK_DAYS} "
                          f"dagen (min. {MIN_DEV_TRADES} trades, gemiddeld ≥ +{MIN_DEV_AVG_R}R); het venster van "
                          f"04:00–06:30 UTC concurreert met de hele Asia-sessie",

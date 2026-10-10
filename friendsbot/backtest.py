@@ -49,6 +49,10 @@ class ExitConfig:
     cost_pct: float = 0.0           # extra round-trip cost as a fraction of price (crypto fees)
     max_hold_bars: int = 96         # 8 hours
     intrabar: str = "pessimistic"   # pessimistic | optimistic
+    # what to do at a market break (1-minute engine): "close" before any break (daily pause and
+    # weekend), "weekend" hold through the daily pause but close before the weekend, "hold" never close
+    gap_policy: str = "close"
+    session_close: bool = False     # close at the end of the session the trade was opened in
 
     def to_dict(self) -> dict:
         return asdict(self)

@@ -12,7 +12,6 @@ from dataclasses import replace
 from pathlib import Path
 
 import numpy as np
-import pandas as pd
 
 from .backtest import ExitConfig, summarize
 from .data import load_dataset, resample
@@ -40,7 +39,7 @@ def cell_trades(assets=None, exits=None, start=START, end=END, timeframes=None, 
     """{(asset, tf, exit, session): [Trade]} with Trade.tags['asset'] set."""
     cfg = FRIEND_RULES[0]
     out = {}
-    exits = {k: EXITS[k] for k in (exits or EXITS)}
+    exits = exits if isinstance(exits, dict) else {k: EXITS[k] for k in (exits or EXITS)}
     for asset in assets or ASSETS:
         spec = ASSETS[asset]
         fine = load_dataset(spec["dataset"])
@@ -52,7 +51,7 @@ def cell_trades(assets=None, exits=None, start=START, end=END, timeframes=None, 
             for ex_name, ex in exits.items():
                 ex = replace(ex, cost=spec["cost"], cost_pct=spec["cost_pct"])
                 for session in sessions or SESSIONS:
-                    trades = simulate_fine(tf, fine, setups, ex, window_filter(session))
+                    trades = simulate_fine(tf, fine, setups, ex, window_filter(session), session=session)
                     for t in trades:
                         t.tags = {**t.tags, "asset": asset, "tf": tf_name, "session": session}
                     out[(asset, tf_name, ex_name, session)] = trades
