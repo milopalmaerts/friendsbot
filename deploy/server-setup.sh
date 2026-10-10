@@ -12,10 +12,13 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update -y
 apt-get install -y git python3 python3-venv python3-pip
 
-id friendsbot >/dev/null 2>&1 || useradd --system --create-home --home-dir /opt/friendsbot --shell /usr/sbin/nologin friendsbot
+id friendsbot >/dev/null 2>&1 || useradd --system --no-create-home --home-dir /opt/friendsbot --shell /usr/sbin/nologin friendsbot
 if [ ! -d /opt/friendsbot/.git ]; then
-  rm -rf /opt/friendsbot/* 2>/dev/null || true
+  rm -rf /opt/friendsbot
+  install -d -o friendsbot -g friendsbot /opt/friendsbot
   sudo -u friendsbot git clone --branch "$BRANCH" "$REPO" /opt/friendsbot
+else
+  sudo -u friendsbot git -C /opt/friendsbot pull --ff-only
 fi
 sudo -u friendsbot python3 -m venv /opt/friendsbot/.venv
 sudo -u friendsbot /opt/friendsbot/.venv/bin/pip install --quiet -r /opt/friendsbot/requirements.txt
