@@ -1,0 +1,38 @@
+name: live (MyFundedPerps)
+
+# Runs the bot against MyFundedPerps every 5 minutes. Needs the repository secret FP_API_KEY:
+# an fp_test_ key trades the sandbox; an fp_live_ key is refused unless FB_ALLOW_LIVE is set.
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Compute orders without sending them"
+        type: boolean
+        default: false
+
+concurrency:
+  group: live
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      FP_API_KEY: ${{ secrets.FP_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Run one tick
+        run: |
+          if [ -z "$FP_API_KEY" ]; then echo "FP_API_KEY secret not set; skipping"; exit 0; fi
+          python -m friendsbot live ${{ inputs.dry_run && '--dry-run' || '' }}

@@ -32,6 +32,25 @@ python -m friendsbot site       # website bouwen
 python -m pytest
 ```
 
+## MyFundedPerps (sandbox)
+De bot kan dezelfde regels uitvoeren op een MyFundedPerps-account via hun REST-API
+(`friendsbot/mfp.py`, `friendsbot/live.py`). Markten: goud `binance|XAUUSDT`, US100
+`hyperliquid|xyz:XYZ100`, BTC `binance|BTCUSDT`.
+
+```bash
+python -m friendsbot live --dry-run   # zonder sleutel: berekent de orders op live candles, verstuurt niets
+FP_API_KEY=fp_test_… python -m friendsbot live   # één run tegen de sandbox
+```
+Elke run is los: entries zijn stop-orders op het niveau van candle 2, na de fill volgen een stop loss en een
+TP op 2R voor de helft (OCO), daarna stop naar breakeven en runner dicht bij een slot door de EMA 21.
+Risico per trade standaard 0,10% (toppers 0,20%) omdat prop-accounts maar 3–6% drawdown toelaten
+(`FB_BASE_RISK_PCT`, `FB_HOT_RISK_PCT`). Geen nieuwe entries als de daglimiet of de maximale drawdown dichtbij is.
+Een `fp_live_`-sleutel wordt geweigerd tenzij `FB_ALLOW_LIVE=1`.
+
+Automatisch: `.github/workflows/live.yml` draait elke 5 minuten zodra de repository-secret `FP_API_KEY`
+bestaat (GitHub → Settings → Secrets and variables → Actions). `.github/workflows/paper.yml` werkt
+wekelijks en op de 1e van de maand de data, de journal en de maandselectie bij.
+
 ## Opbouw
 | Bestand | Wat |
 |---|---|

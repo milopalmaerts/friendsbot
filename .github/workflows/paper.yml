@@ -1,0 +1,39 @@
+name: paper journal
+
+# Weekly (after the Saturday data update) and on the 1st of each month (new selection):
+# fetch the latest candles, update the paper journal and the website, and commit them.
+on:
+  schedule:
+    - cron: "17 9 * * 0"
+    - cron: "7 0 1 * *"
+  workflow_dispatch:
+
+concurrency:
+  group: paper
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m friendsbot fetch --all
+      - run: python -m friendsbot paper
+      - run: python -m friendsbot site
+      - run: python -m pytest -q
+      - name: Commit
+        run: |
+          git config user.name "friendsbot"
+          git config user.email "friendsbot@users.noreply.github.com"
+          git add data/xauusd_5m.csv reports/paper/journal.json website/index.html
+          git diff --cached --quiet || git commit -m "Update paper journal $(date -u +%F)"
+          git push
