@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-10T15:24:08.708354+00:00",
+ "generated": "2026-10-10T16:04:15.821826+00:00",
  "forward_start": "2026-10-10T00:00:00+00:00",
  "data_end": {
   "xauusd": "2026-09-25T20:44:00+00:00",
@@ -13,7 +13,15 @@
  },
  "rules": {
   "exit": "50% op 2R, stop naar breakeven, runner tot slot door EMA 21",
-  "selection": "per markt en sessie de beste timeframe over de vorige 120 dagen (min. 20 trades, gemiddeld \u2265 +0.05R), elke maand opnieuw",
+  "selection": "elke 1e van de maand per markt en sessie de beste timeframe over de vorige 120 dagen (min. 20 trades, gemiddeld \u2265 +0.05R); het venster van 04:00\u201306:30 UTC concurreert met de hele Asia-sessie",
+  "risk": {
+   "base": 0.25,
+   "hot": 0.5,
+   "hot_n": 2,
+   "demote_after": 3,
+   "asset_day_losses": 2,
+   "max_open": 3
+  },
   "timeframes": [
    "5m",
    "15m",
@@ -25,7 +33,8 @@
    "asia",
    "london",
    "new_york",
-   "late"
+   "late",
+   "friend_window"
   ],
   "costs": {
    "xauusd": "$0,30 per trade (spread + slippage)",
@@ -35,59 +44,21 @@
  },
  "defaults": {
   "account": 10000,
-  "risk_pct": 0.5
+  "base_risk": 0.25
  },
  "selections": [
   {
    "month": "2026-06",
    "cells": [
     {
-     "asset": "btcusdt",
-     "session": "london",
-     "tf": "30m",
-     "avg_r": 0.124,
-     "trades": 37,
-     "total_r": 4.57
-    },
-    {
-     "asset": "nas100",
-     "session": "asia",
-     "tf": "5m",
-     "avg_r": 0.055,
-     "trades": 203,
-     "total_r": 11.07
-    },
-    {
-     "asset": "nas100",
-     "session": "london",
-     "tf": "30m",
-     "avg_r": 0.279,
-     "trades": 21,
-     "total_r": 5.86
-    },
-    {
-     "asset": "nas100",
-     "session": "new_york",
-     "tf": "15m",
-     "avg_r": 0.262,
-     "trades": 48,
-     "total_r": 12.58
-    },
-    {
-     "asset": "nas100",
-     "session": "late",
-     "tf": "15m",
-     "avg_r": 0.068,
-     "trades": 47,
-     "total_r": 3.2
-    },
-    {
      "asset": "xauusd",
-     "session": "asia",
-     "tf": "30m",
-     "avg_r": 0.35,
-     "trades": 35,
-     "total_r": 12.24
+     "session": "friend_window",
+     "tf": "5m",
+     "avg_r": 0.469,
+     "trades": 71,
+     "total_r": 33.28,
+     "rank": 1,
+     "hot": true
     },
     {
      "asset": "xauusd",
@@ -95,7 +66,59 @@
      "tf": "15m",
      "avg_r": 0.309,
      "trades": 58,
-     "total_r": 17.9
+     "total_r": 17.9,
+     "rank": 2,
+     "hot": true
+    },
+    {
+     "asset": "nas100",
+     "session": "london",
+     "tf": "30m",
+     "avg_r": 0.279,
+     "trades": 21,
+     "total_r": 5.86,
+     "rank": 3,
+     "hot": false
+    },
+    {
+     "asset": "nas100",
+     "session": "new_york",
+     "tf": "15m",
+     "avg_r": 0.262,
+     "trades": 48,
+     "total_r": 12.58,
+     "rank": 4,
+     "hot": false
+    },
+    {
+     "asset": "nas100",
+     "session": "friend_window",
+     "tf": "5m",
+     "avg_r": 0.166,
+     "trades": 65,
+     "total_r": 10.78,
+     "rank": 5,
+     "hot": false
+    },
+    {
+     "asset": "btcusdt",
+     "session": "london",
+     "tf": "30m",
+     "avg_r": 0.124,
+     "trades": 37,
+     "total_r": 4.57,
+     "rank": 6,
+     "hot": false
+    },
+    {
+     "asset": "nas100",
+     "session": "late",
+     "tf": "15m",
+     "avg_r": 0.068,
+     "trades": 47,
+     "total_r": 3.2,
+     "rank": 7,
+     "hot": false
     }
    ]
   },
@@ -103,20 +126,14 @@
    "month": "2026-07",
    "cells": [
     {
-     "asset": "btcusdt",
-     "session": "asia",
-     "tf": "30m",
-     "avg_r": 0.293,
-     "trades": 58,
-     "total_r": 16.99
-    },
-    {
-     "asset": "nas100",
-     "session": "asia",
+     "asset": "xauusd",
+     "session": "friend_window",
      "tf": "5m",
-     "avg_r": 0.157,
-     "trades": 195,
-     "total_r": 30.64
+     "avg_r": 0.466,
+     "trades": 69,
+     "total_r": 32.18,
+     "rank": 1,
+     "hot": true
     },
     {
      "asset": "nas100",
@@ -124,31 +141,9 @@
      "tf": "30m",
      "avg_r": 0.462,
      "trades": 23,
-     "total_r": 10.63
-    },
-    {
-     "asset": "nas100",
-     "session": "new_york",
-     "tf": "15m",
-     "avg_r": 0.188,
-     "trades": 46,
-     "total_r": 8.63
-    },
-    {
-     "asset": "nas100",
-     "session": "late",
-     "tf": "15m",
-     "avg_r": 0.167,
-     "trades": 43,
-     "total_r": 7.18
-    },
-    {
-     "asset": "xauusd",
-     "session": "asia",
-     "tf": "1h",
-     "avg_r": 0.446,
-     "trades": 24,
-     "total_r": 10.7
+     "total_r": 10.63,
+     "rank": 2,
+     "hot": true
     },
     {
      "asset": "xauusd",
@@ -156,7 +151,49 @@
      "tf": "15m",
      "avg_r": 0.297,
      "trades": 61,
-     "total_r": 18.13
+     "total_r": 18.13,
+     "rank": 3,
+     "hot": false
+    },
+    {
+     "asset": "btcusdt",
+     "session": "asia",
+     "tf": "30m",
+     "avg_r": 0.293,
+     "trades": 58,
+     "total_r": 16.99,
+     "rank": 4,
+     "hot": false
+    },
+    {
+     "asset": "nas100",
+     "session": "friend_window",
+     "tf": "5m",
+     "avg_r": 0.265,
+     "trades": 71,
+     "total_r": 18.8,
+     "rank": 5,
+     "hot": false
+    },
+    {
+     "asset": "nas100",
+     "session": "new_york",
+     "tf": "15m",
+     "avg_r": 0.188,
+     "trades": 46,
+     "total_r": 8.63,
+     "rank": 6,
+     "hot": false
+    },
+    {
+     "asset": "nas100",
+     "session": "late",
+     "tf": "15m",
+     "avg_r": 0.167,
+     "trades": 43,
+     "total_r": 7.18,
+     "rank": 7,
+     "hot": false
     },
     {
      "asset": "xauusd",
@@ -164,7 +201,9 @@
      "tf": "15m",
      "avg_r": 0.163,
      "trades": 47,
-     "total_r": 7.64
+     "total_r": 7.64,
+     "rank": 8,
+     "hot": false
     }
    ]
   },
@@ -172,12 +211,14 @@
    "month": "2026-08",
    "cells": [
     {
-     "asset": "btcusdt",
+     "asset": "xauusd",
      "session": "asia",
-     "tf": "30m",
-     "avg_r": 0.112,
-     "trades": 61,
-     "total_r": 6.84
+     "tf": "1h",
+     "avg_r": 0.423,
+     "trades": 28,
+     "total_r": 11.84,
+     "rank": 1,
+     "hot": true
     },
     {
      "asset": "btcusdt",
@@ -185,7 +226,9 @@
      "tf": "1h",
      "avg_r": 0.41,
      "trades": 24,
-     "total_r": 9.84
+     "total_r": 9.84,
+     "rank": 2,
+     "hot": true
     },
     {
      "asset": "nas100",
@@ -193,15 +236,9 @@
      "tf": "30m",
      "avg_r": 0.385,
      "trades": 29,
-     "total_r": 11.16
-    },
-    {
-     "asset": "nas100",
-     "session": "new_york",
-     "tf": "5m",
-     "avg_r": 0.092,
-     "trades": 124,
-     "total_r": 11.41
+     "total_r": 11.16,
+     "rank": 3,
+     "hot": false
     },
     {
      "asset": "nas100",
@@ -209,15 +246,19 @@
      "tf": "15m",
      "avg_r": 0.282,
      "trades": 47,
-     "total_r": 13.27
+     "total_r": 13.27,
+     "rank": 4,
+     "hot": false
     },
     {
-     "asset": "xauusd",
-     "session": "asia",
-     "tf": "1h",
-     "avg_r": 0.423,
-     "trades": 28,
-     "total_r": 11.84
+     "asset": "btcusdt",
+     "session": "friend_window",
+     "tf": "30m",
+     "avg_r": 0.282,
+     "trades": 20,
+     "total_r": 5.64,
+     "rank": 5,
+     "hot": false
     },
     {
      "asset": "xauusd",
@@ -225,7 +266,19 @@
      "tf": "15m",
      "avg_r": 0.174,
      "trades": 45,
-     "total_r": 7.85
+     "total_r": 7.85,
+     "rank": 6,
+     "hot": false
+    },
+    {
+     "asset": "nas100",
+     "session": "new_york",
+     "tf": "5m",
+     "avg_r": 0.092,
+     "trades": 124,
+     "total_r": 11.41,
+     "rank": 7,
+     "hot": false
     }
    ]
   },
@@ -234,67 +287,13 @@
    "cells": [
     {
      "asset": "btcusdt",
-     "session": "asia",
-     "tf": "1h",
-     "avg_r": 0.228,
-     "trades": 33,
-     "total_r": 7.54
-    },
-    {
-     "asset": "btcusdt",
      "session": "london",
      "tf": "15m",
      "avg_r": 0.717,
      "trades": 70,
-     "total_r": 50.18
-    },
-    {
-     "asset": "btcusdt",
-     "session": "late",
-     "tf": "1h",
-     "avg_r": 0.399,
-     "trades": 24,
-     "total_r": 9.59
-    },
-    {
-     "asset": "nas100",
-     "session": "asia",
-     "tf": "15m",
-     "avg_r": 0.103,
-     "trades": 63,
-     "total_r": 6.48
-    },
-    {
-     "asset": "nas100",
-     "session": "london",
-     "tf": "15m",
-     "avg_r": 0.162,
-     "trades": 59,
-     "total_r": 9.54
-    },
-    {
-     "asset": "nas100",
-     "session": "new_york",
-     "tf": "5m",
-     "avg_r": 0.059,
-     "trades": 131,
-     "total_r": 7.66
-    },
-    {
-     "asset": "nas100",
-     "session": "late",
-     "tf": "5m",
-     "avg_r": 0.144,
-     "trades": 111,
-     "total_r": 15.96
-    },
-    {
-     "asset": "xauusd",
-     "session": "asia",
-     "tf": "1h",
-     "avg_r": 0.406,
-     "trades": 29,
-     "total_r": 11.76
+     "total_r": 50.18,
+     "rank": 1,
+     "hot": true
     },
     {
      "asset": "xauusd",
@@ -302,7 +301,69 @@
      "tf": "30m",
      "avg_r": 0.444,
      "trades": 24,
-     "total_r": 10.66
+     "total_r": 10.66,
+     "rank": 2,
+     "hot": true
+    },
+    {
+     "asset": "xauusd",
+     "session": "asia",
+     "tf": "1h",
+     "avg_r": 0.406,
+     "trades": 29,
+     "total_r": 11.76,
+     "rank": 3,
+     "hot": false
+    },
+    {
+     "asset": "btcusdt",
+     "session": "late",
+     "tf": "1h",
+     "avg_r": 0.399,
+     "trades": 24,
+     "total_r": 9.59,
+     "rank": 4,
+     "hot": false
+    },
+    {
+     "asset": "btcusdt",
+     "session": "friend_window",
+     "tf": "30m",
+     "avg_r": 0.328,
+     "trades": 20,
+     "total_r": 6.57,
+     "rank": 5,
+     "hot": false
+    },
+    {
+     "asset": "nas100",
+     "session": "london",
+     "tf": "15m",
+     "avg_r": 0.162,
+     "trades": 59,
+     "total_r": 9.54,
+     "rank": 6,
+     "hot": false
+    },
+    {
+     "asset": "nas100",
+     "session": "late",
+     "tf": "5m",
+     "avg_r": 0.144,
+     "trades": 111,
+     "total_r": 15.96,
+     "rank": 7,
+     "hot": false
+    },
+    {
+     "asset": "nas100",
+     "session": "friend_window",
+     "tf": "15m",
+     "avg_r": 0.127,
+     "trades": 21,
+     "total_r": 2.67,
+     "rank": 8,
+     "hot": false
     },
     {
      "asset": "xauusd",
@@ -310,7 +371,19 @@
      "tf": "5m",
      "avg_r": 0.059,
      "trades": 132,
-     "total_r": 7.77
+     "total_r": 7.77,
+     "rank": 9,
+     "hot": false
+    },
+    {
+     "asset": "nas100",
+     "session": "new_york",
+     "tf": "5m",
+     "avg_r": 0.059,
+     "trades": 131,
+     "total_r": 7.66,
+     "rank": 10,
+     "hot": false
     }
    ]
   },
@@ -318,12 +391,14 @@
    "month": "2026-10",
    "cells": [
     {
-     "asset": "btcusdt",
-     "session": "asia",
-     "tf": "1h",
-     "avg_r": 0.202,
-     "trades": 36,
-     "total_r": 7.27
+     "asset": "nas100",
+     "session": "friend_window",
+     "tf": "15m",
+     "avg_r": 0.785,
+     "trades": 22,
+     "total_r": 17.28,
+     "rank": 1,
+     "hot": true
     },
     {
      "asset": "btcusdt",
@@ -331,39 +406,9 @@
      "tf": "15m",
      "avg_r": 0.652,
      "trades": 73,
-     "total_r": 47.58
-    },
-    {
-     "asset": "btcusdt",
-     "session": "late",
-     "tf": "1h",
-     "avg_r": 0.105,
-     "trades": 22,
-     "total_r": 2.32
-    },
-    {
-     "asset": "nas100",
-     "session": "asia",
-     "tf": "30m",
-     "avg_r": 0.781,
-     "trades": 37,
-     "total_r": 28.89
-    },
-    {
-     "asset": "nas100",
-     "session": "new_york",
-     "tf": "15m",
-     "avg_r": 0.337,
-     "trades": 49,
-     "total_r": 16.52
-    },
-    {
-     "asset": "nas100",
-     "session": "late",
-     "tf": "5m",
-     "avg_r": 0.217,
-     "trades": 104,
-     "total_r": 22.54
+     "total_r": 47.58,
+     "rank": 2,
+     "hot": true
     },
     {
      "asset": "xauusd",
@@ -371,7 +416,9 @@
      "tf": "1h",
      "avg_r": 0.552,
      "trades": 26,
-     "total_r": 14.36
+     "total_r": 14.36,
+     "rank": 3,
+     "hot": false
     },
     {
      "asset": "xauusd",
@@ -379,15 +426,39 @@
      "tf": "30m",
      "avg_r": 0.535,
      "trades": 24,
-     "total_r": 12.85
+     "total_r": 12.85,
+     "rank": 4,
+     "hot": false
     },
     {
-     "asset": "xauusd",
+     "asset": "nas100",
      "session": "new_york",
-     "tf": "30m",
-     "avg_r": 0.127,
-     "trades": 25,
-     "total_r": 3.18
+     "tf": "15m",
+     "avg_r": 0.337,
+     "trades": 49,
+     "total_r": 16.52,
+     "rank": 5,
+     "hot": false
+    },
+    {
+     "asset": "nas100",
+     "session": "late",
+     "tf": "5m",
+     "avg_r": 0.217,
+     "trades": 104,
+     "total_r": 22.54,
+     "rank": 6,
+     "hot": false
+    },
+    {
+     "asset": "btcusdt",
+     "session": "asia",
+     "tf": "1h",
+     "avg_r": 0.202,
+     "trades": 36,
+     "total_r": 7.27,
+     "rank": 7,
+     "hot": false
     },
     {
      "asset": "xauusd",
@@ -395,52 +466,63 @@
      "tf": "15m",
      "avg_r": 0.139,
      "trades": 39,
-     "total_r": 5.44
+     "total_r": 5.44,
+     "rank": 8,
+     "hot": false
+    },
+    {
+     "asset": "xauusd",
+     "session": "new_york",
+     "tf": "30m",
+     "avg_r": 0.127,
+     "trades": 25,
+     "total_r": 3.18,
+     "rank": 9,
+     "hot": false
+    },
+    {
+     "asset": "btcusdt",
+     "session": "late",
+     "tf": "1h",
+     "avg_r": 0.105,
+     "trades": 22,
+     "total_r": 2.32,
+     "rank": 10,
+     "hot": false
     }
    ]
   }
  ],
  "orders": [],
+ "skipped": {
+  "dagstop markt": 39,
+  "max. posities": 4
+ },
  "trades": [
   {
-   "id": "nas100-5m-long-202606010134",
-   "asset": "nas100",
+   "id": "xauusd-5m-short-202606010427",
+   "asset": "xauusd",
    "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-06-01T01:34:00+00:00",
-   "exit_time": "2026-06-01T03:18:00+00:00",
-   "entry": 30502.44,
-   "stop": 30489.45,
-   "exit": 30502.44,
-   "r": 0.8845,
+   "session": "friend_window",
+   "direction": "short",
+   "entry_time": "2026-06-01T04:27:00+00:00",
+   "exit_time": "2026-06-01T05:03:00+00:00",
+   "entry": 4530.56,
+   "stop": 4533.41,
+   "exit": 4530.56,
+   "r": 0.8947,
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-30m-short-202606010230",
-   "asset": "xauusd",
-   "tf": "30m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-06-01T02:30:00+00:00",
-   "exit_time": "2026-06-01T17:59:00+00:00",
-   "entry": 4538.95,
-   "stop": 4559.96,
-   "exit": 4502.03,
-   "r": 1.8644,
-   "r_gross": 1.8786,
-   "exit_reason": "ema",
-   "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-long-202606010522",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
    "entry_time": "2026-06-01T05:22:00+00:00",
    "exit_time": "2026-06-01T05:27:00+00:00",
@@ -451,6 +533,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -468,13 +552,15 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-long-202606020558",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
    "entry_time": "2026-06-02T05:58:00+00:00",
    "exit_time": "2026-06-02T09:04:00+00:00",
@@ -485,6 +571,27 @@
    "r_gross": 2.7901,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "simulatie"
+  },
+  {
+   "id": "xauusd-5m-long-202606020616",
+   "asset": "xauusd",
+   "tf": "5m",
+   "session": "friend_window",
+   "direction": "long",
+   "entry_time": "2026-06-02T06:16:00+00:00",
+   "exit_time": "2026-06-02T07:54:00+00:00",
+   "entry": 4536.32,
+   "stop": 4531.88,
+   "exit": 4544.01,
+   "r": 1.7984,
+   "r_gross": 1.866,
+   "exit_reason": "ema",
+   "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -502,6 +609,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -519,6 +628,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -536,64 +647,15 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202606030030",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-06-03T00:30:00+00:00",
-   "exit_time": "2026-06-03T01:07:00+00:00",
-   "entry": 30659.28,
-   "stop": 30642.54,
-   "exit": 30642.54,
-   "r": -1.0896,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202606030352",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-06-03T03:52:00+00:00",
-   "exit_time": "2026-06-03T04:59:00+00:00",
-   "entry": 30664.28,
-   "stop": 30653.67,
-   "exit": 30667.64,
-   "r": 1.017,
-   "r_gross": 1.1583,
-   "exit_reason": "ema",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-30m-short-202606030436",
-   "asset": "xauusd",
-   "tf": "30m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-06-03T04:36:00+00:00",
-   "exit_time": "2026-06-03T11:29:00+00:00",
-   "entry": 4487.72,
-   "stop": 4496.29,
-   "exit": 4479.4,
-   "r": 1.4504,
-   "r_gross": 1.4854,
-   "exit_reason": "ema",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-short-202606030545",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-06-03T05:45:00+00:00",
    "exit_time": "2026-06-03T06:04:00+00:00",
@@ -604,6 +666,27 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "simulatie"
+  },
+  {
+   "id": "xauusd-5m-short-202606030555",
+   "asset": "xauusd",
+   "tf": "5m",
+   "session": "friend_window",
+   "direction": "short",
+   "entry_time": "2026-06-03T05:55:00+00:00",
+   "exit_time": "2026-06-03T06:18:00+00:00",
+   "entry": 4477.08,
+   "stop": 4483.2,
+   "exit": 4483.2,
+   "r": -1.049,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
+   "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -621,23 +704,27 @@
    "r_gross": 1.5407,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-short-202606040255",
-   "asset": "nas100",
+   "id": "xauusd-5m-long-202606040513",
+   "asset": "xauusd",
    "tf": "5m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-06-04T02:55:00+00:00",
-   "exit_time": "2026-06-04T03:05:00+00:00",
-   "entry": 30378.0,
-   "stop": 30403.61,
-   "exit": 30403.61,
-   "r": -1.0586,
+   "session": "friend_window",
+   "direction": "long",
+   "entry_time": "2026-06-04T05:13:00+00:00",
+   "exit_time": "2026-06-04T05:22:00+00:00",
+   "entry": 4493.8,
+   "stop": 4488.95,
+   "exit": 4488.95,
+   "r": -1.0619,
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -655,6 +742,8 @@
    "r_gross": 1.2168,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -672,6 +761,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -689,6 +780,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -706,6 +799,8 @@
    "r_gross": 1.9133,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -723,30 +818,15 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-30m-short-202606050532",
-   "asset": "xauusd",
-   "tf": "30m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-06-05T05:32:00+00:00",
-   "exit_time": "2026-06-05T06:46:00+00:00",
-   "entry": 4454.99,
-   "stop": 4463.07,
-   "exit": 4463.07,
-   "r": -1.0371,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-long-202606050536",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
    "entry_time": "2026-06-05T05:36:00+00:00",
    "exit_time": "2026-06-05T05:44:00+00:00",
@@ -757,6 +837,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -774,6 +856,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -791,40 +875,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202606080341",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-06-08T03:41:00+00:00",
-   "exit_time": "2026-06-08T03:49:00+00:00",
-   "entry": 29198.47,
-   "stop": 29177.49,
-   "exit": 29177.49,
-   "r": -1.0715,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-30m-short-202606080433",
-   "asset": "xauusd",
-   "tf": "30m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-06-08T04:33:00+00:00",
-   "exit_time": "2026-06-08T07:24:00+00:00",
-   "entry": 4328.06,
-   "stop": 4336.49,
-   "exit": 4328.06,
-   "r": 0.9644,
-   "r_gross": 1.0,
-   "exit_reason": "breakeven",
-   "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -842,6 +894,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -859,6 +913,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -876,74 +932,103 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-long-202606090230",
+   "id": "nas100-5m-long-202606090437",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
-   "entry_time": "2026-06-09T02:30:00+00:00",
-   "exit_time": "2026-06-09T05:29:00+00:00",
-   "entry": 29464.9,
-   "stop": 29434.29,
-   "exit": 29566.01,
-   "r": 2.6026,
-   "r_gross": 2.6516,
-   "exit_reason": "ema",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-15m-short-202606091948",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "late",
-   "direction": "short",
-   "entry_time": "2026-06-09T19:48:00+00:00",
-   "exit_time": "2026-06-09T19:50:00+00:00",
-   "entry": 28827.9,
-   "stop": 28961.89,
-   "exit": 28961.89,
-   "r": -1.0112,
+   "entry_time": "2026-06-09T04:37:00+00:00",
+   "exit_time": "2026-06-09T05:01:00+00:00",
+   "entry": 29595.9,
+   "stop": 29572.29,
+   "exit": 29572.29,
+   "r": -1.0635,
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-15m-long-202606092000",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "late",
-   "direction": "long",
-   "entry_time": "2026-06-09T20:00:00+00:00",
-   "exit_time": "2026-06-10T08:27:00+00:00",
-   "entry": 29106.8,
-   "stop": 28825.31,
-   "exit": 28825.31,
-   "r": -1.0053,
+   "id": "xauusd-5m-short-202606090455",
+   "asset": "xauusd",
+   "tf": "5m",
+   "session": "friend_window",
+   "direction": "short",
+   "entry_time": "2026-06-09T04:55:00+00:00",
+   "exit_time": "2026-06-09T04:59:00+00:00",
+   "entry": 4339.71,
+   "stop": 4344.19,
+   "exit": 4344.19,
+   "r": -1.067,
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-short-202606100335",
+   "id": "nas100-5m-long-202606090518",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-06-10T03:35:00+00:00",
-   "exit_time": "2026-06-10T05:29:00+00:00",
-   "entry": 28976.46,
-   "stop": 29001.45,
-   "exit": 28915.35,
-   "r": 2.1627,
-   "r_gross": 2.2227,
-   "exit_reason": "ema",
+   "session": "friend_window",
+   "direction": "long",
+   "entry_time": "2026-06-09T05:18:00+00:00",
+   "exit_time": "2026-06-09T05:22:00+00:00",
+   "entry": 29585.4,
+   "stop": 29570.16,
+   "exit": 29570.16,
+   "r": -1.0984,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "simulatie"
+  },
+  {
+   "id": "xauusd-5m-long-202606090621",
+   "asset": "xauusd",
+   "tf": "5m",
+   "session": "friend_window",
+   "direction": "long",
+   "entry_time": "2026-06-09T06:21:00+00:00",
+   "exit_time": "2026-06-09T06:28:00+00:00",
+   "entry": 4356.31,
+   "stop": 4352.62,
+   "exit": 4352.62,
+   "r": -1.0813,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "simulatie"
+  },
+  {
+   "id": "nas100-5m-short-202606100510",
+   "asset": "nas100",
+   "tf": "5m",
+   "session": "friend_window",
+   "direction": "short",
+   "entry_time": "2026-06-10T05:10:00+00:00",
+   "exit_time": "2026-06-10T05:55:00+00:00",
+   "entry": 28882.16,
+   "stop": 28925.2,
+   "exit": 28925.2,
+   "r": -1.0349,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -961,23 +1046,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-30m-short-202606101103",
-   "asset": "btcusdt",
-   "tf": "30m",
-   "session": "london",
-   "direction": "short",
-   "entry_time": "2026-06-10T11:03:00+00:00",
-   "exit_time": "2026-06-10T12:30:00+00:00",
-   "entry": 61213.84,
-   "stop": 61404.3,
-   "exit": 61213.84,
-   "r": 0.7429,
-   "r_gross": 1.0,
-   "exit_reason": "breakeven",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -995,64 +1065,53 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
-   "id": "nas100-15m-short-202606101646",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "new_york",
+   "id": "btcusdt-30m-short-202606101103",
+   "asset": "btcusdt",
+   "tf": "30m",
+   "session": "london",
    "direction": "short",
-   "entry_time": "2026-06-10T16:46:00+00:00",
-   "exit_time": "2026-06-11T00:59:00+00:00",
-   "entry": 28681.74,
-   "stop": 28828.35,
-   "exit": 28530.42,
-   "r": 1.5058,
-   "r_gross": 1.5161,
-   "exit_reason": "ema",
+   "entry_time": "2026-06-10T11:03:00+00:00",
+   "exit_time": "2026-06-10T12:30:00+00:00",
+   "entry": 61213.84,
+   "stop": 61404.3,
+   "exit": 61213.84,
+   "r": 0.7429,
+   "r_gross": 1.0,
+   "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-short-202606110005",
-   "asset": "nas100",
+   "id": "xauusd-5m-long-202606110440",
+   "asset": "xauusd",
    "tf": "5m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-06-11T00:05:00+00:00",
-   "exit_time": "2026-06-11T00:15:00+00:00",
-   "entry": 28316.98,
-   "stop": 28395.89,
-   "exit": 28395.89,
-   "r": -1.019,
+   "session": "friend_window",
+   "direction": "long",
+   "entry_time": "2026-06-11T04:40:00+00:00",
+   "exit_time": "2026-06-11T05:25:00+00:00",
+   "entry": 4089.86,
+   "stop": 4084.97,
+   "exit": 4084.97,
+   "r": -1.0613,
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202606110046",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-06-11T00:46:00+00:00",
-   "exit_time": "2026-06-11T02:14:00+00:00",
-   "entry": 28466.55,
-   "stop": 28409.39,
-   "exit": 28604.04,
-   "r": 2.1764,
-   "r_gross": 2.2027,
-   "exit_reason": "ema",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-long-202606110530",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
    "entry_time": "2026-06-11T05:30:00+00:00",
    "exit_time": "2026-06-11T05:31:00+00:00",
@@ -1063,6 +1122,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1080,6 +1141,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1097,30 +1160,15 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-30m-long-202606120202",
-   "asset": "xauusd",
-   "tf": "30m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-06-12T02:02:00+00:00",
-   "exit_time": "2026-06-12T05:58:00+00:00",
-   "entry": 4207.06,
-   "stop": 4186.83,
-   "exit": 4186.83,
-   "r": -1.0148,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-short-202606120400",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-06-12T04:00:00+00:00",
    "exit_time": "2026-06-12T04:26:00+00:00",
@@ -1131,13 +1179,15 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-short-202606120619",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-06-12T06:19:00+00:00",
    "exit_time": "2026-06-12T07:44:00+00:00",
@@ -1148,6 +1198,8 @@
    "r_gross": 1.701,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1165,6 +1217,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1182,57 +1236,27 @@
    "r_gross": 3.281,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-long-202606150102",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-06-15T01:02:00+00:00",
-   "exit_time": "2026-06-15T01:20:00+00:00",
-   "entry": 30126.61,
-   "stop": 30117.93,
-   "exit": 30126.61,
-   "r": 0.8272,
-   "r_gross": 1.0,
-   "exit_reason": "breakeven",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-30m-long-202606150124",
+   "id": "xauusd-5m-long-202606150457",
    "asset": "xauusd",
-   "tf": "30m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-06-15T01:24:00+00:00",
-   "exit_time": "2026-06-15T06:08:00+00:00",
-   "entry": 4320.07,
-   "stop": 4305.31,
-   "exit": 4320.07,
-   "r": 0.9797,
-   "r_gross": 1.0,
-   "exit_reason": "breakeven",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202606150200",
-   "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
-   "entry_time": "2026-06-15T02:00:00+00:00",
-   "exit_time": "2026-06-15T03:49:00+00:00",
-   "entry": 30159.79,
-   "stop": 30144.05,
-   "exit": 30179.03,
-   "r": 1.5159,
-   "r_gross": 1.6112,
-   "exit_reason": "ema",
+   "entry_time": "2026-06-15T04:57:00+00:00",
+   "exit_time": "2026-06-15T05:05:00+00:00",
+   "entry": 4342.48,
+   "stop": 4340.75,
+   "exit": 4340.75,
+   "r": -1.1734,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1250,6 +1274,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1267,6 +1293,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1284,6 +1312,8 @@
    "r_gross": 3.7971,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -1301,47 +1331,15 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202606160030",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-06-16T00:30:00+00:00",
-   "exit_time": "2026-06-16T00:45:00+00:00",
-   "entry": 30518.12,
-   "stop": 30487.96,
-   "exit": 30487.96,
-   "r": -1.0497,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-30m-short-202606160132",
-   "asset": "xauusd",
-   "tf": "30m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-06-16T01:32:00+00:00",
-   "exit_time": "2026-06-16T03:35:00+00:00",
-   "entry": 4330.29,
-   "stop": 4341.14,
-   "exit": 4341.14,
-   "r": -1.0276,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-long-202606160411",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
    "entry_time": "2026-06-16T04:11:00+00:00",
    "exit_time": "2026-06-16T04:18:00+00:00",
@@ -1352,13 +1350,15 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-short-202606160535",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-06-16T05:35:00+00:00",
    "exit_time": "2026-06-16T07:00:00+00:00",
@@ -1369,6 +1369,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1386,23 +1388,27 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-long-202606170105",
-   "asset": "nas100",
+   "id": "xauusd-5m-short-202606170505",
+   "asset": "xauusd",
    "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-06-17T01:05:00+00:00",
-   "exit_time": "2026-06-17T04:44:00+00:00",
-   "entry": 30078.46,
-   "stop": 30043.85,
-   "exit": 30130.45,
-   "r": 1.7077,
-   "r_gross": 1.7511,
-   "exit_reason": "ema",
+   "session": "friend_window",
+   "direction": "short",
+   "entry_time": "2026-06-17T05:05:00+00:00",
+   "exit_time": "2026-06-17T05:30:00+00:00",
+   "entry": 4341.48,
+   "stop": 4344.17,
+   "exit": 4344.17,
+   "r": -1.1115,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1420,40 +1426,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202606180040",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-06-18T00:40:00+00:00",
-   "exit_time": "2026-06-18T00:51:00+00:00",
-   "entry": 30100.87,
-   "stop": 30065.51,
-   "exit": 30065.51,
-   "r": -1.0424,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-30m-long-202606180518",
-   "asset": "xauusd",
-   "tf": "30m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-06-18T05:18:00+00:00",
-   "exit_time": "2026-06-18T05:45:00+00:00",
-   "entry": 4334.65,
-   "stop": 4325.75,
-   "exit": 4325.75,
-   "r": -1.0337,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1471,6 +1445,8 @@
    "r_gross": 4.5567,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1488,30 +1464,15 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202606190055",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-06-19T00:55:00+00:00",
-   "exit_time": "2026-06-19T01:04:00+00:00",
-   "entry": 30343.6,
-   "stop": 30356.21,
-   "exit": 30356.21,
-   "r": -1.119,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-short-202606190446",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-06-19T04:46:00+00:00",
    "exit_time": "2026-06-19T06:06:00+00:00",
@@ -1522,6 +1483,27 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "simulatie"
+  },
+  {
+   "id": "xauusd-5m-short-202606190552",
+   "asset": "xauusd",
+   "tf": "5m",
+   "session": "friend_window",
+   "direction": "short",
+   "entry_time": "2026-06-19T05:52:00+00:00",
+   "exit_time": "2026-06-19T05:54:00+00:00",
+   "entry": 4151.73,
+   "stop": 4156.02,
+   "exit": 4156.02,
+   "r": -1.0699,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1539,23 +1521,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-15m-long-202606190947",
-   "asset": "xauusd",
-   "tf": "15m",
-   "session": "london",
-   "direction": "long",
-   "entry_time": "2026-06-19T09:47:00+00:00",
-   "exit_time": "2026-06-19T09:58:00+00:00",
-   "entry": 4183.31,
-   "stop": 4179.1,
-   "exit": 4179.1,
-   "r": -1.0713,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1573,30 +1540,34 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-long-202606220222",
-   "asset": "nas100",
+   "id": "xauusd-5m-short-202606220425",
+   "asset": "xauusd",
    "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-06-22T02:22:00+00:00",
-   "exit_time": "2026-06-22T02:27:00+00:00",
-   "entry": 30319.0,
-   "stop": 30299.64,
-   "exit": 30299.64,
-   "r": -1.0775,
+   "session": "friend_window",
+   "direction": "short",
+   "entry_time": "2026-06-22T04:25:00+00:00",
+   "exit_time": "2026-06-22T04:46:00+00:00",
+   "entry": 4162.35,
+   "stop": 4165.69,
+   "exit": 4165.69,
+   "r": -1.0898,
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-short-202606220425",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-06-22T04:25:00+00:00",
    "exit_time": "2026-06-22T04:50:00+00:00",
@@ -1607,13 +1578,15 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-long-202606220551",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
    "entry_time": "2026-06-22T05:51:00+00:00",
    "exit_time": "2026-06-22T08:04:00+00:00",
@@ -1624,6 +1597,27 @@
    "r_gross": 3.7992,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "simulatie"
+  },
+  {
+   "id": "xauusd-5m-long-202606220609",
+   "asset": "xauusd",
+   "tf": "5m",
+   "session": "friend_window",
+   "direction": "long",
+   "entry_time": "2026-06-22T06:09:00+00:00",
+   "exit_time": "2026-06-22T07:30:00+00:00",
+   "entry": 4183.02,
+   "stop": 4177.62,
+   "exit": 4183.02,
+   "r": 0.9444,
+   "r_gross": 1.0,
+   "exit_reason": "breakeven",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1641,6 +1635,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -1658,6 +1654,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -1675,6 +1673,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -1692,30 +1692,34 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-long-202606230111",
-   "asset": "nas100",
+   "id": "xauusd-5m-short-202606230405",
+   "asset": "xauusd",
    "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-06-23T01:11:00+00:00",
-   "exit_time": "2026-06-23T01:15:00+00:00",
-   "entry": 30332.42,
-   "stop": 30298.81,
-   "exit": 30298.81,
-   "r": -1.0446,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
+   "session": "friend_window",
+   "direction": "short",
+   "entry_time": "2026-06-23T04:05:00+00:00",
+   "exit_time": "2026-06-23T08:44:00+00:00",
+   "entry": 4128.82,
+   "stop": 4131.97,
+   "exit": 4094.44,
+   "r": 6.3619,
+   "r_gross": 6.4571,
+   "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-short-202606230430",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-06-23T04:30:00+00:00",
    "exit_time": "2026-06-23T09:14:00+00:00",
@@ -1726,6 +1730,8 @@
    "r_gross": 5.3139,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1743,6 +1749,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1760,6 +1768,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -1777,40 +1787,27 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-long-202606240115",
-   "asset": "nas100",
+   "id": "xauusd-5m-long-202606240557",
+   "asset": "xauusd",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
-   "entry_time": "2026-06-24T01:15:00+00:00",
-   "exit_time": "2026-06-24T01:17:00+00:00",
-   "entry": 29547.87,
-   "stop": 29507.71,
-   "exit": 29507.71,
-   "r": -1.0374,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
+   "entry_time": "2026-06-24T05:57:00+00:00",
+   "exit_time": "2026-06-24T07:29:00+00:00",
+   "entry": 4061.72,
+   "stop": 4056.57,
+   "exit": 4069.79,
+   "r": 1.7252,
+   "r_gross": 1.7835,
+   "exit_reason": "ema",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202606240631",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-06-24T06:31:00+00:00",
-   "exit_time": "2026-06-24T07:02:00+00:00",
-   "entry": 29551.12,
-   "stop": 29529.89,
-   "exit": 29529.89,
-   "r": -1.0707,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1828,47 +1825,15 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202606250011",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-06-25T00:11:00+00:00",
-   "exit_time": "2026-06-25T00:25:00+00:00",
-   "entry": 29818.25,
-   "stop": 29783.71,
-   "exit": 29783.71,
-   "r": -1.0434,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202606250116",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-06-25T01:16:00+00:00",
-   "exit_time": "2026-06-25T01:17:00+00:00",
-   "entry": 29695.98,
-   "stop": 29715.71,
-   "exit": 29715.71,
-   "r": -1.076,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-long-202606250407",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
    "entry_time": "2026-06-25T04:07:00+00:00",
    "exit_time": "2026-06-25T04:17:00+00:00",
@@ -1879,30 +1844,34 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "xauusd-30m-short-202606250530",
+   "id": "xauusd-5m-short-202606250612",
    "asset": "xauusd",
-   "tf": "30m",
-   "session": "asia",
+   "tf": "5m",
+   "session": "friend_window",
    "direction": "short",
-   "entry_time": "2026-06-25T05:30:00+00:00",
-   "exit_time": "2026-06-25T08:22:00+00:00",
-   "entry": 3961.99,
-   "stop": 3972.98,
-   "exit": 3972.98,
-   "r": -1.0273,
+   "entry_time": "2026-06-25T06:12:00+00:00",
+   "exit_time": "2026-06-25T07:28:00+00:00",
+   "entry": 3955.62,
+   "stop": 3962.13,
+   "exit": 3962.13,
+   "r": -1.0461,
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-long-202606250613",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
    "entry_time": "2026-06-25T06:13:00+00:00",
    "exit_time": "2026-06-25T08:44:00+00:00",
@@ -1913,6 +1882,8 @@
    "r_gross": 1.8534,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1930,23 +1901,27 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
-   "id": "nas100-15m-short-202606251600",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "new_york",
+   "id": "xauusd-5m-short-202606260611",
+   "asset": "xauusd",
+   "tf": "5m",
+   "session": "friend_window",
    "direction": "short",
-   "entry_time": "2026-06-25T16:00:00+00:00",
-   "exit_time": "2026-06-25T16:06:00+00:00",
-   "entry": 29389.3,
-   "stop": 29499.66,
-   "exit": 29499.66,
-   "r": -1.0136,
+   "entry_time": "2026-06-26T06:11:00+00:00",
+   "exit_time": "2026-06-26T06:21:00+00:00",
+   "entry": 3978.5,
+   "stop": 3982.71,
+   "exit": 3982.71,
+   "r": -1.0713,
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1964,6 +1939,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -1981,23 +1958,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202606290102",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-06-29T01:02:00+00:00",
-   "exit_time": "2026-06-29T01:06:00+00:00",
-   "entry": 29220.09,
-   "stop": 29271.63,
-   "exit": 29271.63,
-   "r": -1.0291,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2015,6 +1977,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2032,6 +1996,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2049,6 +2015,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -2066,57 +2034,27 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-long-202606300005",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-06-30T00:05:00+00:00",
-   "exit_time": "2026-06-30T00:28:00+00:00",
-   "entry": 29828.94,
-   "stop": 29786.78,
-   "exit": 29786.78,
-   "r": -1.0356,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-30m-short-202606300330",
+   "id": "xauusd-5m-long-202606300503",
    "asset": "xauusd",
-   "tf": "30m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-06-30T03:30:00+00:00",
-   "exit_time": "2026-06-30T04:00:00+00:00",
-   "entry": 3929.45,
-   "stop": 3938.23,
-   "exit": 3938.23,
-   "r": -1.0342,
+   "tf": "5m",
+   "session": "friend_window",
+   "direction": "long",
+   "entry_time": "2026-06-30T05:03:00+00:00",
+   "exit_time": "2026-06-30T05:13:00+00:00",
+   "entry": 3955.71,
+   "stop": 3952.06,
+   "exit": 3952.06,
+   "r": -1.0822,
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202606300632",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-06-30T06:32:00+00:00",
-   "exit_time": "2026-06-30T09:49:00+00:00",
-   "entry": 29894.05,
-   "stop": 29943.16,
-   "exit": 29866.43,
-   "r": 1.2507,
-   "r_gross": 1.2812,
-   "exit_reason": "ema",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2134,6 +2072,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -2151,6 +2091,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2168,6 +2110,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2185,40 +2129,46 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-short-202607010301",
-   "asset": "nas100",
+   "id": "xauusd-5m-short-202607010402",
+   "asset": "xauusd",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
-   "entry_time": "2026-07-01T03:01:00+00:00",
-   "exit_time": "2026-07-01T03:02:00+00:00",
-   "entry": 30219.57,
-   "stop": 30228.56,
-   "exit": 30228.56,
-   "r": -1.1669,
+   "entry_time": "2026-07-01T04:02:00+00:00",
+   "exit_time": "2026-07-01T04:31:00+00:00",
+   "entry": 3944.8,
+   "stop": 3947.99,
+   "exit": 3947.99,
+   "r": -1.094,
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-short-202607010651",
-   "asset": "nas100",
+   "id": "xauusd-5m-short-202607010600",
+   "asset": "xauusd",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
-   "entry_time": "2026-07-01T06:51:00+00:00",
-   "exit_time": "2026-07-01T08:54:00+00:00",
-   "entry": 30187.32,
-   "stop": 30205.56,
-   "exit": 30159.08,
-   "r": 1.6919,
-   "r_gross": 1.7741,
+   "entry_time": "2026-07-01T06:00:00+00:00",
+   "exit_time": "2026-07-01T06:44:00+00:00",
+   "entry": 3941.03,
+   "stop": 3946.18,
+   "exit": 3939.14,
+   "r": 1.1252,
+   "r_gross": 1.1835,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2236,6 +2186,8 @@
    "r_gross": 1.6835,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -2253,40 +2205,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-1h-long-202607020100",
-   "asset": "xauusd",
-   "tf": "1h",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-02T01:00:00+00:00",
-   "exit_time": "2026-07-06T04:59:00+00:00",
-   "entry": 4020.19,
-   "stop": 3998.07,
-   "exit": 4160.04,
-   "r": 4.1476,
-   "r_gross": 4.1612,
-   "exit_reason": "ema",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202607020205",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-02T02:05:00+00:00",
-   "exit_time": "2026-07-02T02:22:00+00:00",
-   "entry": 29999.63,
-   "stop": 29984.02,
-   "exit": 29999.63,
-   "r": 0.9039,
-   "r_gross": 1.0,
-   "exit_reason": "breakeven",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2304,30 +2224,15 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202607020245",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-02T02:45:00+00:00",
-   "exit_time": "2026-07-02T02:53:00+00:00",
-   "entry": 30002.5,
-   "stop": 29989.39,
-   "exit": 29989.39,
-   "r": -1.1144,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-short-202607020401",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-07-02T04:01:00+00:00",
    "exit_time": "2026-07-02T04:02:00+00:00",
@@ -2338,23 +2243,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202607020640",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-07-02T06:40:00+00:00",
-   "exit_time": "2026-07-02T07:44:00+00:00",
-   "entry": 29777.73,
-   "stop": 29801.34,
-   "exit": 29731.99,
-   "r": 1.9051,
-   "r_gross": 1.9687,
-   "exit_reason": "ema",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2372,6 +2262,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -2389,40 +2281,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-15m-short-202607022058",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "late",
-   "direction": "short",
-   "entry_time": "2026-07-02T20:58:00+00:00",
-   "exit_time": "2026-07-02T22:00:00+00:00",
-   "entry": 29331.48,
-   "stop": 29382.12,
-   "exit": 29382.12,
-   "r": -1.0296,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202607030153",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-03T01:53:00+00:00",
-   "exit_time": "2026-07-03T03:44:00+00:00",
-   "entry": 29492.22,
-   "stop": 29460.93,
-   "exit": 29524.58,
-   "r": 1.4692,
-   "r_gross": 1.5171,
-   "exit_reason": "ema",
-   "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -2440,13 +2300,15 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-long-202607030526",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
    "entry_time": "2026-07-03T05:26:00+00:00",
    "exit_time": "2026-07-03T07:14:00+00:00",
@@ -2457,6 +2319,8 @@
    "r_gross": 1.2533,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2474,6 +2338,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -2491,6 +2357,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2508,6 +2376,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2525,40 +2395,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202607060013",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-06T00:13:00+00:00",
-   "exit_time": "2026-07-06T00:29:00+00:00",
-   "entry": 29779.36,
-   "stop": 29708.5,
-   "exit": 29708.5,
-   "r": -1.0212,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202607060100",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-07-06T01:00:00+00:00",
-   "exit_time": "2026-07-06T03:29:00+00:00",
-   "entry": 29721.96,
-   "stop": 29759.32,
-   "exit": 29595.35,
-   "r": 2.6543,
-   "r_gross": 2.6945,
-   "exit_reason": "ema",
-   "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -2576,6 +2414,27 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
+   "source": "simulatie"
+  },
+  {
+   "id": "xauusd-5m-short-202607060556",
+   "asset": "xauusd",
+   "tf": "5m",
+   "session": "friend_window",
+   "direction": "short",
+   "entry_time": "2026-07-06T05:56:00+00:00",
+   "exit_time": "2026-07-06T06:25:00+00:00",
+   "entry": 4153.85,
+   "stop": 4157.49,
+   "exit": 4153.85,
+   "r": 0.9176,
+   "r_gross": 1.0,
+   "exit_reason": "breakeven",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2593,6 +2452,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2610,6 +2471,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2627,57 +2490,27 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-short-202607070215",
-   "asset": "nas100",
+   "id": "xauusd-5m-short-202607070430",
+   "asset": "xauusd",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
-   "entry_time": "2026-07-07T02:15:00+00:00",
-   "exit_time": "2026-07-07T02:16:00+00:00",
-   "entry": 29608.07,
-   "stop": 29623.93,
-   "exit": 29623.93,
-   "r": -1.0946,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
+   "entry_time": "2026-07-07T04:30:00+00:00",
+   "exit_time": "2026-07-07T05:05:00+00:00",
+   "entry": 4131.87,
+   "stop": 4135.36,
+   "exit": 4131.87,
+   "r": 0.914,
+   "r_gross": 1.0,
+   "exit_reason": "breakeven",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202607070300",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-07-07T03:00:00+00:00",
-   "exit_time": "2026-07-07T03:04:00+00:00",
-   "entry": 29551.94,
-   "stop": 29579.93,
-   "exit": 29579.93,
-   "r": -1.0536,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202607070635",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-07T06:35:00+00:00",
-   "exit_time": "2026-07-07T07:49:00+00:00",
-   "entry": 29480.21,
-   "stop": 29453.6,
-   "exit": 29493.83,
-   "r": 1.1995,
-   "r_gross": 1.2559,
-   "exit_reason": "ema",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2695,6 +2528,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2712,6 +2547,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -2729,6 +2566,8 @@
    "r_gross": 1.5468,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2746,13 +2585,34 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "simulatie"
+  },
+  {
+   "id": "xauusd-5m-long-202607080407",
+   "asset": "xauusd",
+   "tf": "5m",
+   "session": "friend_window",
+   "direction": "long",
+   "entry_time": "2026-07-08T04:07:00+00:00",
+   "exit_time": "2026-07-08T04:17:00+00:00",
+   "entry": 4123.15,
+   "stop": 4119.61,
+   "exit": 4119.61,
+   "r": -1.0847,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-short-202607080522",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-07-08T05:22:00+00:00",
    "exit_time": "2026-07-08T07:24:00+00:00",
@@ -2763,6 +2623,8 @@
    "r_gross": 1.8842,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -2780,6 +2642,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2797,6 +2661,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2814,6 +2680,8 @@
    "r_gross": 1.2367,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2831,47 +2699,34 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-long-202607090101",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-09T01:01:00+00:00",
-   "exit_time": "2026-07-09T01:02:00+00:00",
-   "entry": 29329.6,
-   "stop": 29302.06,
-   "exit": 29302.06,
-   "r": -1.0545,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-1h-short-202607090103",
+   "id": "xauusd-5m-short-202607090401",
    "asset": "xauusd",
-   "tf": "1h",
-   "session": "asia",
+   "tf": "5m",
+   "session": "friend_window",
    "direction": "short",
-   "entry_time": "2026-07-09T01:03:00+00:00",
-   "exit_time": "2026-07-09T06:00:00+00:00",
-   "entry": 4067.19,
-   "stop": 4086.99,
-   "exit": 4086.99,
-   "r": -1.0152,
+   "entry_time": "2026-07-09T04:01:00+00:00",
+   "exit_time": "2026-07-09T04:32:00+00:00",
+   "entry": 4058.34,
+   "stop": 4061.2,
+   "exit": 4061.2,
+   "r": -1.1049,
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-long-202607090416",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
    "entry_time": "2026-07-09T04:16:00+00:00",
    "exit_time": "2026-07-09T04:18:00+00:00",
@@ -2882,6 +2737,27 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
+   "source": "simulatie"
+  },
+  {
+   "id": "xauusd-5m-long-202607090538",
+   "asset": "xauusd",
+   "tf": "5m",
+   "session": "friend_window",
+   "direction": "long",
+   "entry_time": "2026-07-09T05:38:00+00:00",
+   "exit_time": "2026-07-09T09:09:00+00:00",
+   "entry": 4070.7,
+   "stop": 4061.59,
+   "exit": 4103.58,
+   "r": 2.7717,
+   "r_gross": 2.8046,
+   "exit_reason": "ema",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2899,23 +2775,8 @@
    "r_gross": 2.2368,
    "exit_reason": "ema",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202607090650",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-09T06:50:00+00:00",
-   "exit_time": "2026-07-09T06:55:00+00:00",
-   "entry": 29446.1,
-   "stop": 29435.24,
-   "exit": 29435.24,
-   "r": -1.1381,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2933,6 +2794,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2950,6 +2813,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -2967,40 +2832,27 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "xauusd-1h-long-202607100004",
+   "id": "xauusd-5m-short-202607100500",
    "asset": "xauusd",
-   "tf": "1h",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-10T00:04:00+00:00",
-   "exit_time": "2026-07-10T00:20:00+00:00",
-   "entry": 4121.31,
-   "stop": 4116.89,
-   "exit": 4116.89,
-   "r": -1.0679,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202607100350",
-   "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-10T03:50:00+00:00",
-   "exit_time": "2026-07-10T03:51:00+00:00",
-   "entry": 29741.12,
-   "stop": 29730.01,
-   "exit": 29730.01,
-   "r": -1.135,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
+   "session": "friend_window",
+   "direction": "short",
+   "entry_time": "2026-07-10T05:00:00+00:00",
+   "exit_time": "2026-07-10T05:54:00+00:00",
+   "entry": 4111.08,
+   "stop": 4114.29,
+   "exit": 4111.08,
+   "r": 0.9065,
+   "r_gross": 1.0,
+   "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3018,6 +2870,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3035,6 +2889,8 @@
    "r_gross": 3.7669,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -3052,6 +2908,8 @@
    "r_gross": 6.7404,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3069,30 +2927,72 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-short-202607130145",
-   "asset": "nas100",
+   "id": "xauusd-5m-short-202607130401",
+   "asset": "xauusd",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
-   "entry_time": "2026-07-13T01:45:00+00:00",
-   "exit_time": "2026-07-13T05:09:00+00:00",
-   "entry": 30363.24,
-   "stop": 30402.72,
-   "exit": 30232.5,
-   "r": 2.6178,
-   "r_gross": 2.6558,
-   "exit_reason": "ema",
+   "entry_time": "2026-07-13T04:01:00+00:00",
+   "exit_time": "2026-07-13T04:58:00+00:00",
+   "entry": 4053.63,
+   "stop": 4056.3,
+   "exit": 4053.63,
+   "r": 0.8876,
+   "r_gross": 1.0,
+   "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "simulatie"
+  },
+  {
+   "id": "xauusd-5m-long-202607130550",
+   "asset": "xauusd",
+   "tf": "5m",
+   "session": "friend_window",
+   "direction": "long",
+   "entry_time": "2026-07-13T05:50:00+00:00",
+   "exit_time": "2026-07-13T05:53:00+00:00",
+   "entry": 4058.69,
+   "stop": 4053.81,
+   "exit": 4053.81,
+   "r": -1.0615,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "simulatie"
+  },
+  {
+   "id": "xauusd-5m-short-202607130555",
+   "asset": "xauusd",
+   "tf": "5m",
+   "session": "friend_window",
+   "direction": "short",
+   "entry_time": "2026-07-13T05:55:00+00:00",
+   "exit_time": "2026-07-13T06:25:00+00:00",
+   "entry": 4052.75,
+   "stop": 4059.51,
+   "exit": 4052.75,
+   "r": 0.9556,
+   "r_gross": 1.0,
+   "exit_reason": "breakeven",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-short-202607130555",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-07-13T05:55:00+00:00",
    "exit_time": "2026-07-13T07:10:00+00:00",
@@ -3103,6 +3003,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -3120,6 +3022,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3137,6 +3041,8 @@
    "r_gross": 2.2501,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -3154,40 +3060,8 @@
    "r_gross": 1.0627,
    "exit_reason": "ema",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-15m-short-202607131911",
-   "asset": "xauusd",
-   "tf": "15m",
-   "session": "late",
-   "direction": "short",
-   "entry_time": "2026-07-13T19:11:00+00:00",
-   "exit_time": "2026-07-13T20:06:00+00:00",
-   "entry": 3993.27,
-   "stop": 4000.4,
-   "exit": 4000.4,
-   "r": -1.0421,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202607140145",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-14T01:45:00+00:00",
-   "exit_time": "2026-07-14T01:56:00+00:00",
-   "entry": 30048.35,
-   "stop": 30006.62,
-   "exit": 30006.62,
-   "r": -1.0359,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3205,13 +3079,34 @@
    "r_gross": 4.7726,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "simulatie"
+  },
+  {
+   "id": "xauusd-5m-long-202607140510",
+   "asset": "xauusd",
+   "tf": "5m",
+   "session": "friend_window",
+   "direction": "long",
+   "entry_time": "2026-07-14T05:10:00+00:00",
+   "exit_time": "2026-07-14T06:29:00+00:00",
+   "entry": 4022.62,
+   "stop": 4018.95,
+   "exit": 4022.62,
+   "r": 0.9183,
+   "r_gross": 1.0,
+   "exit_reason": "breakeven",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-long-202607140605",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
    "entry_time": "2026-07-14T06:05:00+00:00",
    "exit_time": "2026-07-14T06:45:00+00:00",
@@ -3222,6 +3117,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -3239,23 +3136,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-15m-long-202607141432",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "new_york",
-   "direction": "long",
-   "entry_time": "2026-07-14T14:32:00+00:00",
-   "exit_time": "2026-07-15T07:29:00+00:00",
-   "entry": 30299.0,
-   "stop": 30133.52,
-   "exit": 30536.33,
-   "r": 1.708,
-   "r_gross": 1.7171,
-   "exit_reason": "ema",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3273,23 +3155,27 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-long-202607150050",
+   "id": "nas100-5m-long-202607150436",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
-   "entry_time": "2026-07-15T00:50:00+00:00",
-   "exit_time": "2026-07-15T05:14:00+00:00",
-   "entry": 30459.34,
-   "stop": 30410.23,
-   "exit": 30568.58,
-   "r": 2.0817,
-   "r_gross": 2.1122,
-   "exit_reason": "ema",
+   "entry_time": "2026-07-15T04:36:00+00:00",
+   "exit_time": "2026-07-15T05:06:00+00:00",
+   "entry": 30567.34,
+   "stop": 30551.98,
+   "exit": 30567.34,
+   "r": 0.9023,
+   "r_gross": 1.0,
+   "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3307,6 +3193,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3324,40 +3212,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-15m-short-202607151920",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "late",
-   "direction": "short",
-   "entry_time": "2026-07-15T19:20:00+00:00",
-   "exit_time": "2026-07-15T19:40:00+00:00",
-   "entry": 30174.4,
-   "stop": 30238.51,
-   "exit": 30238.51,
-   "r": -1.0234,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202607160110",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-07-16T01:10:00+00:00",
-   "exit_time": "2026-07-16T01:40:00+00:00",
-   "entry": 30217.49,
-   "stop": 30241.05,
-   "exit": 30217.49,
-   "r": 0.9363,
-   "r_gross": 1.0,
-   "exit_reason": "breakeven",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3375,30 +3231,15 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202607160350",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-16T03:50:00+00:00",
-   "exit_time": "2026-07-16T03:50:00+00:00",
-   "entry": 30297.64,
-   "stop": 30281.65,
-   "exit": 30281.65,
-   "r": -1.0938,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-short-202607160605",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-07-16T06:05:00+00:00",
    "exit_time": "2026-07-16T06:08:00+00:00",
@@ -3409,6 +3250,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3426,6 +3269,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3443,6 +3288,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -3460,40 +3307,27 @@
    "r_gross": 4.1277,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-short-202607170131",
+   "id": "nas100-5m-short-202607170525",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
-   "entry_time": "2026-07-17T01:31:00+00:00",
-   "exit_time": "2026-07-17T06:24:00+00:00",
-   "entry": 29591.45,
-   "stop": 29672.49,
-   "exit": 29388.76,
-   "r": 2.232,
-   "r_gross": 2.2506,
-   "exit_reason": "ema",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-1h-short-202607170502",
-   "asset": "xauusd",
-   "tf": "1h",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-07-17T05:02:00+00:00",
-   "exit_time": "2026-07-17T15:04:00+00:00",
-   "entry": 3981.74,
-   "stop": 4010.2,
-   "exit": 4010.2,
-   "r": -1.0105,
+   "entry_time": "2026-07-17T05:25:00+00:00",
+   "exit_time": "2026-07-17T06:25:00+00:00",
+   "entry": 29369.13,
+   "stop": 29401.36,
+   "exit": 29401.36,
+   "r": -1.0465,
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3511,6 +3345,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3528,6 +3364,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -3545,6 +3383,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3562,40 +3402,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-1h-long-202607200013",
-   "asset": "xauusd",
-   "tf": "1h",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-20T00:13:00+00:00",
-   "exit_time": "2026-07-20T01:43:00+00:00",
-   "entry": 4009.36,
-   "stop": 4002.29,
-   "exit": 4009.36,
-   "r": 0.9576,
-   "r_gross": 1.0,
-   "exit_reason": "breakeven",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202607200314",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-20T03:14:00+00:00",
-   "exit_time": "2026-07-20T03:35:00+00:00",
-   "entry": 28754.42,
-   "stop": 28723.06,
-   "exit": 28723.06,
-   "r": -1.0478,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3613,6 +3421,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3630,6 +3440,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3647,30 +3459,34 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-long-202607210203",
-   "asset": "nas100",
+   "id": "xauusd-5m-long-202607210431",
+   "asset": "xauusd",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
-   "entry_time": "2026-07-21T02:03:00+00:00",
-   "exit_time": "2026-07-21T02:19:00+00:00",
-   "entry": 28766.18,
-   "stop": 28741.07,
-   "exit": 28741.07,
-   "r": -1.0597,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
+   "entry_time": "2026-07-21T04:31:00+00:00",
+   "exit_time": "2026-07-21T07:29:00+00:00",
+   "entry": 4058.51,
+   "stop": 4056.54,
+   "exit": 4082.58,
+   "r": 6.9569,
+   "r_gross": 7.1091,
+   "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-long-202607210435",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
    "entry_time": "2026-07-21T04:35:00+00:00",
    "exit_time": "2026-07-21T04:51:00+00:00",
@@ -3681,6 +3497,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3698,6 +3516,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3715,6 +3535,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3732,64 +3554,15 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-15m-long-202607212032",
-   "asset": "xauusd",
-   "tf": "15m",
-   "session": "late",
-   "direction": "long",
-   "entry_time": "2026-07-21T20:32:00+00:00",
-   "exit_time": "2026-07-21T20:40:00+00:00",
-   "entry": 4097.57,
-   "stop": 4093.89,
-   "exit": 4093.89,
-   "r": -1.0815,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-1h-long-202607220005",
-   "asset": "xauusd",
-   "tf": "1h",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-22T00:05:00+00:00",
-   "exit_time": "2026-07-22T22:59:00+00:00",
-   "entry": 4093.99,
-   "stop": 4086.65,
-   "exit": 4127.48,
-   "r": 3.2405,
-   "r_gross": 3.2813,
-   "exit_reason": "ema",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202607220220",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-07-22T02:20:00+00:00",
-   "exit_time": "2026-07-22T04:24:00+00:00",
-   "entry": 29123.59,
-   "stop": 29152.2,
-   "exit": 29099.6,
-   "r": 1.3668,
-   "r_gross": 1.4193,
-   "exit_reason": "ema",
-   "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-short-202607220446",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-07-22T04:46:00+00:00",
    "exit_time": "2026-07-22T05:00:00+00:00",
@@ -3800,23 +3573,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202607220645",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-07-22T06:45:00+00:00",
-   "exit_time": "2026-07-22T06:54:00+00:00",
-   "entry": 28969.97,
-   "stop": 28982.83,
-   "exit": 28969.97,
-   "r": 0.8834,
-   "r_gross": 1.0,
-   "exit_reason": "breakeven",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3834,6 +3592,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3851,91 +3611,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-1h-long-202607230000",
-   "asset": "xauusd",
-   "tf": "1h",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-23T00:00:00+00:00",
-   "exit_time": "2026-07-23T02:04:00+00:00",
-   "entry": 4140.03,
-   "stop": 4119.44,
-   "exit": 4119.44,
-   "r": -1.0146,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202607230051",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-23T00:51:00+00:00",
-   "exit_time": "2026-07-23T01:00:00+00:00",
-   "entry": 29116.19,
-   "stop": 29100.33,
-   "exit": 29116.19,
-   "r": 0.9054,
-   "r_gross": 1.0,
-   "exit_reason": "breakeven",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202607230300",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-07-23T03:00:00+00:00",
-   "exit_time": "2026-07-23T03:00:00+00:00",
-   "entry": 28955.05,
-   "stop": 28967.41,
-   "exit": 28967.41,
-   "r": -1.1214,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202607230635",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-07-23T06:35:00+00:00",
-   "exit_time": "2026-07-23T06:46:00+00:00",
-   "entry": 28961.3,
-   "stop": 28983.28,
-   "exit": 28983.28,
-   "r": -1.0682,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-1h-short-202607230640",
-   "asset": "xauusd",
-   "tf": "1h",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-07-23T06:40:00+00:00",
-   "exit_time": "2026-07-24T08:59:00+00:00",
-   "entry": 4125.23,
-   "stop": 4136.59,
-   "exit": 4063.61,
-   "r": 3.6857,
-   "r_gross": 3.7121,
-   "exit_reason": "ema",
-   "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -3953,6 +3630,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3970,6 +3649,8 @@
    "r_gross": 1.62,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -3987,6 +3668,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -4004,40 +3687,46 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-short-202607240320",
-   "asset": "nas100",
+   "id": "xauusd-5m-short-202607240514",
+   "asset": "xauusd",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
-   "entry_time": "2026-07-24T03:20:00+00:00",
-   "exit_time": "2026-07-24T04:24:00+00:00",
-   "entry": 28405.85,
-   "stop": 28435.08,
-   "exit": 28405.85,
-   "r": 0.9487,
+   "entry_time": "2026-07-24T05:14:00+00:00",
+   "exit_time": "2026-07-24T05:22:00+00:00",
+   "entry": 4033.74,
+   "stop": 4036.13,
+   "exit": 4033.74,
+   "r": 0.8745,
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-short-202607240640",
-   "asset": "nas100",
+   "id": "xauusd-5m-short-202607240552",
+   "asset": "xauusd",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
-   "entry_time": "2026-07-24T06:40:00+00:00",
-   "exit_time": "2026-07-24T06:59:00+00:00",
-   "entry": 28411.97,
-   "stop": 28436.33,
-   "exit": 28411.97,
-   "r": 0.9384,
-   "r_gross": 1.0,
-   "exit_reason": "breakeven",
+   "entry_time": "2026-07-24T05:52:00+00:00",
+   "exit_time": "2026-07-24T06:12:00+00:00",
+   "entry": 4030.68,
+   "stop": 4035.21,
+   "exit": 4035.21,
+   "r": -1.0662,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4055,23 +3744,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-15m-long-202607241700",
-   "asset": "xauusd",
-   "tf": "15m",
-   "session": "late",
-   "direction": "long",
-   "entry_time": "2026-07-24T17:00:00+00:00",
-   "exit_time": "2026-07-24T17:12:00+00:00",
-   "entry": 4073.82,
-   "stop": 4070.23,
-   "exit": 4070.23,
-   "r": -1.0836,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4089,6 +3763,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -4106,6 +3782,8 @@
    "r_gross": 1.7881,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4123,6 +3801,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4140,23 +3820,27 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-long-202607270652",
-   "asset": "nas100",
+   "id": "xauusd-5m-short-202607270406",
+   "asset": "xauusd",
    "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-27T06:52:00+00:00",
-   "exit_time": "2026-07-27T06:54:00+00:00",
-   "entry": 28571.89,
-   "stop": 28561.16,
-   "exit": 28561.16,
-   "r": -1.1398,
+   "session": "friend_window",
+   "direction": "short",
+   "entry_time": "2026-07-27T04:06:00+00:00",
+   "exit_time": "2026-07-27T05:08:00+00:00",
+   "entry": 4097.07,
+   "stop": 4099.23,
+   "exit": 4099.23,
+   "r": -1.1389,
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4174,6 +3858,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -4191,6 +3877,27 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "simulatie"
+  },
+  {
+   "id": "xauusd-5m-short-202607280440",
+   "asset": "xauusd",
+   "tf": "5m",
+   "session": "friend_window",
+   "direction": "short",
+   "entry_time": "2026-07-28T04:40:00+00:00",
+   "exit_time": "2026-07-28T04:44:00+00:00",
+   "entry": 4054.11,
+   "stop": 4055.68,
+   "exit": 4055.68,
+   "r": -1.1911,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4208,6 +3915,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4225,47 +3934,34 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-long-202607290045",
+   "id": "nas100-5m-short-202607290440",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-29T00:45:00+00:00",
-   "exit_time": "2026-07-29T00:58:00+00:00",
-   "entry": 27954.58,
-   "stop": 27898.85,
-   "exit": 27898.85,
-   "r": -1.0269,
+   "session": "friend_window",
+   "direction": "short",
+   "entry_time": "2026-07-29T04:40:00+00:00",
+   "exit_time": "2026-07-29T04:52:00+00:00",
+   "entry": 27556.69,
+   "stop": 27599.42,
+   "exit": 27599.42,
+   "r": -1.0351,
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202607290236",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-07-29T02:36:00+00:00",
-   "exit_time": "2026-07-29T04:59:00+00:00",
-   "entry": 27750.56,
-   "stop": 27791.42,
-   "exit": 27636.7,
-   "r": 2.3566,
-   "r_gross": 2.3933,
-   "exit_reason": "ema",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-long-202607290535",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
    "entry_time": "2026-07-29T05:35:00+00:00",
    "exit_time": "2026-07-29T06:00:00+00:00",
@@ -4276,98 +3972,53 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-15m-long-202607291200",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "new_york",
-   "direction": "long",
-   "entry_time": "2026-07-29T12:00:00+00:00",
-   "exit_time": "2026-07-29T12:08:00+00:00",
-   "entry": 27883.96,
-   "stop": 27837.35,
-   "exit": 27837.35,
-   "r": -1.0322,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-15m-short-202607291331",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "new_york",
-   "direction": "short",
-   "entry_time": "2026-07-29T13:31:00+00:00",
-   "exit_time": "2026-07-29T13:33:00+00:00",
-   "entry": 27737.19,
-   "stop": 27819.17,
-   "exit": 27819.17,
-   "r": -1.0183,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-1h-long-202607300104",
+   "id": "xauusd-5m-long-202607290615",
    "asset": "xauusd",
-   "tf": "1h",
-   "session": "asia",
+   "tf": "5m",
+   "session": "friend_window",
    "direction": "long",
-   "entry_time": "2026-07-30T01:04:00+00:00",
-   "exit_time": "2026-07-30T02:59:00+00:00",
-   "entry": 4100.54,
-   "stop": 4078.67,
-   "exit": 4078.67,
-   "r": -1.0137,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
+   "entry_time": "2026-07-29T06:15:00+00:00",
+   "exit_time": "2026-07-29T08:09:00+00:00",
+   "entry": 4048.01,
+   "stop": 4044.09,
+   "exit": 4050.87,
+   "r": 1.2883,
+   "r_gross": 1.3648,
+   "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-long-202607300211",
-   "asset": "nas100",
+   "id": "xauusd-5m-short-202607300405",
+   "asset": "xauusd",
    "tf": "5m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-07-30T02:11:00+00:00",
-   "exit_time": "2026-07-30T02:14:00+00:00",
-   "entry": 27551.08,
-   "stop": 27523.47,
-   "exit": 27523.47,
-   "r": -1.0543,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202607300340",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
-   "entry_time": "2026-07-30T03:40:00+00:00",
-   "exit_time": "2026-07-30T03:49:00+00:00",
-   "entry": 27380.81,
-   "stop": 27447.17,
-   "exit": 27447.17,
-   "r": -1.0226,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
+   "entry_time": "2026-07-30T04:05:00+00:00",
+   "exit_time": "2026-07-30T07:04:00+00:00",
+   "entry": 4069.61,
+   "stop": 4074.17,
+   "exit": 4058.51,
+   "r": 2.1513,
+   "r_gross": 2.2171,
+   "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-short-202607300450",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-07-30T04:50:00+00:00",
    "exit_time": "2026-07-30T05:42:00+00:00",
@@ -4378,13 +4029,15 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-5m-short-202607300610",
    "asset": "nas100",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-07-30T06:10:00+00:00",
    "exit_time": "2026-07-30T07:01:00+00:00",
@@ -4395,6 +4048,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4412,6 +4067,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4429,40 +4086,27 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-15m-long-202607301700",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "late",
-   "direction": "long",
-   "entry_time": "2026-07-30T17:00:00+00:00",
-   "exit_time": "2026-07-31T03:14:00+00:00",
-   "entry": 28018.73,
-   "stop": 27932.62,
-   "exit": 28297.44,
-   "r": 2.6009,
-   "r_gross": 2.6183,
-   "exit_reason": "ema",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202607310301",
-   "asset": "nas100",
+   "id": "xauusd-5m-short-202607310406",
+   "asset": "xauusd",
    "tf": "5m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
-   "entry_time": "2026-07-31T03:01:00+00:00",
-   "exit_time": "2026-07-31T03:16:00+00:00",
-   "entry": 28289.8,
-   "stop": 28315.66,
-   "exit": 28315.66,
-   "r": -1.058,
+   "entry_time": "2026-07-31T04:06:00+00:00",
+   "exit_time": "2026-07-31T04:26:00+00:00",
+   "entry": 4086.99,
+   "stop": 4092.04,
+   "exit": 4092.04,
+   "r": -1.0594,
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4480,6 +4124,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4497,6 +4143,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4514,6 +4162,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4531,23 +4181,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-15m-long-202607311918",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "late",
-   "direction": "long",
-   "entry_time": "2026-07-31T19:18:00+00:00",
-   "exit_time": "2026-07-31T19:59:00+00:00",
-   "entry": 28337.35,
-   "stop": 28285.49,
-   "exit": 28285.49,
-   "r": -1.0289,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -4565,6 +4200,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4582,40 +4219,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202608031540",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "new_york",
-   "direction": "long",
-   "entry_time": "2026-08-03T15:40:00+00:00",
-   "exit_time": "2026-08-03T19:14:00+00:00",
-   "entry": 28671.68,
-   "stop": 28618.19,
-   "exit": 28793.79,
-   "r": 2.1134,
-   "r_gross": 2.1414,
-   "exit_reason": "ema",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-15m-long-202608032015",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "late",
-   "direction": "long",
-   "entry_time": "2026-08-03T20:15:00+00:00",
-   "exit_time": "2026-08-04T00:42:00+00:00",
-   "entry": 28810.53,
-   "stop": 28760.32,
-   "exit": 28760.32,
-   "r": -1.0299,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4633,13 +4238,15 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
    "id": "btcusdt-30m-long-202608040433",
    "asset": "btcusdt",
    "tf": "30m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
    "entry_time": "2026-08-04T04:33:00+00:00",
    "exit_time": "2026-08-04T05:13:00+00:00",
@@ -4650,6 +4257,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4667,6 +4276,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4684,6 +4295,8 @@
    "r_gross": 6.8925,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4701,6 +4314,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4718,6 +4333,8 @@
    "r_gross": 7.6607,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -4735,6 +4352,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4752,6 +4371,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4769,6 +4390,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4786,6 +4409,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4803,23 +4428,8 @@
    "r_gross": 3.3177,
    "exit_reason": "ema",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-30m-long-202608060023",
-   "asset": "btcusdt",
-   "tf": "30m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-08-06T00:23:00+00:00",
-   "exit_time": "2026-08-06T01:07:00+00:00",
-   "entry": 64643.88,
-   "stop": 64528.94,
-   "exit": 64528.94,
-   "r": -1.4499,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4837,6 +4447,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4854,6 +4466,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4871,23 +4485,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-15m-long-202608061800",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "late",
-   "direction": "long",
-   "entry_time": "2026-08-06T18:00:00+00:00",
-   "exit_time": "2026-08-07T04:16:00+00:00",
-   "entry": 29429.35,
-   "stop": 29365.99,
-   "exit": 29365.99,
-   "r": -1.0237,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4905,6 +4504,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4922,23 +4523,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-30m-short-202608070322",
-   "asset": "btcusdt",
-   "tf": "30m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-08-07T03:22:00+00:00",
-   "exit_time": "2026-08-07T08:42:00+00:00",
-   "entry": 64223.66,
-   "stop": 64479.23,
-   "exit": 64479.23,
-   "r": -1.201,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -4956,6 +4542,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -4973,23 +4561,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202608071605",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "new_york",
-   "direction": "long",
-   "entry_time": "2026-08-07T16:05:00+00:00",
-   "exit_time": "2026-08-07T16:19:00+00:00",
-   "entry": 29720.54,
-   "stop": 29695.68,
-   "exit": 29695.68,
-   "r": -1.0603,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5007,13 +4580,15 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
    "id": "btcusdt-30m-short-202608100440",
    "asset": "btcusdt",
    "tf": "30m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-08-10T04:40:00+00:00",
    "exit_time": "2026-08-10T06:06:00+00:00",
@@ -5024,6 +4599,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5041,6 +4618,8 @@
    "r_gross": 2.2573,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5058,23 +4637,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-30m-short-202608110142",
-   "asset": "btcusdt",
-   "tf": "30m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-08-11T01:42:00+00:00",
-   "exit_time": "2026-08-11T03:17:00+00:00",
-   "entry": 63921.08,
-   "stop": 64054.74,
-   "exit": 64054.74,
-   "r": -1.3826,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5092,6 +4656,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5109,13 +4675,15 @@
    "r_gross": 1.7057,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "btcusdt-30m-long-202608120523",
    "asset": "btcusdt",
    "tf": "30m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
    "entry_time": "2026-08-12T05:23:00+00:00",
    "exit_time": "2026-08-12T06:09:00+00:00",
@@ -5126,6 +4694,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5143,6 +4713,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5160,6 +4732,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5177,6 +4751,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5194,6 +4770,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5211,30 +4789,15 @@
    "r_gross": 2.2737,
    "exit_reason": "ema",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-30m-long-202608140102",
-   "asset": "btcusdt",
-   "tf": "30m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-08-14T01:02:00+00:00",
-   "exit_time": "2026-08-14T03:37:00+00:00",
-   "entry": 63485.81,
-   "stop": 63349.05,
-   "exit": 63349.05,
-   "r": -1.3714,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "btcusdt-30m-short-202608140610",
    "asset": "btcusdt",
    "tf": "30m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-08-14T06:10:00+00:00",
    "exit_time": "2026-08-14T15:59:00+00:00",
@@ -5245,6 +4808,8 @@
    "r_gross": 2.9311,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5262,6 +4827,8 @@
    "r_gross": 2.3574,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5279,6 +4846,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5296,6 +4865,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -5313,6 +4884,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -5330,6 +4903,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5347,6 +4922,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5364,6 +4941,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5381,6 +4960,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5398,40 +4979,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202608181638",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "new_york",
-   "direction": "long",
-   "entry_time": "2026-08-18T16:38:00+00:00",
-   "exit_time": "2026-08-18T17:22:00+00:00",
-   "entry": 29554.94,
-   "stop": 29530.2,
-   "exit": 29530.2,
-   "r": -1.0606,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-15m-short-202608181712",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "late",
-   "direction": "short",
-   "entry_time": "2026-08-18T17:12:00+00:00",
-   "exit_time": "2026-08-19T00:44:00+00:00",
-   "entry": 29545.54,
-   "stop": 29597.65,
-   "exit": 29500.25,
-   "r": 1.4058,
-   "r_gross": 1.4346,
-   "exit_reason": "ema",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5449,6 +4998,8 @@
    "r_gross": 2.7345,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5466,13 +5017,15 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
    "id": "btcusdt-30m-short-202608190547",
    "asset": "btcusdt",
    "tf": "30m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-08-19T05:47:00+00:00",
    "exit_time": "2026-08-19T08:37:00+00:00",
@@ -5483,6 +5036,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5500,6 +5055,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5517,6 +5074,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5534,23 +5093,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-30m-long-202608200134",
-   "asset": "btcusdt",
-   "tf": "30m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-08-20T01:34:00+00:00",
-   "exit_time": "2026-08-20T02:50:00+00:00",
-   "entry": 69477.83,
-   "stop": 69240.21,
-   "exit": 69240.21,
-   "r": -1.2339,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -5568,6 +5112,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5585,6 +5131,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5602,23 +5150,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-30m-long-202608210632",
-   "asset": "btcusdt",
-   "tf": "30m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-08-21T06:32:00+00:00",
-   "exit_time": "2026-08-21T19:59:00+00:00",
-   "entry": 75493.4,
-   "stop": 74493.34,
-   "exit": 77002.01,
-   "r": 1.6939,
-   "r_gross": 1.7543,
-   "exit_reason": "ema",
-   "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -5636,6 +5169,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5653,6 +5188,8 @@
    "r_gross": 1.5594,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5670,6 +5207,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -5687,23 +5226,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-30m-long-202608220104",
-   "asset": "btcusdt",
-   "tf": "30m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-08-22T01:04:00+00:00",
-   "exit_time": "2026-08-22T05:09:00+00:00",
-   "entry": 78048.73,
-   "stop": 77684.36,
-   "exit": 78048.73,
-   "r": 0.8286,
-   "r_gross": 1.0,
-   "exit_reason": "breakeven",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5721,23 +5245,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-30m-long-202608240100",
-   "asset": "btcusdt",
-   "tf": "30m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-08-24T01:00:00+00:00",
-   "exit_time": "2026-08-24T01:51:00+00:00",
-   "entry": 77664.15,
-   "stop": 77135.57,
-   "exit": 77135.57,
-   "r": -1.1175,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -5755,13 +5264,15 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "btcusdt-30m-short-202608240450",
    "asset": "btcusdt",
    "tf": "30m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-08-24T04:50:00+00:00",
    "exit_time": "2026-08-24T06:11:00+00:00",
@@ -5772,6 +5283,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -5789,6 +5302,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5806,6 +5321,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5823,6 +5340,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -5840,6 +5359,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5857,40 +5378,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202608251500",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "new_york",
-   "direction": "short",
-   "entry_time": "2026-08-25T15:00:00+00:00",
-   "exit_time": "2026-08-25T15:21:00+00:00",
-   "entry": 29156.15,
-   "stop": 29197.26,
-   "exit": 29197.26,
-   "r": -1.0365,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202608251615",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "new_york",
-   "direction": "long",
-   "entry_time": "2026-08-25T16:15:00+00:00",
-   "exit_time": "2026-08-25T16:44:00+00:00",
-   "entry": 29216.8,
-   "stop": 29197.94,
-   "exit": 29197.94,
-   "r": -1.0795,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5908,6 +5397,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -5925,6 +5416,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5942,6 +5435,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5959,23 +5454,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-30m-long-202608270322",
-   "asset": "btcusdt",
-   "tf": "30m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-08-27T03:22:00+00:00",
-   "exit_time": "2026-08-27T04:34:00+00:00",
-   "entry": 78795.44,
-   "stop": 78701.6,
-   "exit": 78701.6,
-   "r": -1.6717,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -5993,6 +5473,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6010,6 +5492,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6027,6 +5511,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6044,6 +5530,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6061,40 +5549,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-15m-short-202608281848",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "late",
-   "direction": "short",
-   "entry_time": "2026-08-28T18:48:00+00:00",
-   "exit_time": "2026-08-28T19:40:00+00:00",
-   "entry": 29425.9,
-   "stop": 29456.39,
-   "exit": 29456.39,
-   "r": -1.0492,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-30m-short-202608310250",
-   "asset": "btcusdt",
-   "tf": "30m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-08-31T02:50:00+00:00",
-   "exit_time": "2026-08-31T05:19:00+00:00",
-   "entry": 77515.17,
-   "stop": 77986.8,
-   "exit": 77986.8,
-   "r": -1.1315,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6112,6 +5568,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6129,6 +5587,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6146,6 +5606,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6163,6 +5625,8 @@
    "r_gross": 1.8648,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6180,40 +5644,8 @@
    "r_gross": 1.8749,
    "exit_reason": "ema",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-1h-short-202609020038",
-   "asset": "btcusdt",
-   "tf": "1h",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-09-02T00:38:00+00:00",
-   "exit_time": "2026-09-02T03:19:00+00:00",
-   "entry": 77172.96,
-   "stop": 77570.24,
-   "exit": 77570.24,
-   "r": -1.1554,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-15m-short-202609020302",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-09-02T03:02:00+00:00",
-   "exit_time": "2026-09-02T05:17:00+00:00",
-   "entry": 29038.41,
-   "stop": 29055.52,
-   "exit": 29038.41,
-   "r": 0.9123,
-   "r_gross": 1.0,
-   "exit_reason": "breakeven",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6231,6 +5663,8 @@
    "r_gross": 1.4015,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6248,6 +5682,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6265,6 +5701,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6282,6 +5720,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6299,6 +5739,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6316,6 +5758,27 @@
    "r_gross": 2.8747,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "simulatie"
+  },
+  {
+   "id": "btcusdt-30m-long-202609030500",
+   "asset": "btcusdt",
+   "tf": "30m",
+   "session": "friend_window",
+   "direction": "long",
+   "entry_time": "2026-09-03T05:00:00+00:00",
+   "exit_time": "2026-09-03T05:17:00+00:00",
+   "entry": 77755.66,
+   "stop": 77517.56,
+   "exit": 77517.56,
+   "r": -1.2613,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6333,6 +5796,8 @@
    "r_gross": 3.1908,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -6350,6 +5815,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6367,6 +5834,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6384,6 +5853,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6401,6 +5872,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6418,57 +5891,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202609031610",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "new_york",
-   "direction": "long",
-   "entry_time": "2026-09-03T16:10:00+00:00",
-   "exit_time": "2026-09-03T16:24:00+00:00",
-   "entry": 29482.33,
-   "stop": 29467.47,
-   "exit": 29467.47,
-   "r": -1.1009,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202609031835",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "late",
-   "direction": "long",
-   "entry_time": "2026-09-03T18:35:00+00:00",
-   "exit_time": "2026-09-03T18:42:00+00:00",
-   "entry": 29541.7,
-   "stop": 29527.84,
-   "exit": 29527.84,
-   "r": -1.1082,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-1h-long-202609040306",
-   "asset": "btcusdt",
-   "tf": "1h",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-09-04T03:06:00+00:00",
-   "exit_time": "2026-09-04T06:29:00+00:00",
-   "entry": 80984.12,
-   "stop": 80684.8,
-   "exit": 80684.8,
-   "r": -1.2164,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6486,6 +5910,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6503,6 +5929,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6520,6 +5948,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6537,64 +5967,15 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202609041935",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "late",
-   "direction": "long",
-   "entry_time": "2026-09-04T19:35:00+00:00",
-   "exit_time": "2026-09-06T23:24:00+00:00",
-   "entry": 29500.93,
-   "stop": 29471.82,
-   "exit": 29520.34,
-   "r": 1.2819,
-   "r_gross": 1.3334,
-   "exit_reason": "ema",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-1h-short-202609050046",
-   "asset": "btcusdt",
-   "tf": "1h",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-09-05T00:46:00+00:00",
-   "exit_time": "2026-09-05T12:42:00+00:00",
-   "entry": 79620.23,
-   "stop": 79775.1,
-   "exit": 79775.1,
-   "r": -1.4113,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-1h-long-202609060008",
-   "asset": "btcusdt",
-   "tf": "1h",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-09-06T00:08:00+00:00",
-   "exit_time": "2026-09-06T06:48:00+00:00",
-   "entry": 79894.91,
-   "stop": 79735.01,
-   "exit": 79735.01,
-   "r": -1.3997,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-15m-long-202609070530",
    "asset": "nas100",
    "tf": "15m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
    "entry_time": "2026-09-07T05:30:00+00:00",
    "exit_time": "2026-09-07T10:55:00+00:00",
@@ -6605,6 +5986,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6622,6 +6005,8 @@
    "r_gross": 1.1367,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -6639,6 +6024,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6656,6 +6043,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6673,23 +6062,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202609071555",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "new_york",
-   "direction": "short",
-   "entry_time": "2026-09-07T15:55:00+00:00",
-   "exit_time": "2026-09-07T15:59:00+00:00",
-   "entry": 29554.86,
-   "stop": 29560.84,
-   "exit": 29560.84,
-   "r": -1.2508,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6707,6 +6081,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6724,6 +6100,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -6741,23 +6119,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-5m-short-202609081656",
-   "asset": "xauusd",
-   "tf": "5m",
-   "session": "new_york",
-   "direction": "short",
-   "entry_time": "2026-09-08T16:56:00+00:00",
-   "exit_time": "2026-09-08T17:02:00+00:00",
-   "entry": 4392.7,
-   "stop": 4398.49,
-   "exit": 4398.49,
-   "r": -1.0518,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6775,23 +6138,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202609082016",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "late",
-   "direction": "short",
-   "entry_time": "2026-09-08T20:16:00+00:00",
-   "exit_time": "2026-09-08T22:00:00+00:00",
-   "entry": 29491.73,
-   "stop": 29499.96,
-   "exit": 29499.96,
-   "r": -1.1823,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6809,6 +6157,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6826,6 +6176,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -6843,6 +6195,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -6860,6 +6214,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6877,6 +6233,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6894,6 +6252,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6911,40 +6271,27 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-15m-short-202609100318",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-09-10T03:18:00+00:00",
-   "exit_time": "2026-09-10T04:29:00+00:00",
-   "entry": 29391.93,
-   "stop": 29412.66,
-   "exit": 29412.66,
-   "r": -1.0724,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-1h-short-202609100504",
+   "id": "btcusdt-30m-long-202609100530",
    "asset": "btcusdt",
-   "tf": "1h",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-09-10T05:04:00+00:00",
-   "exit_time": "2026-09-10T05:54:00+00:00",
-   "entry": 78271.48,
-   "stop": 78498.09,
-   "exit": 78498.09,
-   "r": -1.2763,
+   "tf": "30m",
+   "session": "friend_window",
+   "direction": "long",
+   "entry_time": "2026-09-10T05:30:00+00:00",
+   "exit_time": "2026-09-10T06:16:00+00:00",
+   "entry": 78476.04,
+   "stop": 78246.88,
+   "exit": 78246.88,
+   "r": -1.274,
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6962,6 +6309,8 @@
    "r_gross": 5.421,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -6979,6 +6328,8 @@
    "r_gross": 2.0662,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -6996,6 +6347,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7013,6 +6366,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7030,6 +6385,8 @@
    "r_gross": 1.379,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7047,6 +6404,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7064,6 +6423,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7081,23 +6442,8 @@
    "r_gross": 1.8997,
    "exit_reason": "ema",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-15m-short-202609110217",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-09-11T02:17:00+00:00",
-   "exit_time": "2026-09-11T04:27:00+00:00",
-   "entry": 29098.83,
-   "stop": 29115.82,
-   "exit": 29098.83,
-   "r": 0.9117,
-   "r_gross": 1.0,
-   "exit_reason": "breakeven",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7115,6 +6461,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -7132,6 +6480,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -7149,6 +6499,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7166,6 +6518,8 @@
    "r_gross": 2.0965,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7183,6 +6537,8 @@
    "r_gross": 11.302,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7200,6 +6556,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7217,6 +6575,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -7234,13 +6594,15 @@
    "r_gross": 1.2657,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-15m-short-202609140416",
    "asset": "nas100",
    "tf": "15m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-09-14T04:16:00+00:00",
    "exit_time": "2026-09-14T10:44:00+00:00",
@@ -7251,23 +6613,8 @@
    "r_gross": 1.6378,
    "exit_reason": "ema",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-15m-long-202609140824",
-   "asset": "btcusdt",
-   "tf": "15m",
-   "session": "london",
-   "direction": "long",
-   "entry_time": "2026-09-14T08:24:00+00:00",
-   "exit_time": "2026-09-14T08:49:00+00:00",
-   "entry": 77848.5,
-   "stop": 77652.02,
-   "exit": 77652.02,
-   "r": -1.317,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7285,6 +6632,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7302,6 +6651,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7319,6 +6670,8 @@
    "r_gross": 4.6571,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7336,23 +6689,8 @@
    "r_gross": 2.2522,
    "exit_reason": "ema",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202609141711",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "late",
-   "direction": "long",
-   "entry_time": "2026-09-14T17:11:00+00:00",
-   "exit_time": "2026-09-14T17:18:00+00:00",
-   "entry": 29242.79,
-   "stop": 29225.68,
-   "exit": 29225.68,
-   "r": -1.0877,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7370,6 +6708,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7387,6 +6727,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7404,6 +6746,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7421,6 +6765,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -7438,6 +6784,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7455,6 +6803,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7472,6 +6822,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7489,64 +6841,15 @@
    "r_gross": 1.3831,
    "exit_reason": "ema",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202609151630",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "new_york",
-   "direction": "short",
-   "entry_time": "2026-09-15T16:30:00+00:00",
-   "exit_time": "2026-09-15T16:54:00+00:00",
-   "entry": 28979.27,
-   "stop": 28998.63,
-   "exit": 28998.63,
-   "r": -1.0775,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-short-202609151935",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "late",
-   "direction": "short",
-   "entry_time": "2026-09-15T19:35:00+00:00",
-   "exit_time": "2026-09-15T19:59:00+00:00",
-   "entry": 28931.39,
-   "stop": 28943.88,
-   "exit": 28943.88,
-   "r": -1.1201,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-1h-short-202609160136",
-   "asset": "btcusdt",
-   "tf": "1h",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-09-16T01:36:00+00:00",
-   "exit_time": "2026-09-16T02:30:00+00:00",
-   "entry": 75523.39,
-   "stop": 75896.4,
-   "exit": 75896.4,
-   "r": -1.162,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-15m-long-202609160515",
    "asset": "nas100",
    "tf": "15m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
    "entry_time": "2026-09-16T05:15:00+00:00",
    "exit_time": "2026-09-16T12:44:00+00:00",
@@ -7557,6 +6860,8 @@
    "r_gross": 1.7735,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7574,23 +6879,8 @@
    "r_gross": 1.6744,
    "exit_reason": "ema",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-15m-long-202609161100",
-   "asset": "btcusdt",
-   "tf": "15m",
-   "session": "london",
-   "direction": "long",
-   "entry_time": "2026-09-16T11:00:00+00:00",
-   "exit_time": "2026-09-16T13:04:00+00:00",
-   "entry": 75928.6,
-   "stop": 75658.19,
-   "exit": 75658.19,
-   "r": -1.2246,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7608,6 +6898,8 @@
    "r_gross": 1.5372,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7625,40 +6917,27 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-15m-long-202609170231",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-09-17T02:31:00+00:00",
-   "exit_time": "2026-09-17T05:36:00+00:00",
-   "entry": 29126.86,
-   "stop": 29105.45,
-   "exit": 29105.45,
-   "r": -1.0701,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-1h-long-202609170500",
+   "id": "btcusdt-30m-long-202609170448",
    "asset": "btcusdt",
-   "tf": "1h",
-   "session": "asia",
+   "tf": "30m",
+   "session": "friend_window",
    "direction": "long",
-   "entry_time": "2026-09-17T05:00:00+00:00",
+   "entry_time": "2026-09-17T04:48:00+00:00",
    "exit_time": "2026-09-17T11:40:00+00:00",
-   "entry": 76498.78,
-   "stop": 76113.75,
-   "exit": 76113.75,
-   "r": -1.1589,
+   "entry": 76363.94,
+   "stop": 76114.75,
+   "exit": 76114.75,
+   "r": -1.2452,
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7676,6 +6955,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7693,6 +6974,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7710,6 +6993,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7727,6 +7012,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7744,6 +7031,8 @@
    "r_gross": 5.0547,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7761,6 +7050,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7778,6 +7069,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -7795,6 +7088,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -7812,6 +7107,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7829,57 +7126,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-5m-long-202609181650",
-   "asset": "xauusd",
-   "tf": "5m",
-   "session": "new_york",
-   "direction": "long",
-   "entry_time": "2026-09-18T16:50:00+00:00",
-   "exit_time": "2026-09-18T18:39:00+00:00",
-   "entry": 4380.89,
-   "stop": 4376.79,
-   "exit": 4385.54,
-   "r": 1.4939,
-   "r_gross": 1.5671,
-   "exit_reason": "ema",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202609181843",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "late",
-   "direction": "long",
-   "entry_time": "2026-09-18T18:43:00+00:00",
-   "exit_time": "2026-09-21T01:59:00+00:00",
-   "entry": 29489.15,
-   "stop": 29477.04,
-   "exit": 29782.69,
-   "r": 12.9959,
-   "r_gross": 13.1197,
-   "exit_reason": "ema",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-1h-long-202609190031",
-   "asset": "btcusdt",
-   "tf": "1h",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-09-19T00:31:00+00:00",
-   "exit_time": "2026-09-19T20:51:00+00:00",
-   "entry": 81189.22,
-   "stop": 80846.58,
-   "exit": 81189.22,
-   "r": 0.8104,
-   "r_gross": 1.0,
-   "exit_reason": "breakeven",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7897,6 +7145,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7914,6 +7164,27 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "simulatie"
+  },
+  {
+   "id": "btcusdt-30m-short-202609200603",
+   "asset": "btcusdt",
+   "tf": "30m",
+   "session": "friend_window",
+   "direction": "short",
+   "entry_time": "2026-09-20T06:03:00+00:00",
+   "exit_time": "2026-09-20T14:02:00+00:00",
+   "entry": 80428.11,
+   "stop": 80605.93,
+   "exit": 80605.93,
+   "r": -1.3618,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7931,40 +7202,27 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-15m-long-202609210245",
-   "asset": "nas100",
-   "tf": "15m",
-   "session": "asia",
-   "direction": "long",
-   "entry_time": "2026-09-21T02:45:00+00:00",
-   "exit_time": "2026-09-22T04:14:00+00:00",
-   "entry": 29799.95,
-   "stop": 29779.46,
-   "exit": 30574.19,
-   "r": 19.8199,
-   "r_gross": 19.8931,
-   "exit_reason": "ema",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-1h-long-202609210523",
+   "id": "btcusdt-30m-long-202609210449",
    "asset": "btcusdt",
-   "tf": "1h",
-   "session": "asia",
+   "tf": "30m",
+   "session": "friend_window",
    "direction": "long",
-   "entry_time": "2026-09-21T05:23:00+00:00",
-   "exit_time": "2026-09-23T07:59:00+00:00",
-   "entry": 81485.56,
-   "stop": 81212.32,
-   "exit": 86112.03,
-   "r": 9.2274,
-   "r_gross": 9.4659,
+   "entry_time": "2026-09-21T04:49:00+00:00",
+   "exit_time": "2026-09-22T00:59:00+00:00",
+   "entry": 81452.06,
+   "stop": 81230.45,
+   "exit": 85878.17,
+   "r": 10.6922,
+   "r_gross": 10.9863,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7982,6 +7240,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -7999,6 +7259,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8016,6 +7278,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8033,6 +7297,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8050,6 +7316,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8067,6 +7335,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8084,6 +7354,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8101,6 +7373,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8118,6 +7392,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8135,6 +7411,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8152,13 +7430,15 @@
    "r_gross": 1.7389,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-15m-short-202609230400",
    "asset": "nas100",
    "tf": "15m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
    "entry_time": "2026-09-23T04:00:00+00:00",
    "exit_time": "2026-09-23T04:05:00+00:00",
@@ -8169,6 +7449,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8186,6 +7468,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8203,74 +7487,46 @@
    "r_gross": 1.5489,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
-   "id": "nas100-5m-short-202609231740",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "late",
-   "direction": "short",
-   "entry_time": "2026-09-23T17:40:00+00:00",
-   "exit_time": "2026-09-23T17:40:00+00:00",
-   "entry": 30417.33,
-   "stop": 30436.56,
-   "exit": 30436.56,
-   "r": -1.078,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-5m-long-202609231848",
-   "asset": "nas100",
-   "tf": "5m",
-   "session": "late",
-   "direction": "long",
-   "entry_time": "2026-09-23T18:48:00+00:00",
-   "exit_time": "2026-09-23T19:51:00+00:00",
-   "entry": 30482.97,
-   "stop": 30458.61,
-   "exit": 30458.61,
-   "r": -1.0616,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-1h-short-202609240010",
-   "asset": "btcusdt",
-   "tf": "1h",
-   "session": "asia",
-   "direction": "short",
-   "entry_time": "2026-09-24T00:10:00+00:00",
-   "exit_time": "2026-09-24T13:59:00+00:00",
-   "entry": 84342.69,
-   "stop": 84649.73,
-   "exit": 84237.91,
-   "r": 0.9509,
-   "r_gross": 1.1706,
-   "exit_reason": "ema",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "nas100-15m-short-202609240300",
+   "id": "nas100-15m-short-202609240545",
    "asset": "nas100",
    "tf": "15m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "short",
-   "entry_time": "2026-09-24T03:00:00+00:00",
+   "entry_time": "2026-09-24T05:45:00+00:00",
    "exit_time": "2026-09-24T13:14:00+00:00",
-   "entry": 30477.84,
-   "stop": 30489.58,
+   "entry": 30410.22,
+   "stop": 30450.33,
    "exit": 30250.48,
-   "r": 10.5554,
-   "r_gross": 10.6831,
+   "r": 2.9539,
+   "r_gross": 2.9913,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "simulatie"
+  },
+  {
+   "id": "btcusdt-30m-short-202609240558",
+   "asset": "btcusdt",
+   "tf": "30m",
+   "session": "friend_window",
+   "direction": "short",
+   "entry_time": "2026-09-24T05:58:00+00:00",
+   "exit_time": "2026-09-24T07:29:00+00:00",
+   "entry": 84023.23,
+   "stop": 84378.26,
+   "exit": 84378.26,
+   "r": -1.1893,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8288,6 +7544,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8305,6 +7563,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8322,6 +7582,8 @@
    "r_gross": 2.6688,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8339,6 +7601,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8356,40 +7620,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "xauusd-5m-long-202609241651",
-   "asset": "xauusd",
-   "tf": "5m",
-   "session": "new_york",
-   "direction": "long",
-   "entry_time": "2026-09-24T16:51:00+00:00",
-   "exit_time": "2026-09-24T16:53:00+00:00",
-   "entry": 4277.26,
-   "stop": 4272.5,
-   "exit": 4272.5,
-   "r": -1.063,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-1h-long-202609241913",
-   "asset": "btcusdt",
-   "tf": "1h",
-   "session": "late",
-   "direction": "long",
-   "entry_time": "2026-09-24T19:13:00+00:00",
-   "exit_time": "2026-09-25T07:08:00+00:00",
-   "entry": 84519.68,
-   "stop": 83873.35,
-   "exit": 83873.35,
-   "r": -1.1046,
-   "r_gross": -1.0,
-   "exit_reason": "stop",
-   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8407,13 +7639,15 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
    "id": "nas100-15m-long-202609250434",
    "asset": "nas100",
    "tf": "15m",
-   "session": "asia",
+   "session": "friend_window",
    "direction": "long",
    "entry_time": "2026-09-25T04:34:00+00:00",
    "exit_time": "2026-09-25T12:44:00+00:00",
@@ -8424,6 +7658,8 @@
    "r_gross": 5.1753,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8441,6 +7677,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8458,6 +7696,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8475,6 +7715,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8492,6 +7734,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8509,6 +7753,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8526,6 +7772,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8543,6 +7791,27 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "simulatie"
+  },
+  {
+   "id": "btcusdt-30m-long-202609270530",
+   "asset": "btcusdt",
+   "tf": "30m",
+   "session": "friend_window",
+   "direction": "long",
+   "entry_time": "2026-09-27T05:30:00+00:00",
+   "exit_time": "2026-09-27T14:29:00+00:00",
+   "entry": 84376.64,
+   "stop": 84287.0,
+   "exit": 84700.26,
+   "r": 2.0521,
+   "r_gross": 2.8051,
+   "exit_reason": "ema",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8560,6 +7829,8 @@
    "r_gross": 3.672,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8577,6 +7848,27 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "simulatie"
+  },
+  {
+   "id": "btcusdt-30m-short-202609290400",
+   "asset": "btcusdt",
+   "tf": "30m",
+   "session": "friend_window",
+   "direction": "short",
+   "entry_time": "2026-09-29T04:00:00+00:00",
+   "exit_time": "2026-09-29T04:17:00+00:00",
+   "entry": 83011.17,
+   "stop": 83183.61,
+   "exit": 83183.61,
+   "r": -1.3851,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8594,6 +7886,27 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "simulatie"
+  },
+  {
+   "id": "btcusdt-30m-short-202609300609",
+   "asset": "btcusdt",
+   "tf": "30m",
+   "session": "friend_window",
+   "direction": "short",
+   "entry_time": "2026-09-30T06:09:00+00:00",
+   "exit_time": "2026-09-30T09:31:00+00:00",
+   "entry": 83260.37,
+   "stop": 83471.94,
+   "exit": 83471.94,
+   "r": -1.3148,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8611,6 +7924,8 @@
    "r_gross": 1.4055,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8628,6 +7943,8 @@
    "r_gross": 1.0,
    "exit_reason": "breakeven",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -8645,6 +7962,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8662,6 +7981,8 @@
    "r_gross": 2.8468,
    "exit_reason": "ema",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8679,6 +8000,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   },
   {
@@ -8696,6 +8019,8 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
    "source": "simulatie"
   },
   {
@@ -8713,39 +8038,28 @@
    "r_gross": -1.0,
    "exit_reason": "stop",
    "status": "closed",
-   "source": "simulatie"
-  },
-  {
-   "id": "btcusdt-15m-long-202610091100",
-   "asset": "btcusdt",
-   "tf": "15m",
-   "session": "london",
-   "direction": "long",
-   "entry_time": "2026-10-09T11:00:00+00:00",
-   "exit_time": "2026-10-09T13:36:00+00:00",
-   "entry": 82509.5,
-   "stop": 82347.57,
-   "exit": 82509.5,
-   "r": 0.5924,
-   "r_gross": 1.0,
-   "exit_reason": "breakeven",
-   "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
    "source": "simulatie"
   }
  ],
  "summary": {
   "simulatie": {
-   "trades": 490,
+   "trades": 397,
    "open": 0,
-   "win_rate": 0.345,
-   "total_r": -9.72,
-   "avg_r": -0.02,
-   "avg_win_r": 2.04,
-   "avg_loss_r": -1.1
+   "win_rate": 0.35,
+   "total_r": -19.98,
+   "avg_r": -0.05,
+   "avg_win_r": 1.91,
+   "avg_loss_r": -1.11,
+   "return_pct": -6.03,
+   "max_dd_pct": 12.83
   },
   "papier": {
    "trades": 0,
-   "open": 0
+   "open": 0,
+   "return_pct": 0.0,
+   "max_dd_pct": 0.0
   }
  }
 }

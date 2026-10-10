@@ -36,7 +36,7 @@ HAND_PICKED = [("nas100", "15m", "new_york"), ("xauusd", "15m", "asia"), ("xauus
                ("nas100", "1h", "asia"), ("btcusdt", "15m", "london")]
 
 
-def cell_trades(assets=None, exits=None, start=START, end=END, timeframes=None):
+def cell_trades(assets=None, exits=None, start=START, end=END, timeframes=None, sessions=None):
     """{(asset, tf, exit, session): [Trade]} with Trade.tags['asset'] set."""
     cfg = FRIEND_RULES[0]
     out = {}
@@ -51,7 +51,7 @@ def cell_trades(assets=None, exits=None, start=START, end=END, timeframes=None):
             setups = find_setups(tf, cfg, levels)
             for ex_name, ex in exits.items():
                 ex = replace(ex, cost=spec["cost"], cost_pct=spec["cost_pct"])
-                for session in SESSIONS:
+                for session in sessions or SESSIONS:
                     trades = simulate_fine(tf, fine, setups, ex, window_filter(session))
                     for t in trades:
                         t.tags = {**t.tags, "asset": asset, "tf": tf_name, "session": session}

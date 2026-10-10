@@ -12,7 +12,10 @@ python -m friendsbot paper         # journal bijwerken → reports/paper/journal
 python -m friendsbot site          # journal-website → website/index.html
 ```
 De regels liggen vast sinds 10 oktober 2026 (`friendsbot/paper.py`). Elke maand kiest de bot per markt en sessie
-de beste timeframe over de vorige 120 dagen. Exit: helft op 2R, stop naar breakeven, runner tot de EMA 21.
+de beste timeframe over de vorige 120 dagen; het venster 04:00–06:30 UTC concurreert met de hele Asia-sessie.
+Exit: helft op 2R, stop naar breakeven, runner tot de EMA 21.
+Risico: de 2 best gerangschikte combinaties 0,5% per trade, de rest 0,25%; een topper die 3 keer na elkaar verliest
+zakt naar 0,25% en de volgende neemt over. Na 2 verliezen op een markt stopt die markt voor de dag. Max. 3 posities open.
 Trades vóór 10 oktober zijn een walk-forward-simulatie, trades daarna zijn papiertrades.
 
 ## Snel starten
