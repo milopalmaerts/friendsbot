@@ -13,7 +13,7 @@ from pathlib import Path
 import pandas as pd
 
 from .data import ROOT
-from .live import MARKETS, parse_client_id
+from .live import ACCOUNT, MARKETS, find_account, parse_client_id
 from .mfp import Client
 
 OUT = ROOT / "reports" / "live" / "sandbox.json"
@@ -24,13 +24,9 @@ def _ms(t) -> str | None:
 
 
 def collect(client: Client, account_id: str | None = None) -> dict:
-    accounts = client.accounts()
-    if account_id:
-        accounts = [a for a in accounts if a["id"] == account_id]
-    active = [a for a in accounts if a["status"] == "active"] or accounts
-    if not active:
-        raise SystemExit("geen account gevonden voor deze sleutel")
-    acct = client.account(active[0]["id"])
+    acct = find_account(client, account_id)
+    if not acct:
+        raise SystemExit(f"account {account_id or ACCOUNT} niet gevonden voor deze sleutel")
     aid = acct["id"]
     by_market = {v: k for k, v in MARKETS.items()}
     orders = client.paged("/v1/orders", {"account_id": aid})

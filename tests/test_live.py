@@ -46,7 +46,8 @@ class FakeClient:
         return {MARKET: {"market_id": MARKET, "size_step": 0.001, "min_size": 0.001, "min_notional": 10, "max_leverage": 20}}
 
     def accounts(self):
-        return [{"id": "acc1", "status": "active"}]
+        return [{"id": "other", "account_number": "FP-1", "status": "active"},
+                {"id": "acc1", "account_number": "FP-16539224", "status": "active"}]
 
     def account(self, account_id):
         return {"id": account_id, "balance": self.equity, "risk": self.risk}
@@ -86,6 +87,14 @@ def test_places_stop_entry_sized_to_risk(journal):
     # hot combination: risk = equity × HOT_RISK_PCT, size rounded down to the size step
     expected = np.floor(100_000 * live.HOT_RISK_PCT / 100 / (103.81 - 102.0) * 1000) / 1000
     assert body["size"] == pytest.approx(expected)
+    assert body["account_id"] == "acc1"          # the pinned account, not the first one listed
+
+
+def test_trades_nothing_without_the_pinned_account(journal, monkeypatch):
+    monkeypatch.setattr(live, "ACCOUNT", "FP-99999999")
+    c = FakeClient()
+    plan = run(c, journal)
+    assert c.calls == [] and any("niet gevonden" in n for n in plan.notes)
 
 
 def test_keeps_identical_working_entry_and_replaces_a_moved_one(journal):

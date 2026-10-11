@@ -10,10 +10,10 @@ class Client:
     environment = "test"
 
     def accounts(self):
-        return [{"id": "a1", "status": "active"}]
+        return [{"id": "a0", "account_number": "FP-0", "status": "active"}, {"id": "a1", "status": "active"}]
 
     def account(self, aid):
-        return {"id": aid, "account_number": "FP-1", "name": "API Sandbox 1", "status": "active",
+        return {"id": aid, "account_number": live.ACCOUNT if aid == "a1" else "FP-0", "name": "API Sandbox 1", "status": "active",
                 "starting_balance": 100_000, "balance": 100_150.0, "risk": {"equity": 100_150.0}}
 
     def paged(self, path, query):
@@ -37,7 +37,7 @@ class Client:
 
 def test_collects_only_bot_trades_with_r_after_costs():
     d = sandbox.collect(Client())
-    assert d["account"]["number"] == "FP-1"
+    assert d["account"]["number"] == live.ACCOUNT and d["account"]["id"] == "a1"
     (t,) = d["trades"]
     assert (t["asset"], t["tf"], t["session"], t["source"]) == ("btcusdt", "15m", "london", "sandbox")
     assert t["risk_usd"] == pytest.approx(1000 * 0.2)          # (entry − stop) × size

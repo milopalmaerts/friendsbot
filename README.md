@@ -46,6 +46,7 @@ TP op 2R voor de helft (OCO), daarna stop naar breakeven en runner dicht bij een
 Risico per trade standaard 0,10% (toppers 0,20%) omdat prop-accounts maar 3–6% drawdown toelaten
 (`FB_BASE_RISK_PCT`, `FB_HOT_RISK_PCT`). Geen nieuwe entries als de daglimiet of de maximale drawdown dichtbij is.
 Een `fp_live_`-sleutel wordt geweigerd tenzij `FB_ALLOW_LIVE=1`.
+De bot handelt alleen op account `FP-16539224` (aan te passen met `FB_ACCOUNT`); andere accounts op dezelfde sleutel blijven onaangeroerd, en ontbreekt dit account dan plaatst hij niets.
 
 ### Doorlopend draaien (aanbevolen)
 `python -m friendsbot run` luistert naar de marktstream en de accountstream van MyFundedPerps en reageert binnen

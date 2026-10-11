@@ -35,6 +35,9 @@ MARKETS = {
 }
 INTERVAL = {"5m": "5m", "15m": "15m", "30m": "30m", "1h": "1h", "4h": "4h"}
 TAG = "fb"                                   # prefix of every client_order_id this bot creates
+# The only account the bot may trade (account number or id). Any other account on the same key is
+# left alone; if this one is missing or not active, the bot places nothing.
+ACCOUNT = os.environ.get("FB_ACCOUNT", "FP-16539224")
 
 # Prop accounts allow only 3–6% total drawdown and 3% per day, so risk is far smaller than in the
 # paper journal's €-view. Overridable with environment variables.
@@ -127,6 +130,20 @@ def entry_order(market: dict, setup: dict, cell: dict, risk_usd: float, account_
     }
 
 
+def find_account(client: Client, wanted: str | None = None) -> dict | None:
+    """Details of the one account the bot trades, matched on id or account number; None if absent."""
+    wanted = wanted or ACCOUNT
+    for a in client.accounts():
+        if wanted in (a.get("id"), a.get("account_number")):
+            return client.account(a["id"])
+    for a in client.accounts():                    # list entries may lack the number: check details
+        if "account_number" not in a:
+            acct = client.account(a["id"])
+            if acct.get("account_number") == wanted:
+                return acct
+    return None
+
+
 def tick(client: Client, account_id: str | None = None, now: pd.Timestamp | None = None,
          dry_run: bool = False, journal_path: Path = paper.JOURNAL, bars: dict | None = None) -> Plan:
     plan = Plan()
@@ -140,13 +157,10 @@ def tick(client: Client, account_id: str | None = None, now: pd.Timestamp | None
 
     # ---- account state -------------------------------------------------------------------
     if client.authenticated:
-        accounts = [a for a in client.accounts() if a["status"] == "active"]
-        if account_id:
-            accounts = [a for a in accounts if a["id"] == account_id]
-        if not accounts:
-            plan.note("geen actief account gevonden")
+        acct = find_account(client, account_id)
+        if not acct or acct.get("status", "active") != "active":
+            plan.note(f"account {account_id or ACCOUNT} niet gevonden of niet actief: niets geplaatst")
             return plan
-        acct = client.account(accounts[0]["id"])
         account_id = acct["id"]
         risk = acct.get("risk") or {}
         equity = risk.get("equity") or acct["balance"]
