@@ -13,7 +13,7 @@ from pathlib import Path
 import pandas as pd
 
 from .data import ROOT
-from .live import ACCOUNT, MARKETS, find_account, parse_client_id
+from .live import ACCOUNT, HOT_RISK_PCT, MARKETS, find_account, parse_client_id
 from .mfp import Client
 
 OUT = ROOT / "reports" / "live" / "sandbox.json"
@@ -56,7 +56,8 @@ def collect(client: Client, account_id: str | None = None) -> dict:
             "r": round(net / risk_usd, 3) if net is not None and risk_usd > 0 else None,
             "risk_pct": round(risk_usd / acct["starting_balance"] * 100, 3),
             "exit_reason": p.get("close_reason") or ("open" if not closed else "user"),
-            "status": "closed" if closed else "open", "hot": False, "source": "sandbox",
+            "status": "closed" if closed else "open", "source": "sandbox",
+            "hot": risk_usd / acct["starting_balance"] * 100 >= HOT_RISK_PCT * 0.9,
         })
     risk = acct.get("risk") or {}
     return {
