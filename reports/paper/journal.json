@@ -1,10 +1,10 @@
 {
- "generated": "2026-10-10T20:59:24.212467+00:00",
+ "generated": "2026-10-11T15:46:05.342426+00:00",
  "forward_start": "2026-10-10T00:00:00+00:00",
  "data_end": {
   "xauusd": "2026-09-25T20:44:00+00:00",
   "nas100": "2026-09-25T20:44:00+00:00",
-  "btcusdt": "2026-10-10T02:47:00+00:00"
+  "btcusdt": "2026-10-11T02:16:00+00:00"
  },
  "assets": {
   "xauusd": "Goud (XAUUSD)",
@@ -5138,6 +5138,25 @@
    "risk_pct": 0.5,
    "hot": true,
    "source": "simulatie"
+  },
+  {
+   "id": "btcusdt-15m-long-202610100855",
+   "asset": "btcusdt",
+   "tf": "15m",
+   "session": "london",
+   "direction": "long",
+   "entry_time": "2026-10-10T08:55:00+00:00",
+   "exit_time": "2026-10-10T18:29:00+00:00",
+   "entry": 82761.54,
+   "stop": 82661.87,
+   "exit": 82921.79,
+   "r": 1.0358,
+   "r_gross": 1.8039,
+   "exit_reason": "ema",
+   "status": "closed",
+   "risk_pct": 0.5,
+   "hot": true,
+   "source": "papier"
   }
  ],
  "summary": {
@@ -5153,9 +5172,14 @@
    "max_dd_pct": 10.84
   },
   "papier": {
-   "trades": 0,
+   "trades": 1,
    "open": 0,
-   "return_pct": 0.0,
+   "win_rate": 1.0,
+   "total_r": 1.04,
+   "avg_r": 1.036,
+   "avg_win_r": 1.04,
+   "avg_loss_r": null,
+   "return_pct": 0.52,
    "max_dd_pct": 0.0
   }
  }
