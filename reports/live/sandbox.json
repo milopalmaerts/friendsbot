@@ -1,15 +1,15 @@
 {
- "updated": "2026-10-13T16:23:20.413799+00:00",
+ "updated": "2026-10-13T21:30:52.523623+00:00",
  "account": {
   "id": "jh7am5vbqjkywtxzzk7eqh1g958g1k7x",
   "number": "FP-16539224",
   "name": "API Sandbox 1",
   "status": "active",
   "starting_balance": 100000,
-  "balance": 99307.436621,
-  "equity": 99591.005121,
-  "daily_loss_room": 3869.935110999999,
-  "max_drawdown_room": 5591.005120999995
+  "balance": 99305.953504,
+  "equity": 99519.601004,
+  "daily_loss_room": 3798.5309940000006,
+  "max_drawdown_room": 5519.6010039999965
  },
  "environment": "test",
  "trades": [
