@@ -3,7 +3,8 @@
 Bot en onderzoek voor de "second entry"-strategie van een vriend: XAUUSD op 5 minuten, EMA 21,
 key levels, entry op de tweede poging na een pullback (0 → 1 → P → 2).
 
-**Status:** papier-trading sinds 10 oktober 2026. Er is geen brokerkoppeling en de bot plaatst geen echte orders.
+**Status:** papier-trading sinds 10 oktober 2026, plus een MyFundedPerps-adapter voor accountuitvoering.
+Die adapter verstuurt alleen orders als een uitvoeringsproces met accounttoegang draait; `--dry-run` verstuurt niets.
 
 ## Papier-trading
 ```bash
@@ -43,6 +44,9 @@ FP_API_KEY=fp_test_… python -m friendsbot live   # één run tegen de sandbox
 ```
 Elke run is los: entries zijn stop-orders op het niveau van candle 2, na de fill volgen een stop loss en een
 TP op 2R voor de helft (OCO), daarna stop naar breakeven en runner dicht bij een slot door de EMA 21.
+De runner gebruikt altijd de **gesloten 15-minuutcandle en de 15-minuut EMA 21**, onafhankelijk van de
+entry-timeframe uit de maandselectie. Short: slot boven de EMA; long: slot eronder. Een lopende candle of
+een wick alleen telt niet. De EMA-exit heeft voorrang op het wijzigen van een beschermende stop.
 Risico per trade standaard 0,10% (toppers 0,20%) omdat prop-accounts maar 3–6% drawdown toelaten
 (`FB_BASE_RISK_PCT`, `FB_HOT_RISK_PCT`). Geen nieuwe entries als de daglimiet of de maximale drawdown dichtbij is.
 Een `fp_live_`-sleutel wordt geweigerd tenzij `FB_ALLOW_LIVE=1`.
@@ -62,6 +66,38 @@ Dit moet op een machine die altijd aan staat:
 Fallback: `.github/workflows/live.yml` draait elke 5 minuten zodra de repository-secret `FP_API_KEY`
 bestaat (GitHub → Settings → Secrets and variables → Actions). `.github/workflows/paper.yml` werkt
 wekelijks en op de 1e van de maand de data, de journal en de maandselectie bij.
+
+### Runner sluit niet op de EMA
+
+Een wijziging in deze repository wordt pas actief nadat de draaiende bot de nieuwe code gebruikt.
+Op Railway: deploy de versie met de fix naar de bestaande service en controleer de nieuwe deploymentlogs.
+Op een VPS: haal de nieuwe versie op en herstart `friendsbot`; bekijk `journalctl -u friendsbot -f`.
+Start geen tweede uitvoeringsproces naast de bestaande bot om dezelfde positie te beheren.
+
+Met de sleutel veilig in de runtime-omgeving kun je eerst uitsluitend lezen/plannen:
+
+```bash
+python -m friendsbot live --dry-run
+```
+
+`checks` toont per positie de entry-timeframe, runner-timeframe, laatst gesloten candle, close, EMA,
+huidige en oorspronkelijke grootte en de beslissing:
+
+* `ema_exit`: de exit is verschuldigd; in dry-run wordt geen sluitorder verstuurd.
+* `awaiting_partial`: de afbouw naar de runner is nog niet vastgesteld.
+* `holding_runner`: de laatst gesloten 15m-candle geeft geen exit.
+* `missing_runner_candles`: geen voldoende gesloten 15m-historie; de entry-EMA wordt niet als vervanging gebruikt.
+* `unmatched_entry`: de positie kan niet aan een eigen entry gekoppeld worden en wordt niet automatisch overgenomen.
+
+De live-loop leest zo nodig oudere orderpagina's en bewaart eerder herkende entries en hun oorspronkelijke
+grootte in `logs/live-entry-links.json` (niet in Git). Dit voorkomt dat een runner na veel vervangende
+orders of een herstart buiten de laatste 100 orders valt. Een oude entry wordt alleen hersteld met een
+expliciete positie-link of een overeenkomende, eerder vastgelegde bottrade uit het accountjournal.
+Een willekeurige oude botfill op dezelfde markt is onvoldoende om een handmatige positie over te nemen.
+Bewaar deze runtime-map bij een herstart; op een nieuwe machine kan het accountjournal als herstelbewijs dienen.
+
+De always-on runner logt deze controles ook tijdens safety-ticks zonder orders. Een geplande
+`close_runner` bewijst nog geen fill: controleer daarna de accountpositie en eventuele API-fout in de logs.
 
 ## Opbouw
 | Bestand | Wat |

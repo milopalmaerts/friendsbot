@@ -6,3 +6,4 @@ __pycache__/
 /data/journal/
 /data/journal/
 /logs/
+.venv/

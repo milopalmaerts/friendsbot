@@ -68,7 +68,7 @@ def main(argv=None):
             raise SystemExit("live key detected: set FB_ALLOW_LIVE=1 to trade a real challenge account")
         plan = tick(client, account_id=a.account, dry_run=a.dry_run or not client.authenticated)
         print(json.dumps({"environment": client.environment, "dry_run": a.dry_run or not client.authenticated,
-                          "notes": plan.notes, "actions": plan.actions}, indent=1, default=str))
+                          "notes": plan.notes, "actions": plan.actions, "checks": plan.checks}, indent=1, default=str))
     elif a.cmd == "sandbox":
         from .mfp import Client
         from .sandbox import update

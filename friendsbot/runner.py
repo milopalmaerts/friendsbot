@@ -119,20 +119,21 @@ class Runner:
             reason, started = self.reason, time.monotonic()
             try:
                 plan = await asyncio.to_thread(live.tick, self.client, self.account_id, None, self.dry_run)
-                if plan.actions or reason != "safety":
+                if plan.actions or plan.checks or plan.notes or reason != "safety":
                     log("tick", reason=reason, seconds=round(time.monotonic() - started, 1),
-                        actions=plan.actions, notes=plan.notes[-3:])
+                        actions=plan.actions, checks=plan.checks, notes=plan.notes[-3:])
                 self._append(reason, plan)
             except Exception as err:            # noqa: BLE001 — keep running; next event or safety tick retries
                 log("tick_failed", reason=reason, error=str(err)[:300])
 
     def _append(self, reason, plan):
-        if not self.log_file or not plan.actions:
+        if not self.log_file or not (plan.actions or plan.checks or plan.notes):
             return
         self.log_file.parent.mkdir(parents=True, exist_ok=True)
         with self.log_file.open("a") as f:
             f.write(json.dumps({"t": pd.Timestamp.now(tz="UTC").isoformat(), "reason": reason,
-                                "actions": plan.actions}, default=str) + "\n")
+                                "actions": plan.actions, "checks": plan.checks,
+                                "notes": plan.notes}, default=str) + "\n")
 
     async def main(self):
         log("runner_start", environment=self.client.environment, dry_run=self.dry_run)

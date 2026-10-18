@@ -1,7 +1,8 @@
 """Run the paper bot's rules against a MyFundedPerps account (sandbox first).
 
 `tick()` is meant to run every few minutes (GitHub Actions, cron, or a loop). Each run is
-independent: everything it needs is read back from the API, so a missed or repeated run is safe.
+independent: account state is read back from the API. Tagged entry identity is retained locally
+so older runners can still be recognised after order history rolls over or the process restarts.
 
 Per run:
 1. Read this month's combinations (market × session × timeframe, ranked) from the paper journal.
@@ -17,6 +18,7 @@ from __future__ import annotations
 import json
 import math
 import os
+import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -35,6 +37,9 @@ MARKETS = {
 }
 INTERVAL = {"5m": "5m", "15m": "15m", "30m": "30m", "1h": "1h", "4h": "4h"}
 TAG = "fb"                                   # prefix of every client_order_id this bot creates
+RUNNER_INTERVAL = "15m"                      # independent of the entry/monthly-selection timeframe
+ENTRY_LINKS = Path(__file__).resolve().parents[1] / "logs" / "live-entry-links.json"
+SANDBOX_JOURNAL = Path(__file__).resolve().parents[1] / "reports" / "live" / "sandbox.json"
 # The only account the bot may trade (account number or id). Any other account on the same key is
 # left alone; if this one is missing or not active, the bot places nothing.
 ACCOUNT = os.environ.get("FB_ACCOUNT", "FP-16539224")
@@ -76,12 +81,16 @@ class Plan:
     """Everything one run decided, for logging and for dry runs."""
     notes: list[str] = field(default_factory=list)
     actions: list[dict] = field(default_factory=list)
+    checks: list[dict] = field(default_factory=list)
 
     def act(self, kind: str, **kw):
         self.actions.append({"action": kind, **kw})
 
     def note(self, msg: str):
         self.notes.append(msg)
+
+    def check(self, reason: str, **kw):
+        self.checks.append({"reason": reason, **kw})
 
 
 def client_id(asset, tf, session, direction, zero_time, stop, trigger) -> str:
@@ -105,6 +114,17 @@ def parse_client_id(cid: str | None) -> dict | None:
 
 def round_step(x: float, step: float) -> float:
     return math.floor(x / step + 1e-9) * step
+
+
+def _owned_rows(path, account_id, environment, key):
+    """Only reuse ownership information recorded for this account/environment."""
+    try:
+        data = json.loads(path.read_text())
+        if data.get("account", {}).get("id") == account_id and data.get("environment") == environment:
+            return {row["id"]: row for row in data.get(key, [])}
+    except (OSError, ValueError, KeyError, TypeError):
+        pass
+    return {}
 
 
 def current_selection(journal_path: Path = paper.JOURNAL, now: pd.Timestamp | None = None) -> tuple[str, list[dict]]:
@@ -177,13 +197,66 @@ def tick(client: Client, account_id: str | None = None, now: pd.Timestamp | None
     by_market = {v: k for k, v in MARKETS.items()}
     day = now.tz_convert("America/New_York").strftime("%Y-%m-%d")   # prop daily reset is NY midnight
     entries = {o["id"]: (o, parse_client_id(o.get("client_order_id"))) for o in recent}
+    recent_ids = set(entries)
     ours = [(o, meta) for o, meta in entries.values() if meta]
+    saved = _owned_rows(ENTRY_LINKS, account_id, client.environment, "links")
+    recorded = _owned_rows(SANDBOX_JOURNAL, account_id, client.environment, "trades")
 
     def entry_for(position) -> dict | None:
         """Our filled entry order that opened this position (latest fill on that market before it opened)."""
+        link = saved.get(position["id"])
+        if link and link.get("opened_at") == position["opened_at"]:
+            order = link.get("order", {})
+            meta = parse_client_id(order.get("client_order_id"))
+            if meta and order.get("market_id") == position["market_id"] and meta["direction"] == position["side"]:
+                return order, meta
+        def linked(order, meta):
+            if order.get("position_id"):
+                return order["position_id"] == position["id"]
+            if order["id"] in recent_ids:
+                return True  # preserve the existing recent-fill association
+            row = recorded.get(position["id"], {})
+            # Paging alone must not adopt a manual trade merely because the
+            # same market had an unrelated bot fill a long time ago.
+            return (row.get("entry_time") == pd.Timestamp(position["opened_at"], unit="ms", tz="UTC").isoformat()
+                    and row.get("asset") == meta["asset"] and row.get("direction") == position["side"]
+                    and row.get("tf") == meta["tf"] and row.get("session") == meta["session"]
+                    and row.get("stop") == meta["stop"])
         cands = [(o, m) for o, m in ours if o["market_id"] == position["market_id"] and o.get("status") == "filled"
-                 and o.get("reduce_only") is False and o.get("requested_at", 0) <= position["opened_at"] + 60_000]
+                 and o.get("reduce_only") is False and m["direction"] == position["side"]
+                 and o.get("requested_at", 0) <= position["opened_at"] + 60_000 and linked(o,m)]
         return max(cands, key=lambda x: x[0].get("requested_at", 0)) if cands else None
+
+    # Long-lived runners can outlast hundreds of canceled/replaced entry orders.
+    # Recover their tagged fills from paginated history before treating them as
+    # foreign positions. This never adopts a position without a bot-tagged fill.
+    if any(p["market_id"] in by_market and entry_for(p) is None for p in positions):
+        try:
+            history = client.paged("/v1/orders", {"account_id": account_id})
+            entries.update({o["id"]: (o, parse_client_id(o.get("client_order_id"))) for o in history})
+            ours = [(o, meta) for o, meta in entries.values() if meta]
+        except (ApiError, OSError) as err:
+            plan.note(f"oudere entry-orders konden niet worden opgehaald: {err}")
+
+    # Retain known entry identity/initial size across restarts and order-history
+    # rollover. Do not store credentials or take ownership of unmatched trades.
+    links = []
+    for position in positions:
+        entry = entry_for(position)
+        if entry:
+            order, _ = entry
+            fields = ("id","market_id","client_order_id","size","filled_size","requested_at")
+            links.append({"id": position["id"], "opened_at": position["opened_at"],
+                          "order": {k: order[k] for k in fields if k in order}})
+    if client.authenticated and not dry_run:
+        try:
+            ENTRY_LINKS.parent.mkdir(parents=True, exist_ok=True)
+            with tempfile.NamedTemporaryFile(mode="w", dir=ENTRY_LINKS.parent, delete=False) as file:
+                json.dump({"account":{"id":account_id},"environment":client.environment,"links":links},file)
+                temporary = Path(file.name)
+            temporary.replace(ENTRY_LINKS)
+        except OSError as err:
+            plan.note(f"entry-identiteit kon niet worden bewaard: {err}")
 
     losses_today, streak = {}, {}
     for p in sorted(closed, key=lambda p: p.get("closed_at") or 0):
@@ -206,12 +279,20 @@ def tick(client: Client, account_id: str | None = None, now: pd.Timestamp | None
 
     # ---- candles for every timeframe in use ------------------------------------------------
     needed = sorted({(c["asset"], c["tf"]) for c in cells} | {(by_market.get(p["market_id"]), m["tf"])
-                     for p in positions for _, m in [entry_for(p) or (None, None)] if m and by_market.get(p["market_id"])})
+                     for p in positions for _, m in [entry_for(p) or (None, None)] if m and by_market.get(p["market_id"])}
+                    | {(by_market[p["market_id"]], RUNNER_INTERVAL) for p in positions
+                       if p["market_id"] in by_market and entry_for(p) is not None})
     if bars is None:
         reqs = [(MARKETS[a].split("|")[0], MARKETS[a].split("|")[1], INTERVAL[tf]) for a, tf in needed]
         raw = candles(reqs)
         bars = {(a, tf): raw[(MARKETS[a].split("|")[0], MARKETS[a].split("|")[1], INTERVAL[tf])] for a, tf in needed}
-    frames = {k: with_indicators(v, cfg) for k, v in bars.items() if len(v) > 60}
+    frames = {}
+    for key, frame in bars.items():
+        # Do not trust a missing/incorrect provider isFinal flag. A candle must
+        # have reached its actual close before it can affect an EMA decision.
+        closed_frame = frame.loc[frame.index + pd.Timedelta(INTERVAL[key[1]]) <= now]
+        if len(closed_frame) > 60:
+            frames[key] = with_indicators(closed_frame, cfg)
 
     # ---- 1. manage open positions ------------------------------------------------------------
     for p in positions:
@@ -219,6 +300,7 @@ def tick(client: Client, account_id: str | None = None, now: pd.Timestamp | None
         e = entry_for(p)
         if not asset or not e:
             plan.note(f"positie {p['market_id']} is niet van de bot; niet aangeraakt")
+            plan.check("unmatched_entry", position_id=p["id"], market=p["market_id"])
             continue
         try:
             manage_position(client, plan, p, asset, e, working, markets, frames, now, dry_run)
@@ -242,6 +324,26 @@ def manage_position(client, plan, p, asset, e, working, markets, frames, now, dr
         r = abs(entry - stop)
         initial = order.get("filled_size") or order["size"]
         partial_done = p["size"] <= initial * 0.75
+        # An EMA close is the exit, not a prerequisite for modifying a stop.
+        # In particular, a rejected breakeven modification must not suppress it.
+        df = frames.get((asset, RUNNER_INTERVAL))
+        check = dict(position_id=p["id"], market=p["market_id"], entry_timeframe=meta["tf"],
+                     runner_timeframe=RUNNER_INTERVAL, partial_done=partial_done,
+                     size=p["size"], initial_size=initial)
+        if df is None or df.empty:
+            plan.check("missing_runner_candles", **check)
+        else:
+            stamp = df.index[-1]
+            close, ema = float(df.close.iloc[-1]), float(df.ema.iloc[-1])
+            exit_due = partial_done and (close-ema)*sign < 0
+            plan.check("ema_exit" if exit_due else "holding_runner" if partial_done else "awaiting_partial",
+                       candle_open=stamp.isoformat(), close=close, ema=ema, **check)
+            if exit_due:
+                plan.act("close_runner", market=p["market_id"], timeframe=RUNNER_INTERVAL,
+                         candle_open=stamp.isoformat(), close=close, ema=ema)
+                if not dry_run:
+                    client.close_position(p["id"], client_order_id=f"{TAG}-close-{p['id'][:40]}-{int(stamp.timestamp())}")
+                return
         exits = [o for o in working if o["market_id"] == p["market_id"] and o.get("reduce_only")]
         sl = [o for o in exits if o["type"] == "stop_market" or o.get("mode") == "stop_market"]
         tp = [o for o in exits if o["type"] in ("take_profit", "take_market") or o.get("mode") in ("take_profit", "take_market")]
@@ -272,12 +374,6 @@ def manage_position(client, plan, p, asset, e, working, markets, frames, now, dr
                                          "price": o.get("trigger_price"), "size": o["size"]} for o in tp],
                     "operations": [{"kind": "place", "group": "sl", "execution_type": "market",
                                     "price": round(entry if partial_done else stop, 8), "size": p["size"]}]})
-        # runner: close on a candle close through the EMA once the first half is banked
-        df = frames.get((asset, meta["tf"]))
-        if partial_done and df is not None and (df.close.iloc[-1] - df.ema.iloc[-1]) * sign < 0:
-            plan.act("close_runner", market=p["market_id"], close=float(df.close.iloc[-1]), ema=float(df.ema.iloc[-1]))
-            if not dry_run:
-                client.close_position(p["id"], client_order_id=f"{TAG}-close-{p['id'][:40]}-{int(now.timestamp())}")
 
 def place_entries(client, plan, cfg, ranks, frames, markets, positions, working, by_market, losses_today,
                   hot, equity, risk, account_id, now, dry_run) -> Plan:

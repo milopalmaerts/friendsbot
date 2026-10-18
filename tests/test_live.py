@@ -12,6 +12,12 @@ MARKET = "binance|XAUUSDT"
 NOW = pd.Timestamp("2026-03-02 06:21", tz="UTC")
 
 
+@pytest.fixture(autouse=True)
+def isolate_ownership_files(tmp_path,monkeypatch):
+    monkeypatch.setattr(live,"ENTRY_LINKS",tmp_path/"links.json")
+    monkeypatch.setattr(live,"SANDBOX_JOURNAL",tmp_path/"sandbox.json")
+
+
 def bars_with_setup():
     """A steady uptrend, a push to 0, a pullback, 1 and P: the next candle's stop entry is at 103.81."""
     pre = [(80 + i * 0.3 + 1, 80 + i * 0.3) for i in range(70)]
@@ -57,6 +63,9 @@ class FakeClient:
 
     def orders(self, account_id, status=None, limit=100):
         return self._working if status == "working" else self._recent
+
+    def paged(self, path, query):
+        return self._recent
 
     def place_order(self, body):
         self.calls.append(("place", body))
@@ -142,7 +151,7 @@ def test_new_position_gets_stop_and_half_take_profit_at_2r(journal):
     assert not any(k == "place" for k, *_ in c.calls)     # market already has a position
 
 
-def test_after_take_profit_stop_moves_to_breakeven_and_runner_closes_below_ema(journal):
+def test_after_take_profit_stop_moves_to_breakeven_without_using_entry_ema(journal):
     sl = {"id": "s1", "market_id": MARKET, "reduce_only": True, "type": "stop_market", "trigger_price": 102.0, "size": 5.0}
     falling = bars_with_setup()
     falling.iloc[-1, falling.columns.get_loc("close")] = 90.0     # last close far below the EMA
@@ -150,9 +159,163 @@ def test_after_take_profit_stop_moves_to_breakeven_and_runner_closes_below_ema(j
     c = FakeClient(positions=[position(size=5.0)], working=[sl], recent=[entry_order_filled()])
     run(c, journal, bars=falling)
     kinds = [x[0] for x in c.calls]
-    assert "exits" in kinds and "close" in kinds
+    assert "exits" in kinds and "close" not in kinds
     modify = next(x for x in c.calls if x[0] == "exits")[2]["operations"][0]
     assert modify == {"kind": "modify", "order_id": "s1", "price": pytest.approx(103.81)}
+
+
+def runner_bars(close=110.0):
+    idx = pd.date_range(end=NOW.floor("15min")-pd.Timedelta(minutes=15), periods=80, freq="15min")
+    df = pd.DataFrame({"open": 100., "high": 101., "low": 99., "close": 100., "volume": 1.}, index=idx)
+    df.iloc[-1] = [100.,max(101.,close),min(99.,close),close,1.]
+    return df
+
+
+def runner_client(side="long", tf="5m"):
+    p = position(size=5.)
+    p["side"] = side
+    order = entry_order_filled()
+    order["client_order_id"] = live.client_id("xauusd",tf,"asia",side,
+        pd.Timestamp("2026-03-02 05:55",tz="UTC"),102.,103.81)
+    sl = {"id":"s1","market_id":MARKET,"reduce_only":True,"type":"stop_market",
+          "trigger_price":102.,"size":5.}
+    return FakeClient(positions=[p],working=[sl],recent=[order])
+
+
+@pytest.mark.parametrize("side,close,tf",[("long",90.,"5m"),("short",110.,"1h"),("short",110.,"15m")])
+def test_runner_uses_closed_fifteen_minute_ema_independently_of_entry_frame(journal,side,close,tf):
+    c = runner_client(side,tf)
+    plan = live.tick(c,now=NOW,journal_path=journal,
+                     bars={("xauusd","5m"):bars_with_setup(),("xauusd","15m"):runner_bars(close)})
+    assert c.calls == [("close","p1")]  # exit takes precedence over modifying the protective stop
+    action = next(a for a in plan.actions if a["action"]=="close_runner")
+    assert action["timeframe"] == "15m"
+    assert plan.checks[0]["entry_timeframe"] == tf
+    assert plan.checks[0]["reason"] == "ema_exit"
+
+
+def test_five_minute_cross_alone_cannot_close_fifteen_minute_runner(journal):
+    c = runner_client()
+    five = bars_with_setup();five.iloc[-1,five.columns.get_loc("close")] = 90.
+    plan = live.tick(c,now=NOW,journal_path=journal,
+                     bars={("xauusd","5m"):five,("xauusd","15m"):runner_bars(110.)})
+    assert ("close","p1") not in c.calls
+    assert plan.checks[0]["reason"] == "holding_runner"
+
+
+def test_forming_fifteen_minute_cross_is_filtered_before_ema(journal):
+    c = runner_client()
+    df = runner_bars(110.)
+    df.loc[NOW.floor("15min")] = [110.,111.,50.,50.,1.]
+    plan = live.tick(c,now=NOW,journal_path=journal,
+                     bars={("xauusd","5m"):bars_with_setup(),("xauusd","15m"):df})
+    assert ("close","p1") not in c.calls
+    assert plan.checks[0]["close"] == 110.
+
+
+def test_wick_through_ema_is_not_a_runner_close(journal):
+    c = runner_client()
+    df = runner_bars(110.);df.iloc[-1,df.columns.get_loc("low")] = 50.
+    live.tick(c,now=NOW,journal_path=journal,
+              bars={("xauusd","5m"):bars_with_setup(),("xauusd","15m"):df})
+    assert ("close","p1") not in c.calls
+
+
+def test_ema_exit_still_requires_partial_profit(journal):
+    c = runner_client();c._positions[0]["size"] = 10.
+    plan = live.tick(c,now=NOW,journal_path=journal,
+                     bars={("xauusd","5m"):bars_with_setup(),("xauusd","15m"):runner_bars(90.)})
+    assert ("close","p1") not in c.calls
+    assert plan.checks[0]["reason"] == "awaiting_partial"
+
+
+def test_old_runner_entry_is_recovered_beyond_the_latest_order_page(journal):
+    c = runner_client();original = c._recent[0]
+    original["position_id"] = "p1"
+    c._recent = [{"id":f"later-{i}","client_order_id":"manual","status":"canceled"} for i in range(100)]
+    c.paged = lambda path,query: [original]+c._recent
+    plan = live.tick(c,now=NOW,journal_path=journal,
+                     bars={("xauusd","5m"):bars_with_setup(),("xauusd","15m"):runner_bars(90.)})
+    assert ("close","p1") in c.calls
+    assert plan.checks[0]["reason"] == "ema_exit"
+
+
+def test_order_paging_cannot_adopt_a_manual_position_from_an_unrelated_old_fill(journal):
+    c=runner_client();old=c._recent[0];c._recent=[]
+    c.paged=lambda path,query:[old]
+    plan=live.tick(c,now=NOW,journal_path=journal,
+                   bars={("xauusd","5m"):bars_with_setup(),("xauusd","15m"):runner_bars(90.)})
+    assert c.calls==[]
+    assert plan.checks[0]["reason"]=="unmatched_entry"
+
+
+def test_saved_entry_identity_survives_order_history_rollover(journal):
+    c=runner_client()
+    frames={("xauusd","5m"):bars_with_setup(),("xauusd","15m"):runner_bars(110.)}
+    live.tick(c,now=NOW,journal_path=journal,bars=frames)
+    c.calls.clear();c._recent=[]
+    frames[("xauusd","15m")]=runner_bars(90.)
+    live.tick(c,now=NOW,journal_path=journal,bars=frames)
+    assert ("close","p1") in c.calls
+
+
+def test_recorded_bot_journal_can_recover_an_older_tagged_entry(journal):
+    c=runner_client();original=c._recent[0];c._recent=[]
+    c.paged=lambda path,query:[original]
+    row={"id":"p1","entry_time":pd.Timestamp(c._positions[0]["opened_at"],unit="ms",tz="UTC").isoformat(),
+         "asset":"xauusd","direction":"long","tf":"5m","session":"asia","stop":102.}
+    live.SANDBOX_JOURNAL.write_text(json.dumps({"account":{"id":"acc1"},"environment":"test","trades":[row]}))
+    live.tick(c,now=NOW,journal_path=journal,
+              bars={("xauusd","5m"):bars_with_setup(),("xauusd","15m"):runner_bars(90.)})
+    assert ("close","p1") in c.calls
+
+
+@pytest.mark.parametrize("account,environment",[("different-account","test"),("acc1","live")])
+def test_ownership_cache_from_another_account_or_environment_is_ignored(journal,account,environment):
+    c=runner_client();order=c._recent[0];c._recent=[]
+    live.ENTRY_LINKS.write_text(json.dumps({"account":{"id":account},"environment":environment,
+        "links":[{"id":"p1","opened_at":c._positions[0]["opened_at"],"order":order}]}))
+    plan=live.tick(c,now=NOW,journal_path=journal,
+                   bars={("xauusd","5m"):bars_with_setup(),("xauusd","15m"):runner_bars(90.)})
+    assert c.calls==[]
+    assert plan.checks[0]["reason"]=="unmatched_entry"
+
+
+def test_runner_status_is_logged_even_when_no_order_was_sent(tmp_path):
+    from friendsbot.runner import Runner
+    plan=live.Plan();plan.check("missing_runner_candles",position_id="p1")
+    path=tmp_path/"live.jsonl"
+    Runner(FakeClient(),log_file=path)._append("safety",plan)
+    row=json.loads(path.read_text())
+    assert row["actions"]==[]
+    assert row["checks"][0]["reason"]=="missing_runner_candles"
+
+
+def test_missing_tagged_entry_is_reported_without_adopting_manual_position(journal):
+    c = runner_client();c._recent = []
+    plan = live.tick(c,now=NOW,journal_path=journal,
+                     bars={("xauusd","5m"):bars_with_setup(),("xauusd","15m"):runner_bars(90.)})
+    assert c.calls == []
+    assert plan.checks[0]["reason"] == "unmatched_entry"
+
+
+def test_fifteen_minute_history_is_requested_for_an_hourly_entry(journal,monkeypatch):
+    c = runner_client("short","1h");requests=[]
+    def get_candles(items):
+        requests.extend(items)
+        return {item:runner_bars(110.) if item[2]=="15m" else bars_with_setup() for item in items}
+    monkeypatch.setattr(live,"candles",get_candles)
+    live.tick(c,now=NOW,journal_path=journal)
+    assert ("binance","XAUUSDT","15m") in requests
+    assert ("close","p1") in c.calls
+
+
+def test_dry_run_checks_runner_without_sending_a_close(journal):
+    c = runner_client()
+    plan = live.tick(c,now=NOW,journal_path=journal,dry_run=True,
+                     bars={("xauusd","5m"):bars_with_setup(),("xauusd","15m"):runner_bars(90.)})
+    assert c.calls == []
+    assert any(a["action"]=="close_runner" for a in plan.actions)
 
 
 def test_market_stops_after_two_losses_today(journal):
