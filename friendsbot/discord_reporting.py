@@ -279,13 +279,19 @@ class Reporter:
                     self.sender(self.url, self.name, body)
                     db.execute('UPDATE outbox SET sent=1 WHERE id=?',(key,))
                     db.commit()
+                    print(f"Discord delivered: {key.split(chr(58), 1)[0]}", flush=True)
                     time.sleep(0.5)
 
 
 def loop(collect, reporter, interval=30):
+    synced = False
     while True:
         try:
-            reporter.poll(collect())
+            rows = collect()
+            reporter.poll(rows)
+            if not synced:
+                print(f"Discord reporting ready: {len(rows)} matched bot positions; durable journal active", flush=True)
+                synced = True
         except Exception as error:
             # No URLs, tokens, account ids or API response bodies in logs.
             print(f'Discord reporting deferred ({type(error).__name__}); retry next poll', flush=True)
