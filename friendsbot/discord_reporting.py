@@ -186,7 +186,7 @@ def chunks(text, limit=1900):
 
 def send_webhook(url, name, content):
     parsed = urllib.parse.urlsplit(url)
-    if parsed.scheme != 'https' or parsed.hostname not in ('discord.com', 'canary.discord.com', 'ptb.discord.com') or '/api/webhooks/' not in parsed.path:
+    if parsed.scheme != 'https' or parsed.hostname not in ('discord.com', 'discordapp.com', 'canary.discord.com', 'ptb.discord.com') or '/api/webhooks/' not in parsed.path:
         raise ValueError('Expected a Discord HTTPS webhook URL')
     query = dict(urllib.parse.parse_qsl(parsed.query))
     query['wait'] = 'true'

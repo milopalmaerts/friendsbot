@@ -99,6 +99,8 @@ class ReportingTests(TestCase):
         response=mock.MagicMock();response.__enter__.return_value.status=200
         with mock.patch('urllib.request.urlopen',return_value=response) as send:
             send_webhook('https://discord.com/api/webhooks/123/secret','Atlas','hi @everyone')
+        with mock.patch('urllib.request.urlopen',return_value=response):
+            send_webhook('https://discordapp.com/api/webhooks/123/secret','Atlas','legacy URL')
         req=send.call_args.args[0]
         self.assertIn('wait=true',req.full_url)
         self.assertEqual(json.loads(req.data)['allowed_mentions'],{'parse':[]})
