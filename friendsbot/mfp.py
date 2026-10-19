@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import math
 import os
 import time
 import urllib.error
@@ -118,7 +119,25 @@ class Client:
         return self._call("DELETE", f"/v1/orders/{order_id}")
 
     def close_position(self, position_id: str, client_order_id: str | None = None) -> dict:
-        body = {"client_order_id": client_order_id} if client_order_id else {}
+        # A close is a market order too: the API validates expected_price before
+        # resolving the server-side closing direction. Use a fresh size-aware
+        # quote, never a historical strategy candle or the original entry price.
+        position = self._call("GET", f"/v1/positions/{position_id}")["data"]
+        side = {"long": "sell", "short": "buy"}.get(position.get("side"))
+        size = float(position.get("size") or 0)
+        if side is None or not math.isfinite(size) or size <= 0:
+            raise ValueError("Cannot quote a close for a flat or invalid position")
+        market = urllib.parse.quote(position["market_id"], safe="")
+        quote = self._call("GET", f"/v1/markets/{market}/quote", {"side": side, "size": size})["data"]
+        price = float(quote.get("estimated_fill_price") or quote.get("mid") or 0)
+        if not math.isfinite(price) or price <= 0:
+            raise ValueError("Close quote has no positive finite expected price")
+        # Omit size: the server closes the current remainder, even if TP1 filled
+        # between the position snapshot and settlement. This endpoint enforces
+        # reduce-only and cannot open a reversed position.
+        body = {"type": "market", "expected_price": price, "slippage_tolerance_bps": 25}
+        if client_order_id:
+            body["client_order_id"] = client_order_id
         return self._call("POST", f"/v1/positions/{position_id}/close", body=body, idempotent=True)
 
     def set_exits(self, position_id: str, body: dict) -> dict:
@@ -160,3 +179,4 @@ def candles(requests: list[tuple[str, str, str]], limit: int = 400) -> dict[tupl
             out[key] = df[~df.index.duplicated(keep="last")].sort_index()
 
     return asyncio.run(run())
+
