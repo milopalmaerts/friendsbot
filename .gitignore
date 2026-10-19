@@ -6,3 +6,9 @@ __pycache__/
 /data/journal/
 /data/journal/
 /logs/
+
+# Discord reporting state (persistent host volume, never commit)
+state/
+*.sqlite3
+*.sqlite3-*
+

@@ -135,9 +135,12 @@ class Runner:
                                 "actions": plan.actions}, default=str) + "\n")
 
     async def main(self):
+        from .discord import start
+        start(self.client, self.account_id, self.dry_run)
         log("runner_start", environment=self.client.environment, dry_run=self.dry_run)
         await asyncio.gather(self.market_stream(), self.account_stream(), self.ticker())
 
 
 def run(client: Client, account_id: str | None = None, dry_run: bool = False, log_file: Path | None = None):
     asyncio.run(Runner(client, account_id, dry_run, log_file).main())
+

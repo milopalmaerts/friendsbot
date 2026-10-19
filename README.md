@@ -81,3 +81,8 @@ Resultaten en beperkingen: zie [FINDINGS.md](FINDINGS.md). Databron: [THIRD_PART
 ## Website
 `website/index.html` is de journal van de bot: 7/30/90 dagen of alles, equity-curve, resultaat per dag in € en %,
 kalender, per markt en sessie, en alle trades. Eén zelfstandig bestand; Vercel serveert de map `website/`.
+
+
+## Discord alerts and recaps
+
+See [DISCORD.md](DISCORD.md) for TL Atlas entries, exits, and weekly/monthly recaps.
