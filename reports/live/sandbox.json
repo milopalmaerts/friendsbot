@@ -1,15 +1,15 @@
 {
- "updated": "2026-10-20T12:03:23.890901+00:00",
+ "updated": "2026-10-20T17:29:30.794135+00:00",
  "account": {
   "id": "jh7am5vbqjkywtxzzk7eqh1g958g1k7x",
   "number": "FP-16539224",
   "name": "API Sandbox 1",
   "status": "active",
   "starting_balance": 100000,
-  "balance": 98925.86581,
-  "equity": 98963.11729,
-  "daily_loss_room": 3297.617149999991,
-  "max_drawdown_room": 4963.117289999995
+  "balance": 98715.310525,
+  "equity": 98715.310525,
+  "daily_loss_room": 3049.8103849999898,
+  "max_drawdown_room": 4715.3105249999935
  },
  "environment": "test",
  "trades": [
@@ -482,17 +482,17 @@
    "session": "london",
    "direction": "short",
    "entry_time": "2026-10-20T07:33:49.046000+00:00",
-   "exit_time": null,
+   "exit_time": "2026-10-20T14:24:30.454000+00:00",
    "entry": 4135.56,
    "stop": 4152.74,
-   "exit": null,
+   "exit": 4152.86,
    "size": 5.816,
    "risk_usd": 99.92,
-   "pnl_usd": null,
-   "r": null,
+   "pnl_usd": -101.98,
+   "r": -1.021,
    "risk_pct": 0.1,
-   "exit_reason": "open",
-   "status": "open",
+   "exit_reason": "stop_loss",
+   "status": "closed",
    "source": "sandbox",
    "hot": false
   },
@@ -537,6 +537,27 @@
    "status": "closed",
    "source": "sandbox",
    "hot": true
+  },
+  {
+   "id": "js7694kfjweyvczzdykksvc2mx8gmqw0",
+   "asset": "nas100",
+   "tf": "15m",
+   "session": "new_york",
+   "direction": "long",
+   "entry_time": "2026-10-20T16:31:18.774000+00:00",
+   "exit_time": "2026-10-20T16:54:16.324000+00:00",
+   "entry": 29584,
+   "stop": 29521.9,
+   "exit": 29521,
+   "size": 1.644,
+   "risk_usd": 102.09,
+   "pnl_usd": -108.43,
+   "r": -1.062,
+   "risk_pct": 0.102,
+   "exit_reason": "stop_loss",
+   "status": "closed",
+   "source": "sandbox",
+   "hot": false
   }
  ]
 }
