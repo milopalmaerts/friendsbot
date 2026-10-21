@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-21T00:51:36.766982+00:00",
+ "updated": "2026-10-21T07:58:33.500898+00:00",
  "account": {
   "id": "jh7am5vbqjkywtxzzk7eqh1g958g1k7x",
   "number": "FP-16539224",
@@ -8,7 +8,7 @@
   "starting_balance": 100000,
   "balance": 98715.310525,
   "equity": 98715.310525,
-  "daily_loss_room": 3049.8103849999898,
+  "daily_loss_room": 4000,
   "max_drawdown_room": 4715.3105249999935
  },
  "environment": "test",
