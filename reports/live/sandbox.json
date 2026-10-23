@@ -1,15 +1,15 @@
 {
- "updated": "2026-10-23T13:46:36.218751+00:00",
+ "updated": "2026-10-23T18:40:56.893891+00:00",
  "account": {
   "id": "jh7am5vbqjkywtxzzk7eqh1g958g1k7x",
   "number": "FP-16539224",
   "name": "API Sandbox 1",
   "status": "active",
   "starting_balance": 100000,
-  "balance": 98168.566702,
-  "equity": 98168.566702,
-  "daily_loss_room": 3631.642704999991,
-  "max_drawdown_room": 4168.566701999996
+  "balance": 98054.439915,
+  "equity": 98054.439915,
+  "daily_loss_room": 3517.51591799999,
+  "max_drawdown_room": 4054.4399149999954
  },
  "environment": "test",
  "trades": [
@@ -764,6 +764,27 @@
    "pnl_usd": -107.46,
    "r": -1.079,
    "risk_pct": 0.1,
+   "exit_reason": "stop_loss",
+   "status": "closed",
+   "source": "sandbox",
+   "hot": false
+  },
+  {
+   "id": "js7a5bpbejp7vpkh2k542hqssd8gtvqm",
+   "asset": "nas100",
+   "tf": "15m",
+   "session": "new_york",
+   "direction": "long",
+   "entry_time": "2026-10-23T16:45:52.057000+00:00",
+   "exit_time": "2026-10-23T16:53:02.940000+00:00",
+   "entry": 29105,
+   "stop": 29050.9,
+   "exit": 29045,
+   "size": 1.8142,
+   "risk_usd": 98.15,
+   "pnl_usd": -114.13,
+   "r": -1.163,
+   "risk_pct": 0.098,
    "exit_reason": "stop_loss",
    "status": "closed",
    "source": "sandbox",
