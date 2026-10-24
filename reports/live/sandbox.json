@@ -1,15 +1,15 @@
 {
- "updated": "2026-10-24T07:34:31.231384+00:00",
+ "updated": "2026-10-24T12:54:09.505554+00:00",
  "account": {
   "id": "jh7am5vbqjkywtxzzk7eqh1g958g1k7x",
   "number": "FP-16539224",
   "name": "API Sandbox 1",
   "status": "active",
   "starting_balance": 100000,
-  "balance": 98021.013762,
-  "equity": 97970.712762,
-  "daily_loss_room": 3916.272847,
-  "max_drawdown_room": 3970.7127619999956
+  "balance": 98199.443651,
+  "equity": 98199.443651,
+  "daily_loss_room": 4145.003735999999,
+  "max_drawdown_room": 4199.443650999994
  },
  "environment": "test",
  "trades": [
@@ -797,17 +797,17 @@
    "session": "london",
    "direction": "short",
    "entry_time": "2026-10-24T07:30:20.795000+00:00",
-   "exit_time": null,
+   "exit_time": "2026-10-24T12:26:25.108000+00:00",
    "entry": 80739.5,
    "stop": 80890.6,
-   "exit": null,
+   "exit": 80740,
    "size": 1.38,
    "risk_usd": 208.52,
-   "pnl_usd": null,
-   "r": null,
+   "pnl_usd": 154.74,
+   "r": 0.742,
    "risk_pct": 0.209,
-   "exit_reason": "open",
-   "status": "open",
+   "exit_reason": "stop_loss",
+   "status": "closed",
    "source": "sandbox",
    "hot": true
   }
