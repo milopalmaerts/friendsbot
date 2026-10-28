@@ -1,15 +1,15 @@
 {
- "updated": "2026-10-28T01:38:46.935329+00:00",
+ "updated": "2026-10-28T08:56:21.559478+00:00",
  "account": {
   "id": "jh7am5vbqjkywtxzzk7eqh1g958g1k7x",
   "number": "FP-16539224",
   "name": "API Sandbox 1",
   "status": "active",
   "starting_balance": 100000,
-  "balance": 97550.387034,
-  "equity": 97550.387034,
-  "daily_loss_room": 3894.851072999998,
-  "max_drawdown_room": 3550.3870339999994
+  "balance": 97628.661216,
+  "equity": 97783.517966,
+  "daily_loss_room": 4233.130932,
+  "max_drawdown_room": 3783.5179659999994
  },
  "environment": "test",
  "trades": [
@@ -892,6 +892,27 @@
    "risk_pct": 0.097,
    "exit_reason": "stop_loss",
    "status": "closed",
+   "source": "sandbox",
+   "hot": false
+  },
+  {
+   "id": "js7f4c3meqs4gh0envn2aw2wx18h4kt9",
+   "asset": "btcusdt",
+   "tf": "1h",
+   "session": "asia",
+   "direction": "long",
+   "entry_time": "2026-10-28T06:20:42.841000+00:00",
+   "exit_time": null,
+   "entry": 80975.2,
+   "stop": 80815.8,
+   "exit": null,
+   "size": 0.626,
+   "risk_usd": 99.78,
+   "pnl_usd": null,
+   "r": null,
+   "risk_pct": 0.1,
+   "exit_reason": "open",
+   "status": "open",
    "source": "sandbox",
    "hot": false
   }
