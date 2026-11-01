@@ -1,10 +1,10 @@
 {
- "generated": "2026-10-25T13:45:37.819098+00:00",
+ "generated": "2026-11-01T05:54:12.179167+00:00",
  "forward_start": "2026-10-10T00:00:00+00:00",
  "data_end": {
   "xauusd": "2026-09-25T20:44:00+00:00",
   "nas100": "2026-09-25T20:44:00+00:00",
-  "btcusdt": "2026-10-25T01:47:00+00:00"
+  "btcusdt": "2026-11-01T02:39:00+00:00"
  },
  "assets": {
   "xauusd": "Goud (XAUUSD)",
@@ -398,6 +398,81 @@
      "trades": 39,
      "total_r": 2.23,
      "rank": 9,
+     "hot": false
+    }
+   ]
+  },
+  {
+   "month": "2026-11",
+   "cells": [
+    {
+     "asset": "nas100",
+     "session": "asia",
+     "tf": "30m",
+     "avg_r": 0.961,
+     "trades": 27,
+     "total_r": 25.96,
+     "rank": 1,
+     "hot": true
+    },
+    {
+     "asset": "btcusdt",
+     "session": "london",
+     "tf": "15m",
+     "avg_r": 0.492,
+     "trades": 75,
+     "total_r": 36.93,
+     "rank": 2,
+     "hot": true
+    },
+    {
+     "asset": "nas100",
+     "session": "new_york",
+     "tf": "15m",
+     "avg_r": 0.367,
+     "trades": 39,
+     "total_r": 14.33,
+     "rank": 3,
+     "hot": false
+    },
+    {
+     "asset": "xauusd",
+     "session": "new_york",
+     "tf": "30m",
+     "avg_r": 0.206,
+     "trades": 20,
+     "total_r": 4.12,
+     "rank": 4,
+     "hot": false
+    },
+    {
+     "asset": "xauusd",
+     "session": "friend_window",
+     "tf": "5m",
+     "avg_r": 0.183,
+     "trades": 54,
+     "total_r": 9.89,
+     "rank": 5,
+     "hot": false
+    },
+    {
+     "asset": "nas100",
+     "session": "late",
+     "tf": "15m",
+     "avg_r": 0.152,
+     "trades": 26,
+     "total_r": 3.95,
+     "rank": 6,
+     "hot": false
+    },
+    {
+     "asset": "btcusdt",
+     "session": "late",
+     "tf": "1h",
+     "avg_r": 0.13,
+     "trades": 22,
+     "total_r": 2.86,
+     "rank": 7,
      "hot": false
     }
    ]
@@ -5480,6 +5555,139 @@
    "risk_pct": 0.25,
    "hot": false,
    "source": "papier"
+  },
+  {
+   "id": "btcusdt-15m-long-202610261139",
+   "asset": "btcusdt",
+   "tf": "15m",
+   "session": "london",
+   "direction": "long",
+   "entry_time": "2026-10-26T11:39:00+00:00",
+   "exit_time": "2026-10-26T13:01:00+00:00",
+   "entry": 80252.16,
+   "stop": 80133.98,
+   "exit": 80133.98,
+   "r": -1.5602,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "papier"
+  },
+  {
+   "id": "btcusdt-1h-long-202610280140",
+   "asset": "btcusdt",
+   "tf": "1h",
+   "session": "asia",
+   "direction": "long",
+   "entry_time": "2026-10-28T01:40:00+00:00",
+   "exit_time": "2026-10-28T12:14:00+00:00",
+   "entry": 80811.0,
+   "stop": 80607.95,
+   "exit": 80811.0,
+   "r": 0.6269,
+   "r_gross": 1.0,
+   "exit_reason": "breakeven",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "papier"
+  },
+  {
+   "id": "btcusdt-15m-long-202610281022",
+   "asset": "btcusdt",
+   "tf": "15m",
+   "session": "london",
+   "direction": "long",
+   "entry_time": "2026-10-28T10:22:00+00:00",
+   "exit_time": "2026-10-28T11:04:00+00:00",
+   "entry": 81450.91,
+   "stop": 81330.04,
+   "exit": 81330.04,
+   "r": -1.5475,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "papier"
+  },
+  {
+   "id": "btcusdt-15m-long-202610291032",
+   "asset": "btcusdt",
+   "tf": "15m",
+   "session": "london",
+   "direction": "long",
+   "entry_time": "2026-10-29T10:32:00+00:00",
+   "exit_time": "2026-10-29T11:29:00+00:00",
+   "entry": 80064.1,
+   "stop": 80012.86,
+   "exit": 80064.1,
+   "r": -0.2696,
+   "r_gross": 1.0,
+   "exit_reason": "breakeven",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "papier"
+  },
+  {
+   "id": "btcusdt-15m-long-202610300730",
+   "asset": "btcusdt",
+   "tf": "15m",
+   "session": "london",
+   "direction": "long",
+   "entry_time": "2026-10-30T07:30:00+00:00",
+   "exit_time": "2026-10-30T07:34:00+00:00",
+   "entry": 78360.63,
+   "stop": 78246.49,
+   "exit": 78246.49,
+   "r": -1.5492,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "papier"
+  },
+  {
+   "id": "btcusdt-1h-short-202610310201",
+   "asset": "btcusdt",
+   "tf": "1h",
+   "session": "asia",
+   "direction": "short",
+   "entry_time": "2026-10-31T02:01:00+00:00",
+   "exit_time": "2026-10-31T11:49:00+00:00",
+   "entry": 77230.78,
+   "stop": 77476.82,
+   "exit": 77476.82,
+   "r": -1.2864,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "papier"
+  },
+  {
+   "id": "btcusdt-15m-long-202610311008",
+   "asset": "btcusdt",
+   "tf": "15m",
+   "session": "london",
+   "direction": "long",
+   "entry_time": "2026-10-31T10:08:00+00:00",
+   "exit_time": "2026-10-31T10:51:00+00:00",
+   "entry": 77309.67,
+   "stop": 77262.77,
+   "exit": 77262.77,
+   "r": -2.3187,
+   "r_gross": -1.0,
+   "exit_reason": "stop",
+   "status": "closed",
+   "risk_pct": 0.25,
+   "hot": false,
+   "source": "papier"
   }
  ],
  "summary": {
@@ -5495,15 +5703,15 @@
    "max_dd_pct": 10.84
   },
   "papier": {
-   "trades": 18,
+   "trades": 25,
    "open": 0,
-   "win_rate": 0.278,
-   "total_r": -13.66,
-   "avg_r": -0.759,
-   "avg_win_r": 1.2,
-   "avg_loss_r": -1.51,
-   "return_pct": -3.33,
-   "max_dd_pct": 5.62
+   "win_rate": 0.24,
+   "total_r": -21.57,
+   "avg_r": -0.863,
+   "avg_win_r": 1.11,
+   "avg_loss_r": -1.48,
+   "return_pct": -5.23,
+   "max_dd_pct": 7.47
   }
  }
 }
