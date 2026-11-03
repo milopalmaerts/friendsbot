@@ -1,15 +1,15 @@
 {
- "updated": "2026-11-03T02:37:19.067208+00:00",
+ "updated": "2026-11-03T09:59:30.451708+00:00",
  "account": {
   "id": "jh7am5vbqjkywtxzzk7eqh1g958g1k7x",
   "number": "FP-16539224",
   "name": "API Sandbox 1",
   "status": "active",
   "starting_balance": 100000,
-  "balance": 98332.568017,
-  "equity": 98332.568017,
-  "daily_loss_room": 4152.421419999999,
-  "max_drawdown_room": 4332.568016999998
+  "balance": 98605.651475,
+  "equity": 98605.651475,
+  "daily_loss_room": 3603.969717,
+  "max_drawdown_room": 4605.651475000006
  },
  "environment": "test",
  "trades": [
@@ -1083,6 +1083,48 @@
    "status": "closed",
    "source": "sandbox",
    "hot": true
+  },
+  {
+   "id": "js79rkb5hc61n6m5tbz12j0r5x8hhpz8",
+   "asset": "nas100",
+   "tf": "30m",
+   "session": "asia",
+   "direction": "short",
+   "entry_time": "2026-11-03T02:43:28.055000+00:00",
+   "exit_time": "2026-11-03T09:57:24.993000+00:00",
+   "entry": 28110,
+   "stop": 28144.1,
+   "exit": 28110,
+   "size": 6.1247,
+   "risk_usd": 208.85,
+   "pnl_usd": 198.92,
+   "r": 0.952,
+   "risk_pct": 0.209,
+   "exit_reason": "stop_loss",
+   "status": "closed",
+   "source": "sandbox",
+   "hot": true
+  },
+  {
+   "id": "js74tq9evfgfkm3c1yews5hc998hh6c0",
+   "asset": "xauusd",
+   "tf": "5m",
+   "session": "friend_window",
+   "direction": "short",
+   "entry_time": "2026-11-03T04:32:15.911000+00:00",
+   "exit_time": "2026-11-03T05:07:52.833000+00:00",
+   "entry": 3934.55,
+   "stop": 3936.52,
+   "exit": 3934.56,
+   "size": 51.131,
+   "risk_usd": 100.73,
+   "pnl_usd": 85.08,
+   "r": 0.845,
+   "risk_pct": 0.101,
+   "exit_reason": "stop_loss",
+   "status": "closed",
+   "source": "sandbox",
+   "hot": false
   }
  ]
 }
